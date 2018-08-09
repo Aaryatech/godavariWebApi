@@ -1,0 +1,775 @@
+package com.ats.godaapi.controller;
+
+import java.util.ArrayList;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ats.godaapi.model.Category;
+import com.ats.godaapi.model.Distributor;
+import com.ats.godaapi.model.ErrorMessage;
+import com.ats.godaapi.model.Hub;
+import com.ats.godaapi.model.HubUser;
+import com.ats.godaapi.model.Item;
+import com.ats.godaapi.model.ItemHsn;
+import com.ats.godaapi.model.MahasnaghUser;
+import com.ats.godaapi.model.Route;
+import com.ats.godaapi.model.RouteSup;
+import com.ats.godaapi.repository.CategoryRepo;
+import com.ats.godaapi.repository.DistributorRepository;
+import com.ats.godaapi.repository.HubRepository;
+import com.ats.godaapi.repository.HubUserRepo;
+import com.ats.godaapi.repository.ItemHsnRepo;
+import com.ats.godaapi.repository.ItemRepo;
+import com.ats.godaapi.repository.MahasnaghUserRepo;
+import com.ats.godaapi.repository.RouteRepository;
+import com.ats.godaapi.repository.RouteSupRepo;
+
+@RestController
+public class MasterApiController {
+
+	@Autowired
+	HubRepository hubRepository;
+
+	@Autowired
+	MahasnaghUserRepo mahasnaghUserRepo;
+
+	@Autowired
+	RouteSupRepo routeSupRepo;
+
+	@Autowired
+	HubUserRepo hubUserRepo;
+
+	@Autowired
+	RouteRepository routeRepository;
+
+	@Autowired
+	DistributorRepository distributorRepository;
+
+	@Autowired
+	CategoryRepo categoryRepo;
+
+	@Autowired
+	ItemHsnRepo itemHsnRepo;
+
+	@Autowired
+	ItemRepo itemRepo;
+
+	// -------------------Hub------------------------
+
+	@RequestMapping(value = { "/saveHub" }, method = RequestMethod.POST)
+	public @ResponseBody Hub saveHub(@RequestBody Hub hub) {
+
+		Hub res = new Hub();
+
+		try {
+
+			res = hubRepository.saveAndFlush(hub);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return res;
+	}
+
+	@RequestMapping(value = { "/getHubByHubId" }, method = RequestMethod.POST)
+	public @ResponseBody Hub getHubByHubId(@RequestParam("hubId") int hubId) {
+
+		Hub hub = null;
+		try {
+			hub = hubRepository.findByHubIdAndIsUsed(hubId, 1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return hub;
+
+	}
+
+	@RequestMapping(value = { "/getAllHubByIsUsed" }, method = RequestMethod.GET)
+	public @ResponseBody List<Hub> getAllHubByIsUsed() {
+
+		List<Hub> hubList = new ArrayList<Hub>();
+
+		try {
+
+			hubList = hubRepository.findByIsUsed(1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return hubList;
+
+	}
+
+	@RequestMapping(value = { "/deleteHub" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage deleteHub(@RequestParam("hubId") int hubId) {
+
+		ErrorMessage errorMessage = new ErrorMessage();
+
+		try {
+			int delete = hubRepository.deleteHub(hubId);
+
+			if (delete == 1) {
+				errorMessage.setError(false);
+				errorMessage.setMessage("Deleted Successfully");
+			} else {
+				errorMessage.setError(true);
+				errorMessage.setMessage("Deletion Failed");
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			errorMessage.setError(true);
+			errorMessage.setMessage("Deletion Failed :EXC");
+
+		}
+		return errorMessage;
+	}
+
+	// -------------------Route------------------------
+
+	@RequestMapping(value = { "/saveRoute" }, method = RequestMethod.POST)
+	public @ResponseBody Route saveRoute(@RequestBody Route route) {
+
+		Route res = new Route();
+
+		try {
+
+			res = routeRepository.saveAndFlush(route);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return res;
+	}
+
+	@RequestMapping(value = { "/getRouteByRouteId" }, method = RequestMethod.POST)
+	public @ResponseBody Route getRouteByRouteId(@RequestParam("routeId") int routeId) {
+
+		Route route = null;
+		try {
+			route = routeRepository.findByRouteIdAndIsUsed(routeId, 1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return route;
+
+	}
+
+	@RequestMapping(value = { "/getAllRouteByIsUsed" }, method = RequestMethod.GET)
+	public @ResponseBody List<Route> getAllRouteByIsUsed() {
+
+		List<Route> routeList = new ArrayList<Route>();
+
+		try {
+
+			routeList = routeRepository.findByIsUsed(1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return routeList;
+
+	}
+
+	@RequestMapping(value = { "/deleteRoute" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage deleteRoute(@RequestParam("routeId") int routeId) {
+
+		ErrorMessage errorMessage = new ErrorMessage();
+
+		try {
+			int delete = routeRepository.deleteRoute(routeId);
+
+			if (delete == 1) {
+				errorMessage.setError(false);
+				errorMessage.setMessage("Deleted Successfully");
+			} else {
+				errorMessage.setError(true);
+				errorMessage.setMessage("Deletion Failed");
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			errorMessage.setError(true);
+			errorMessage.setMessage("Deletion Failed :EXC");
+
+		}
+		return errorMessage;
+	}
+
+	// -------------------Distributor------------------------
+
+	@RequestMapping(value = { "/saveDist" }, method = RequestMethod.POST)
+	public @ResponseBody Distributor saveDist(@RequestBody Distributor distributor) {
+
+		Distributor res = new Distributor();
+
+		try {
+
+			res = distributorRepository.saveAndFlush(distributor);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return res;
+	}
+
+	@RequestMapping(value = { "/getDistributorByDistId" }, method = RequestMethod.POST)
+	public @ResponseBody Distributor getDistributorByDistId(@RequestParam("distId") int distId) {
+
+		Distributor distributor = null;
+		try {
+			distributor = distributorRepository.findByDistIdAndIsUsed(distId, 1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return distributor;
+
+	}
+
+	@RequestMapping(value = { "/getAllDistByIsUsed" }, method = RequestMethod.GET)
+	public @ResponseBody List<Distributor> getAllDistByIsUsed() {
+
+		List<Distributor> distList = new ArrayList<Distributor>();
+
+		try {
+
+			distList = distributorRepository.findByIsUsed(1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return distList;
+
+	}
+
+	@RequestMapping(value = { "/deleteDistributor" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage deleteDistributor(@RequestParam("distId") int distId) {
+
+		ErrorMessage errorMessage = new ErrorMessage();
+
+		try {
+			int delete = distributorRepository.deleteDistributor(distId);
+
+			if (delete == 1) {
+				errorMessage.setError(false);
+				errorMessage.setMessage("Deleted Successfully");
+			} else {
+				errorMessage.setError(true);
+				errorMessage.setMessage("Deletion Failed");
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			errorMessage.setError(true);
+			errorMessage.setMessage("Deletion Failed :EXC");
+
+		}
+		return errorMessage;
+	}
+
+	// -------------------Category------------------------
+
+	@RequestMapping(value = { "/saveCat" }, method = RequestMethod.POST)
+	public @ResponseBody Category saveCat(@RequestBody Category category) {
+
+		Category res = new Category();
+
+		try {
+
+			res = categoryRepo.saveAndFlush(category);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return res;
+	}
+
+	@RequestMapping(value = { "/getCatByCatId" }, method = RequestMethod.POST)
+	public @ResponseBody Category getCatByCatId(@RequestParam("catId") int catId) {
+
+		Category category = null;
+		try {
+			category = categoryRepo.findByCatIdAndIsUsed(catId, 1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return category;
+
+	}
+
+	@RequestMapping(value = { "/getAllCatByIsUsed" }, method = RequestMethod.GET)
+	public @ResponseBody List<Category> getAllCatByIsUsed() {
+
+		List<Category> catList = new ArrayList<Category>();
+
+		try {
+
+			catList = categoryRepo.findByIsUsed(1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return catList;
+
+	}
+
+	@RequestMapping(value = { "/deleteCategory" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage deleteCategory(@RequestParam("catId") int catId) {
+
+		ErrorMessage errorMessage = new ErrorMessage();
+
+		try {
+			int delete = categoryRepo.deleteCategory(catId);
+
+			if (delete == 1) {
+				errorMessage.setError(false);
+				errorMessage.setMessage("Deleted Successfully");
+			} else {
+				errorMessage.setError(true);
+				errorMessage.setMessage("Deletion Failed");
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			errorMessage.setError(true);
+			errorMessage.setMessage("Deletion Failed :EXC");
+
+		}
+		return errorMessage;
+	}
+
+	// -------------------HubUser------------------------
+
+	@RequestMapping(value = { "/saveHubUser" }, method = RequestMethod.POST)
+	public @ResponseBody HubUser saveHubUser(@RequestBody HubUser hubUser) {
+
+		HubUser res = new HubUser();
+
+		try {
+
+			res = hubUserRepo.saveAndFlush(hubUser);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return res;
+	}
+
+	@RequestMapping(value = { "/getAllHubUserByIsUsed" }, method = RequestMethod.GET)
+	public @ResponseBody List<HubUser> getAllHubUserByIsUsed() {
+
+		List<HubUser> hubUserList = new ArrayList<HubUser>();
+
+		try {
+
+			hubUserList = hubUserRepo.findByIsUsed(1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return hubUserList;
+
+	}
+
+	@RequestMapping(value = { "/getHubUserByHsId" }, method = RequestMethod.POST)
+	public @ResponseBody HubUser getHubUserByHsId(@RequestParam("hsId") int hsId) {
+
+		HubUser hubUser = null;
+		try {
+			hubUser = hubUserRepo.findByHsIdAndIsUsed(hsId, 1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return hubUser;
+
+	}
+
+	@RequestMapping(value = { "/deleteHubUser" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage deleteHubUser(@RequestParam("hsId") int hsId) {
+
+		ErrorMessage errorMessage = new ErrorMessage();
+
+		try {
+			int delete = hubUserRepo.deleteHubUser(hsId);
+
+			if (delete == 1) {
+				errorMessage.setError(false);
+				errorMessage.setMessage("Deleted Successfully");
+			} else {
+				errorMessage.setError(true);
+				errorMessage.setMessage("Deletion Failed");
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			errorMessage.setError(true);
+			errorMessage.setMessage("Deletion Failed :EXC");
+
+		}
+		return errorMessage;
+	}
+
+	// -------------------ItemHsn------------------------
+
+	@RequestMapping(value = { "/saveItemHsn" }, method = RequestMethod.POST)
+	public @ResponseBody ItemHsn saveItemHsn(@RequestBody ItemHsn itemHsn) {
+
+		ItemHsn res = new ItemHsn();
+
+		try {
+
+			res = itemHsnRepo.saveAndFlush(itemHsn);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return res;
+	}
+
+	@RequestMapping(value = { "/getItemHsnByItemHsnId" }, method = RequestMethod.POST)
+	public @ResponseBody ItemHsn getItemHsnByItemHsnId(@RequestParam("itemHsnId") int itemHsnId) {
+
+		ItemHsn itemHsn = null;
+		try {
+			itemHsn = itemHsnRepo.findByItemHsnIdAndIsUsed(itemHsnId, 1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return itemHsn;
+
+	}
+
+	@RequestMapping(value = { "/getAllItemHsnByIsUsed" }, method = RequestMethod.GET)
+	public @ResponseBody List<ItemHsn> getAllItemHsnByIsUsed() {
+
+		List<ItemHsn> itemHsnList = new ArrayList<ItemHsn>();
+
+		try {
+
+			itemHsnList = itemHsnRepo.findByIsUsed(1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return itemHsnList;
+
+	}
+
+	@RequestMapping(value = { "/deleteItemHsn" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage deleteItemHsn(@RequestParam("itemHsnId") int itemHsnId) {
+
+		ErrorMessage errorMessage = new ErrorMessage();
+
+		try {
+			int delete = itemHsnRepo.deleteItemHsn(itemHsnId);
+
+			if (delete == 1) {
+				errorMessage.setError(false);
+				errorMessage.setMessage("Deleted Successfully");
+			} else {
+				errorMessage.setError(true);
+				errorMessage.setMessage("Deletion Failed");
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			errorMessage.setError(true);
+			errorMessage.setMessage("Deletion Failed :EXC");
+
+		}
+		return errorMessage;
+	}
+
+	// -------------------Item----------------------------------
+
+	@RequestMapping(value = { "/saveItem" }, method = RequestMethod.POST)
+	public @ResponseBody Item saveItem(@RequestBody Item item) {
+
+		Item res = new Item();
+
+		try {
+
+			res = itemRepo.saveAndFlush(item);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return res;
+	}
+
+	@RequestMapping(value = { "/getAllItemByIsUsed" }, method = RequestMethod.GET)
+	public @ResponseBody List<Item> getAllItemByIsUsed() {
+
+		List<Item> itemList = new ArrayList<Item>();
+
+		try {
+
+			itemList = itemRepo.findByIsUsed(1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return itemList;
+
+	}
+
+	@RequestMapping(value = { "/getItemByItemId" }, method = RequestMethod.POST)
+	public @ResponseBody Item getItemByItemId(@RequestParam("itemId") int itemId) {
+
+		Item item = null;
+		try {
+			item = itemRepo.findByItemIdAndIsUsed(itemId, 1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return item;
+
+	}
+
+	@RequestMapping(value = { "/deleteItem" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage deleteItem(@RequestParam("itemId") int itemId) {
+
+		ErrorMessage errorMessage = new ErrorMessage();
+
+		try {
+			int delete = itemRepo.deleteItem(itemId);
+
+			if (delete == 1) {
+				errorMessage.setError(false);
+				errorMessage.setMessage("Deleted Successfully");
+			} else {
+				errorMessage.setError(true);
+				errorMessage.setMessage("Deletion Failed");
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			errorMessage.setError(true);
+			errorMessage.setMessage("Deletion Failed :EXC");
+
+		}
+		return errorMessage;
+	}
+
+	// -------------------MahasnaghUser----------------------------------
+
+	@RequestMapping(value = { "/saveMahasnaghUser" }, method = RequestMethod.POST)
+	public @ResponseBody MahasnaghUser saveMahasnaghUser(@RequestBody MahasnaghUser mahasnaghUser) {
+
+		MahasnaghUser res = new MahasnaghUser();
+
+		try {
+
+			res = mahasnaghUserRepo.saveAndFlush(mahasnaghUser);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return res;
+	}
+
+	@RequestMapping(value = { "/getAllMSByIsUsed" }, method = RequestMethod.GET)
+	public @ResponseBody List<MahasnaghUser> getAllMSByIsUsed() {
+
+		List<MahasnaghUser> msList = new ArrayList<MahasnaghUser>();
+
+		try {
+
+			msList = mahasnaghUserRepo.findByIsUsed(1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return msList;
+
+	}
+
+	@RequestMapping(value = { "/getMsByMsId" }, method = RequestMethod.POST)
+	public @ResponseBody MahasnaghUser getMsByMsId(@RequestParam("msId") int msId) {
+
+		MahasnaghUser ms = null;
+		try {
+			ms = mahasnaghUserRepo.findByMsIdAndIsUsed(msId, 1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return ms;
+
+	}
+
+	@RequestMapping(value = { "/deleteMahasanghUser" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage deleteMahasanghUser(@RequestParam("msId") int msId) {
+
+		ErrorMessage errorMessage = new ErrorMessage();
+
+		try {
+			int delete = mahasnaghUserRepo.deleteMahasnaghUser(msId);
+
+			if (delete == 1) {
+				errorMessage.setError(false);
+				errorMessage.setMessage("Deleted Successfully");
+			} else {
+				errorMessage.setError(true);
+				errorMessage.setMessage("Deletion Failed");
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			errorMessage.setError(true);
+			errorMessage.setMessage("Deletion Failed :EXC");
+
+		}
+		return errorMessage;
+	}
+	// -------------------RouteSup----------------------------------
+
+	@RequestMapping(value = { "/saveRouteSup" }, method = RequestMethod.POST)
+	public @ResponseBody RouteSup saveRouteSup(@RequestBody RouteSup routeSup) {
+
+		RouteSup res = new RouteSup();
+
+		try {
+
+			res = routeSupRepo.saveAndFlush(routeSup);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return res;
+	}
+
+	@RequestMapping(value = { "/getAllRsByIsUsed" }, method = RequestMethod.GET)
+	public @ResponseBody List<RouteSup> getAllRsByIsUsed() {
+
+		List<RouteSup> rsList = new ArrayList<RouteSup>();
+
+		try {
+
+			rsList = routeSupRepo.findByIsUsed(1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return rsList;
+
+	}
+
+	@RequestMapping(value = { "/getRsBySupId" }, method = RequestMethod.POST)
+	public @ResponseBody RouteSup getRsBySupId(@RequestParam("supId") int supId) {
+
+		RouteSup rs = null;
+		try {
+			rs = routeSupRepo.findBySupIdAndIsUsed(supId, 1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return rs;
+
+	}
+
+	@RequestMapping(value = { "/deleteRouteSup" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage deleteRouteSup(@RequestParam("supId") int supId) {
+
+		ErrorMessage errorMessage = new ErrorMessage();
+
+		try {
+			int delete = routeSupRepo.deleteRouteSup(supId);
+
+			if (delete == 1) {
+				errorMessage.setError(false);
+				errorMessage.setMessage("Deleted Successfully");
+			} else {
+				errorMessage.setError(true);
+				errorMessage.setMessage("Deletion Failed");
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			errorMessage.setError(true);
+			errorMessage.setMessage("Deletion Failed :EXC");
+
+		}
+		return errorMessage;
+	}
+
+}
