@@ -1,5 +1,6 @@
 package com.ats.godaapi.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ats.godaapi.model.ErrorMessage;
+import com.ats.godaapi.model.Item;
 import com.ats.godaapi.model.Order;
 import com.ats.godaapi.model.OrderDetail;
+import com.ats.godaapi.repository.ItemRepo;
 import com.ats.godaapi.repository.OrderDetailRepo;
 import com.ats.godaapi.repository.OrderRepo;
 
@@ -24,6 +27,9 @@ public class OrderApiController {
 
 	@Autowired
 	OrderDetailRepo orderDetailRepo;
+
+	@Autowired
+	ItemRepo itemRepo;
 
 	@RequestMapping(value = { "/saveOrderHeaderDetail" }, method = RequestMethod.POST)
 	public @ResponseBody ErrorMessage saveOrderHeaderDetail(@RequestBody Order order) {
@@ -78,4 +84,69 @@ public class OrderApiController {
 		return orderHeader;
 
 	}
+
+	@RequestMapping(value = { "/getOrderHeaderAndDetailByDistId" }, method = RequestMethod.POST)
+	public @ResponseBody List<Order> getOrderHeaderAndDetailByDistId(@RequestParam("distId") int distId) {
+
+		List<Order> orderHeaderList = new ArrayList<Order>();
+
+		try {
+
+			orderHeaderList = orderRepo.findByDistId(distId);
+
+			for (int i = 0; i < orderHeaderList.size(); i++) {
+				List<OrderDetail> orderDetailList = orderDetailRepo
+						.findByOrderHeaderId(orderHeaderList.get(i).getOrderHeaderId());
+				orderHeaderList.get(i).setOrderDetailList(orderDetailList);
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return orderHeaderList;
+
+	}
+
+	@RequestMapping(value = { "/getOrderByItemId" }, method = RequestMethod.POST)
+	public @ResponseBody List<OrderDetail> getOrderByItemId(@RequestParam("itemId") int itemId) {
+
+		List<OrderDetail> itemList = new ArrayList<OrderDetail>();
+		try {
+			itemList = orderDetailRepo.findByItemId(itemId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return itemList;
+
+	}
+
+	@RequestMapping(value = { "/getOrderHistory" }, method = RequestMethod.POST)
+	public @ResponseBody List<Order> getOrderHistory(@RequestParam("orderDate") String orderDate) {
+
+		List<Order> orderHeaderList = new ArrayList<Order>();
+
+		try {
+
+			orderHeaderList = orderRepo.findByOrderDate(orderDate);
+
+			for (int i = 0; i < orderHeaderList.size(); i++) {
+				List<OrderDetail> orderDetailList = orderDetailRepo
+						.findByOrderHeaderId(orderHeaderList.get(i).getOrderHeaderId());
+				orderHeaderList.get(i).setOrderDetailList(orderDetailList);
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return orderHeaderList;
+
+	}
+
 }

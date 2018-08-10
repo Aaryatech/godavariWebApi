@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ats.godaapi.model.CatItemList;
 import com.ats.godaapi.model.Category;
 import com.ats.godaapi.model.Distributor;
 import com.ats.godaapi.model.ErrorMessage;
@@ -20,9 +21,11 @@ import com.ats.godaapi.model.HubUser;
 import com.ats.godaapi.model.Item;
 import com.ats.godaapi.model.ItemHsn;
 import com.ats.godaapi.model.LoginResponseDist;
+import com.ats.godaapi.model.LoginResponseSup;
 import com.ats.godaapi.model.MahasnaghUser;
 import com.ats.godaapi.model.Route;
 import com.ats.godaapi.model.RouteSup;
+import com.ats.godaapi.repository.CatItemListRepo;
 import com.ats.godaapi.repository.CategoryRepo;
 import com.ats.godaapi.repository.DistributorRepository;
 import com.ats.godaapi.repository.HubRepository;
@@ -38,6 +41,9 @@ public class MasterApiController {
 
 	@Autowired
 	HubRepository hubRepository;
+
+	@Autowired
+	CatItemListRepo catItemListRepo;
 
 	@Autowired
 	MahasnaghUserRepo mahasnaghUserRepo;
@@ -590,6 +596,22 @@ public class MasterApiController {
 
 	}
 
+	@RequestMapping(value = { "/getItemByCatId" }, method = RequestMethod.POST)
+	public @ResponseBody List<Item> getItemByCatId(@RequestParam("catId") int catId) {
+
+		List<Item> itemList = new ArrayList<Item>();
+		try {
+			itemList = itemRepo.findByCatIdAndIsUsed(catId, 1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return itemList;
+
+	}
+
 	@RequestMapping(value = { "/deleteItem" }, method = RequestMethod.POST)
 	public @ResponseBody ErrorMessage deleteItem(@RequestParam("itemId") int itemId) {
 
@@ -827,5 +849,71 @@ public class MasterApiController {
 
 		}
 		return loginResponse;
+	}
+
+	// -----------Distributor Login--------------------
+
+	@RequestMapping(value = { "/loginResponseSup" }, method = RequestMethod.POST)
+	public @ResponseBody LoginResponseSup loginResponseSup(@RequestParam("supContactNo") String supContactNo,
+			@RequestParam("supPwd") String supPwd) {
+
+		LoginResponseSup loginResponse = new LoginResponseSup();
+		try {
+
+			RouteSup rs = routeSupRepo.findBySupContactNoAndSupPwdAndIsUsed(supContactNo, supPwd, 1);
+			if (rs == null) {
+				loginResponse.setError(true);
+				loginResponse.setMsg("login Failed");
+			} else {
+				loginResponse.setError(false);
+				loginResponse.setMsg("login successfully");
+				loginResponse.setRouteSup(rs);
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			loginResponse.setError(true);
+			loginResponse.setMsg("login Failed");
+		}
+
+		return loginResponse;
+	}
+
+	@RequestMapping(value = { "/getAllCatwiseItemList" }, method = RequestMethod.GET)
+	public @ResponseBody List<CatItemList> getAllCatwiseItemList() {
+
+		List<Category> catList = new ArrayList<Category>();
+		List<CatItemList> catItemList = new ArrayList<CatItemList>();
+
+		try {
+
+			catList = categoryRepo.findByIsUsed(1);
+
+			for (int i = 0; i < catList.size(); i++) {
+
+				Category cat = catList.get(i);
+
+				CatItemList catItem = new CatItemList();
+				catItem.setCatEngName(cat.getCatEngName());
+				catItem.setCatId(cat.getCatId());
+				catItem.setCatMarName(cat.getCatMarName());
+				catItem.setCatPic(cat.getCatPic());
+				catItem.setIsUsed(cat.getIsUsed());
+
+				List<Item> itemList = itemRepo.findByCatId(cat.getCatId());
+
+				catItem.setItemList(itemList);
+
+				catItemList.add(catItem);
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return catItemList;
+
 	}
 }

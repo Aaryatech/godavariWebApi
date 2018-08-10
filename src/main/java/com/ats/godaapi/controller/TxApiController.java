@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ats.godaapi.model.Config;
 import com.ats.godaapi.model.ErrorMessage;
 import com.ats.godaapi.model.Setting;
+import com.ats.godaapi.model.Test;
 import com.ats.godaapi.repository.ConfigRepo;
 import com.ats.godaapi.repository.SettingRepo;
+import com.ats.godaapi.repository.TestRepo;
 
 @RestController
 public class TxApiController {
@@ -25,6 +27,46 @@ public class TxApiController {
 
 	@Autowired
 	ConfigRepo configRepo;
+
+	@Autowired
+	TestRepo testRepo;
+
+	// -------------------Test------------------------
+
+	@RequestMapping(value = { "/saveTest" }, method = RequestMethod.POST)
+	public @ResponseBody Test saveTest(@RequestBody Test test) {
+
+		Test res = new Test();
+
+		try {
+
+			res = testRepo.saveAndFlush(test);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return res;
+	}
+
+	@RequestMapping(value = { "/getAllTests" }, method = RequestMethod.GET)
+	public @ResponseBody List<Test> getAllTests() {
+
+		List<Test> testList = new ArrayList<Test>();
+
+		try {
+
+			testList = testRepo.findAll();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return testList;
+
+	}
 
 	// -------------------Setting------------------------
 

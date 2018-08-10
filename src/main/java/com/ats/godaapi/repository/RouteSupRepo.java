@@ -21,4 +21,6 @@ public interface RouteSupRepo extends JpaRepository<RouteSup, Integer> {
 
 	RouteSup findBySupIdAndIsUsed(int supId, int i);
 
+	RouteSup findBySupContactNoAndSupPwdAndIsUsed(String supContactNo, String supPwd, int i);
+
 }

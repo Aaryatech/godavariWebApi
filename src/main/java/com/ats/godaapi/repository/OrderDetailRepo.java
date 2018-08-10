@@ -10,4 +10,6 @@ public interface OrderDetailRepo extends JpaRepository<OrderDetail, Integer> {
 
 	List<OrderDetail> findByOrderHeaderId(int orderHeaderId);
 
+	List<OrderDetail> findByItemId(int itemId);
+
 }
