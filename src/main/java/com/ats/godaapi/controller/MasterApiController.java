@@ -19,6 +19,7 @@ import com.ats.godaapi.model.Hub;
 import com.ats.godaapi.model.HubUser;
 import com.ats.godaapi.model.Item;
 import com.ats.godaapi.model.ItemHsn;
+import com.ats.godaapi.model.LoginResponseDist;
 import com.ats.godaapi.model.MahasnaghUser;
 import com.ats.godaapi.model.Route;
 import com.ats.godaapi.model.RouteSup;
@@ -771,5 +772,60 @@ public class MasterApiController {
 		}
 		return errorMessage;
 	}
+	// -----------Distributor Login--------------------
 
+	@RequestMapping(value = { "/loginResponseDist" }, method = RequestMethod.POST)
+	public @ResponseBody LoginResponseDist loginResponseDist(@RequestParam("distContactNo") String distContactNo,
+			@RequestParam("distPwd") String distPwd) {
+
+		LoginResponseDist loginResponse = new LoginResponseDist();
+		try {
+
+			Distributor dist = distributorRepository.findByDistContactNoAndDistPwdAndIsUsed(distContactNo, distPwd, 1);
+			if (dist == null) {
+				loginResponse.setError(true);
+				loginResponse.setMsg("login Failed");
+			} else {
+				loginResponse.setError(false);
+				loginResponse.setMsg("login successfully");
+				loginResponse.setDistributor(dist);
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			loginResponse.setError(true);
+			loginResponse.setMsg("login Failed");
+		}
+
+		return loginResponse;
+	}
+	// ------------Update dist token--------------
+
+	@RequestMapping(value = { "/updateDistToken" }, method = RequestMethod.POST)
+	public @ResponseBody LoginResponseDist updateDistToken(@RequestParam("distId") int distId,
+			@RequestParam("token") String token) {
+
+		Distributor dist = distributorRepository.findByDistId(distId);
+
+		LoginResponseDist loginResponse = new LoginResponseDist();
+
+		if (dist == null) {
+			dist = new Distributor();
+			loginResponse.setDistributor(dist);
+
+			loginResponse.setError(true);
+			loginResponse.setMsg("Invalid ID ");
+
+		} else {
+
+			loginResponse.setDistributor(dist);
+			loginResponse.setError(false);
+			loginResponse.setMsg("Update Token Successfully");
+
+			int isUpdated = distributorRepository.updateToken(dist.getDistId(), token);
+
+		}
+		return loginResponse;
+	}
 }

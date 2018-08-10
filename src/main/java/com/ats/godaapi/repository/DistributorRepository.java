@@ -20,4 +20,13 @@ public interface DistributorRepository extends JpaRepository<Distributor, Intege
 	int deleteDistributor(@Param("distId") int distId);
 
 	List<Distributor> findByIsUsed(int i);
+
+	Distributor findByDistContactNoAndDistPwdAndIsUsed(String distContactNo, String distPwd, int i);
+
+	Distributor findByDistId(int distId);
+
+	@Transactional
+	@Modifying
+	@Query("UPDATE Distributor SET token=:token  WHERE dist_id=:distId")
+	int updateToken(@Param("distId") int distId, @Param("token") String token);
 }
