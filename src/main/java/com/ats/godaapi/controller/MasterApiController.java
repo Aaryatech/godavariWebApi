@@ -1106,4 +1106,31 @@ public class MasterApiController {
 
 		return loginResponse;
 	}
+
+	// -------------Add new staff member==MahasnaghUser -------------
+
+	@RequestMapping(value = { "/saveMahasanghUserExisting" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage saveMahasanghUserExisting(@RequestBody MahasnaghUser mahasnaghUser) {
+		ErrorMessage errorMessage = new ErrorMessage();
+		MahasnaghUser res = new MahasnaghUser();
+
+		res = mahasnaghUserRepo.findByMsContactNoAndIsUsed(mahasnaghUser.getMsContactNo(), 1);
+		try {
+
+			if (res == null) {
+
+				res = mahasnaghUserRepo.saveAndFlush(mahasnaghUser);
+				errorMessage.setMessage("Save Successfully");
+
+			} else {
+				errorMessage.setMessage("Mobile No Already Exist");
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return errorMessage;
+	}
 }

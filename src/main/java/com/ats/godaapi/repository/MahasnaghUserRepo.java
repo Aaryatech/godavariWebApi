@@ -28,4 +28,6 @@ public interface MahasnaghUserRepo extends JpaRepository<MahasnaghUser, Integer>
 
 	MahasnaghUser findByMsContactNoAndMsPwdAndIsUsed(String msContactNo, String msPwd, int i);
 
+	MahasnaghUser findByMsContactNoAndIsUsed(String msContactNo, int i);
+
 }

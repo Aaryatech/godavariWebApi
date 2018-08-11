@@ -1,7 +1,10 @@
 package com.ats.godaapi.controller;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,7 @@ import com.ats.godaapi.model.GetOrderDetail;
 import com.ats.godaapi.model.ItemwiseOrder;
 import com.ats.godaapi.model.Order;
 import com.ats.godaapi.model.OrderDetail;
+import com.ats.godaapi.model.Setting;
 import com.ats.godaapi.repository.DistributorRepository;
 import com.ats.godaapi.repository.GetOrderDetailRepo;
 import com.ats.godaapi.repository.GetOrderRepo;
@@ -27,9 +31,13 @@ import com.ats.godaapi.repository.ItemRepo;
 import com.ats.godaapi.repository.ItemwiseOrderRepo;
 import com.ats.godaapi.repository.OrderDetailRepo;
 import com.ats.godaapi.repository.OrderRepo;
+import com.ats.godaapi.repository.SettingRepo;
 
 @RestController
 public class OrderApiController {
+
+	@Autowired
+	SettingRepo settingRepo;
 
 	@Autowired
 	OrderRepo orderRepo;
@@ -298,6 +306,54 @@ public class OrderApiController {
 
 		}
 		return distOrderList;
+
+	}
+
+	@RequestMapping(value = { "/saveOrderBySetting" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage saveOrderBySetting(@RequestBody Order order) {
+
+		ErrorMessage errorMessage = new ErrorMessage();
+		Order orderRes = new Order();
+		System.out.println("orderList" + order.toString());
+		List<Setting> setList = new ArrayList<Setting>();
+
+		try {
+
+			DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a");
+			Date date = new Date();
+			String time = dateFormat.format(date);
+			System.out.println(time);
+
+			Calendar calobj = Calendar.getInstance();
+			System.out.println(calobj.getTime());
+
+			setList = settingRepo.getTime(time);
+			if (setList != null) {
+				orderRes = orderRepo.saveAndFlush(order);
+				System.out.println("orderResListDeatil" + orderRes.getOrderDetailList());
+
+				for (int i = 0; i < order.getOrderDetailList().size(); i++) {
+					order.getOrderDetailList().get(i).setOrderHeaderId(orderRes.getOrderHeaderId());
+
+					List<OrderDetail> orderDetailList = orderDetailRepo.saveAll(order.getOrderDetailList());
+					System.out.println("orderDetailList" + orderDetailList.toString());
+					orderRes.setOrderDetailList(orderDetailList);
+				}
+				errorMessage.setError(false);
+				errorMessage.setMessage("successfully Saved ");
+			} else {
+				errorMessage.setMessage("Time not Match");
+
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			errorMessage.setError(true);
+			errorMessage.setMessage("failed to Save ");
+
+		}
+		return errorMessage;
 
 	}
 

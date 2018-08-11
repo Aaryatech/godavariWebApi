@@ -21,4 +21,7 @@ public interface SettingRepo extends JpaRepository<Setting, Integer> {
 
 	Setting findBySettingIdAndIsUsed(int settingId, int i);
 
+	@Query(value = "SELECT s.* FROM t_setting s,m_dist d,t_config c WHERE d.hub_id=s.hub_id  AND s.config_id=c.config_id AND :currentTime BETWEEN c.dist_from_time AND c.dist_to_time", nativeQuery = true)
+	List<Setting> getTime(@Param("currentTime") String time);
+
 }
