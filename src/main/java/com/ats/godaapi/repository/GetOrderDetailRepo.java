@@ -10,7 +10,7 @@ import com.ats.godaapi.model.GetOrderDetail;
 
 public interface GetOrderDetailRepo extends JpaRepository<GetOrderDetail, Integer> {
 
-	@Query(value = "SELECT d.*,s.sa_name,u.user_name ,rel.user_name AS manager_name FROM t_fb_header d,m_sa s,m_user u,m_user rel  WHERE d.del_status=0 AND d.fb_date BETWEEN :fromDate AND :toDate  AND d.company_id=:companyId AND d.sa_id=s.sa_id AND d.rel_man_id=u.user_id AND rel.user_id=d.rel_man_id", nativeQuery = true)
+	@Query(value = "SELECT d.*,i.item_eng_name,i.item_mar_name,i.item_eng_desc,i.item_mar_desc,i.item_uom FROM t_order_detail d ,m_item i WHERE d.item_id=i.item_id and d.order_header_id=:orderHeaderId", nativeQuery = true)
 	List<GetOrderDetail> getOrderDetailHistory(@Param("orderHeaderId") int orderHeaderId);
 
 }

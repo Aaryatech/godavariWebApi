@@ -36,6 +36,8 @@ public class TxApiController {
 	@RequestMapping(value = { "/saveTest" }, method = RequestMethod.POST)
 	public @ResponseBody Test saveTest(@RequestBody Test test) {
 
+		
+		System.out.println("Input param "+test.toString());
 		Test res = new Test();
 
 		try {
@@ -53,6 +55,7 @@ public class TxApiController {
 	@RequestMapping(value = { "/getAllTests" }, method = RequestMethod.GET)
 	public @ResponseBody List<Test> getAllTests() {
 
+		
 		List<Test> testList = new ArrayList<Test>();
 
 		try {

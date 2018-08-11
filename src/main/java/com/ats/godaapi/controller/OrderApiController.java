@@ -12,9 +12,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ats.godaapi.model.ErrorMessage;
+import com.ats.godaapi.model.GetOrder;
+import com.ats.godaapi.model.GetOrderDetail;
 import com.ats.godaapi.model.Item;
 import com.ats.godaapi.model.Order;
 import com.ats.godaapi.model.OrderDetail;
+import com.ats.godaapi.repository.GetOrderDetailRepo;
+import com.ats.godaapi.repository.GetOrderRepo;
 import com.ats.godaapi.repository.ItemRepo;
 import com.ats.godaapi.repository.OrderDetailRepo;
 import com.ats.godaapi.repository.OrderRepo;
@@ -30,6 +34,12 @@ public class OrderApiController {
 
 	@Autowired
 	ItemRepo itemRepo;
+
+	@Autowired
+	GetOrderDetailRepo getOrderDetailRepo;
+
+	@Autowired
+	GetOrderRepo getOrderRepo;
 
 	@RequestMapping(value = { "/saveOrderHeaderDetail" }, method = RequestMethod.POST)
 	public @ResponseBody ErrorMessage saveOrderHeaderDetail(@RequestBody Order order) {
@@ -126,18 +136,18 @@ public class OrderApiController {
 	}
 
 	@RequestMapping(value = { "/getOrderHistory" }, method = RequestMethod.POST)
-	public @ResponseBody List<Order> getOrderHistory(@RequestParam("orderDate") String orderDate) {
+	public @ResponseBody List<GetOrder> getOrderHistory(@RequestParam("orderDate") String orderDate) {
 
-		List<Order> orderHeaderList = new ArrayList<Order>();
+		List<GetOrder> orderHeaderList = new ArrayList<GetOrder>();
 
 		try {
 
-			orderHeaderList = orderRepo.findByOrderDate(orderDate);
+			orderHeaderList = getOrderRepo.getOrderHeaderlHistory(orderDate);
 
 			for (int i = 0; i < orderHeaderList.size(); i++) {
-				List<OrderDetail> orderDetailList = orderDetailRepo
-						.findByOrderHeaderId(orderHeaderList.get(i).getOrderHeaderId());
-				orderHeaderList.get(i).setOrderDetailList(orderDetailList);
+				List<GetOrderDetail> orderDetailList = getOrderDetailRepo
+						.getOrderDetailHistory(orderHeaderList.get(i).getOrderHeaderId());
+				orderHeaderList.get(i).setGetOrderDetailList(orderDetailList);
 			}
 
 		} catch (Exception e) {
@@ -150,3 +160,4 @@ public class OrderApiController {
 	}
 
 }
+	
