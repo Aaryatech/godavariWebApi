@@ -1,6 +1,7 @@
 package com.ats.godaapi.controller;
 
 import java.util.ArrayList;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,15 +12,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ats.godaapi.model.Distributor;
+import com.ats.godaapi.model.DistwiseOrder;
 import com.ats.godaapi.model.ErrorMessage;
 import com.ats.godaapi.model.GetOrder;
 import com.ats.godaapi.model.GetOrderDetail;
-import com.ats.godaapi.model.Item;
+import com.ats.godaapi.model.ItemwiseOrder;
 import com.ats.godaapi.model.Order;
 import com.ats.godaapi.model.OrderDetail;
+import com.ats.godaapi.repository.DistributorRepository;
 import com.ats.godaapi.repository.GetOrderDetailRepo;
 import com.ats.godaapi.repository.GetOrderRepo;
 import com.ats.godaapi.repository.ItemRepo;
+import com.ats.godaapi.repository.ItemwiseOrderRepo;
 import com.ats.godaapi.repository.OrderDetailRepo;
 import com.ats.godaapi.repository.OrderRepo;
 
@@ -28,6 +33,9 @@ public class OrderApiController {
 
 	@Autowired
 	OrderRepo orderRepo;
+
+	@Autowired
+	ItemwiseOrderRepo itemwiseOrderRepo;
 
 	@Autowired
 	OrderDetailRepo orderDetailRepo;
@@ -40,6 +48,9 @@ public class OrderApiController {
 
 	@Autowired
 	GetOrderRepo getOrderRepo;
+
+	@Autowired
+	DistributorRepository distributorRepository;
 
 	@RequestMapping(value = { "/saveOrderHeaderDetail" }, method = RequestMethod.POST)
 	public @ResponseBody ErrorMessage saveOrderHeaderDetail(@RequestBody Order order) {
@@ -159,5 +170,135 @@ public class OrderApiController {
 
 	}
 
+	@RequestMapping(value = { "/updateOrderHeaderAndDetail" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage updateOrderHeaderAndDetail(@RequestBody List<Order> orderList) {
+
+		ErrorMessage errorMessage = new ErrorMessage();
+
+		try {
+
+			for (int i = 0; i < orderList.size(); i++) {
+				Order orderHeader = orderRepo.save(orderList.get(i));
+
+				for (int j = 0; j < orderList.get(i).getOrderDetailList().size(); j++) {
+
+					orderList.get(i).getOrderDetailList().get(j).setOrderHeaderId(orderHeader.getOrderHeaderId());
+
+				}
+
+				List<OrderDetail> orderDetailsList = orderDetailRepo.saveAll(orderList.get(i).getOrderDetailList());
+				System.out.println("orderDetailsList" + orderDetailsList.toString());
+			}
+
+			errorMessage.setError(false);
+			errorMessage.setMessage("successfully Saved ");
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			errorMessage.setError(true);
+			errorMessage.setMessage("failed to Save ");
+
+		}
+		return errorMessage;
+
+	}
+
+	@RequestMapping(value = { "/getOrderItemwise" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetOrder> getOrderItemwise(@RequestParam("date") String date) {
+
+		List<GetOrder> orderHeaderList = new ArrayList<GetOrder>();
+
+		try {
+
+			orderHeaderList = getOrderRepo.getOrderItemwise(date);
+
+			for (int i = 0; i < orderHeaderList.size(); i++) {
+				List<GetOrderDetail> orderDetailList = getOrderDetailRepo
+						.getOrderDetailByItemwise(orderHeaderList.get(i).getOrderHeaderId());
+				orderHeaderList.get(i).setGetOrderDetailList(orderDetailList);
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return orderHeaderList;
+
+	}
+
+	@RequestMapping(value = { "/getItemwiseOrder" }, method = RequestMethod.POST)
+	public @ResponseBody List<ItemwiseOrder> getItemwiseOrder(@RequestParam("date") String date) {
+
+		List<ItemwiseOrder> orderList = new ArrayList<ItemwiseOrder>();
+
+		try {
+
+			orderList = itemwiseOrderRepo.getItemwiseOrder(date);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return orderList;
+
+	}
+
+	@RequestMapping(value = { "/getDistwiseOrder" }, method = RequestMethod.POST)
+	public @ResponseBody List<DistwiseOrder> getDistwiseOrder(@RequestParam("date") String date) {
+
+		List<DistwiseOrder> distOrderList = new ArrayList<DistwiseOrder>();
+
+		List<Distributor> distList = new ArrayList<>();
+
+		try {
+
+			distList = distributorRepository.findByIsUsed(1);
+
+			for (int i = 0; i < distList.size(); i++) {
+
+				List<GetOrderDetail> orderDetailList = getOrderDetailRepo
+						.getDistwiseOrderDetail(distList.get(i).getDistId(), date);
+
+				if (!orderDetailList.isEmpty()) {
+					DistwiseOrder distwiseOrder = new DistwiseOrder();
+					distwiseOrder.setDistAddEng(distList.get(i).getDistAddEng());
+					distwiseOrder.setDistAddMar(distList.get(i).getDistAddMar());
+
+					distwiseOrder.setDistAmtLimit(distList.get(i).getDistAmtLimit());
+
+					distwiseOrder.setDistAmtPending(distList.get(i).getDistAmtPending());
+					distwiseOrder.setDistContactNo(distList.get(i).getDistContactNo());
+					distwiseOrder.setDistCratesLimit(distList.get(i).getDistCratesLimit());
+					distwiseOrder.setDistCratesPending(distList.get(i).getDistCratesPending());
+					distwiseOrder.setDistEngName(distList.get(i).getDistAddEng());
+					distwiseOrder.setDistId(distList.get(i).getDistId());
+
+					distwiseOrder.setDistLocation(distList.get(i).getDistLocation());
+					distwiseOrder.setDistMarName(distList.get(i).getDistMarName());
+					distwiseOrder.setDistPwd(distList.get(i).getDistPwd());
+					distwiseOrder.setHubId(distList.get(i).getHubId());
+					distwiseOrder.setIsBlock(distList.get(i).getIsBlock());
+					distwiseOrder.setIsUsed(distList.get(i).getIsUsed());
+					distwiseOrder.setRouteDistSeqNo(distList.get(i).getRouteDistSeqNo());
+					distwiseOrder.setRouteId(distList.get(i).getRouteId());
+					distwiseOrder.setToken(distList.get(i).getToken());
+					distwiseOrder.setGetOrderDetailList(orderDetailList);
+					distOrderList.add(distwiseOrder);
+
+				}
+
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return distOrderList;
+
+	}
+
 }
-	

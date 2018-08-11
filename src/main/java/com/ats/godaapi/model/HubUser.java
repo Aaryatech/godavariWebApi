@@ -25,6 +25,8 @@ public class HubUser {
 	private int isAdmin;
 	private int isUsed;
 
+	private String hsContactNo;
+
 	public int getHsId() {
 		return hsId;
 	}
@@ -89,10 +91,19 @@ public class HubUser {
 		this.isUsed = isUsed;
 	}
 
+	public String getHsContactNo() {
+		return hsContactNo;
+	}
+
+	public void setHsContactNo(String hsContactNo) {
+		this.hsContactNo = hsContactNo;
+	}
+
 	@Override
 	public String toString() {
 		return "HubUser [hsId=" + hsId + ", hubId=" + hubId + ", hsEngName=" + hsEngName + ", hsMarName=" + hsMarName
-				+ ", hsPwd=" + hsPwd + ", isBlock=" + isBlock + ", isAdmin=" + isAdmin + ", isUsed=" + isUsed + "]";
+				+ ", hsPwd=" + hsPwd + ", isBlock=" + isBlock + ", isAdmin=" + isAdmin + ", isUsed=" + isUsed
+				+ ", hsContactNo=" + hsContactNo + "]";
 	}
 
 }

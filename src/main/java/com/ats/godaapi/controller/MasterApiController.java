@@ -20,6 +20,7 @@ import com.ats.godaapi.model.Hub;
 import com.ats.godaapi.model.HubUser;
 import com.ats.godaapi.model.Item;
 import com.ats.godaapi.model.ItemHsn;
+import com.ats.godaapi.model.LoginResHubUser;
 import com.ats.godaapi.model.LoginResponseDist;
 import com.ats.godaapi.model.LoginResponseSup;
 import com.ats.godaapi.model.MahasnaghUser;
@@ -851,7 +852,7 @@ public class MasterApiController {
 		return loginResponse;
 	}
 
-	// -----------Distributor Login--------------------
+	// -----------Supervisor Login--------------------
 
 	@RequestMapping(value = { "/loginResponseSup" }, method = RequestMethod.POST)
 	public @ResponseBody LoginResponseSup loginResponseSup(@RequestParam("supContactNo") String supContactNo,
@@ -915,5 +916,34 @@ public class MasterApiController {
 		}
 		return catItemList;
 
+	}
+
+	// ----------------Hub user login---------------
+
+	@RequestMapping(value = { "/loginResponseHubUser" }, method = RequestMethod.POST)
+	public @ResponseBody LoginResHubUser loginResponseHubUser(@RequestParam("hsContactNo") String hsContactNo,
+			@RequestParam("hsPwd") String hsPwd) {
+
+		LoginResHubUser loginResponse = new LoginResHubUser();
+		try {
+
+			HubUser hb = hubUserRepo.findByHsContactNoAndHsPwdAndIsUsed(hsContactNo, hsPwd, 1);
+			if (hb == null) {
+				loginResponse.setError(true);
+				loginResponse.setMsg("login Failed");
+			} else {
+				loginResponse.setError(false);
+				loginResponse.setMsg("login successfully");
+				loginResponse.setHubUser(hb);
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			loginResponse.setError(true);
+			loginResponse.setMsg("login Failed");
+		}
+
+		return loginResponse;
 	}
 }

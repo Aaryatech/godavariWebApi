@@ -21,4 +21,6 @@ public interface HubUserRepo extends JpaRepository<HubUser, Integer> {
 
 	HubUser findByHsIdAndIsUsed(int hsId, int i);
 
+	HubUser findByHsContactNoAndHsPwdAndIsUsed(String hsContactNo, String hsPwd, int i);
+
 }
