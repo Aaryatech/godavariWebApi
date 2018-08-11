@@ -23,4 +23,9 @@ public interface RouteSupRepo extends JpaRepository<RouteSup, Integer> {
 
 	RouteSup findBySupContactNoAndSupPwdAndIsUsed(String supContactNo, String supPwd, int i);
 
+	@Transactional
+	@Modifying
+	@Query("UPDATE RouteSup SET isBlock=0    WHERE sup_id=:supId ")
+	int blockRouteSup(@Param("supId") int supId);
+
 }

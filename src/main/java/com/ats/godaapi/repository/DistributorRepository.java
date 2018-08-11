@@ -29,4 +29,10 @@ public interface DistributorRepository extends JpaRepository<Distributor, Intege
 	@Modifying
 	@Query("UPDATE Distributor SET token=:token  WHERE dist_id=:distId")
 	int updateToken(@Param("distId") int distId, @Param("token") String token);
+
+	@Transactional
+	@Modifying
+	@Query("UPDATE Distributor SET isBlock=0    WHERE dist_id=:distId ")
+	int blockDistributor(@Param("distId") int distId);
+
 }

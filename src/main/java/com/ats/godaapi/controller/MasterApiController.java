@@ -22,6 +22,7 @@ import com.ats.godaapi.model.Item;
 import com.ats.godaapi.model.ItemHsn;
 import com.ats.godaapi.model.LoginResHubUser;
 import com.ats.godaapi.model.LoginResponseDist;
+import com.ats.godaapi.model.LoginResponseMU;
 import com.ats.godaapi.model.LoginResponseSup;
 import com.ats.godaapi.model.MahasnaghUser;
 import com.ats.godaapi.model.Route;
@@ -307,6 +308,31 @@ public class MasterApiController {
 		return errorMessage;
 	}
 
+	@RequestMapping(value = { "/blockDistributor" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage blockDistributor(@RequestParam("distId") int distId) {
+
+		ErrorMessage errorMessage = new ErrorMessage();
+
+		try {
+			int delete = distributorRepository.blockDistributor(distId);
+
+			if (delete == 1) {
+				errorMessage.setError(false);
+				errorMessage.setMessage("Deleted Successfully");
+			} else {
+				errorMessage.setError(true);
+				errorMessage.setMessage("Deletion Failed");
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			errorMessage.setError(true);
+			errorMessage.setMessage("Deletion Failed :EXC");
+
+		}
+		return errorMessage;
+	}
 	// -------------------Category------------------------
 
 	@RequestMapping(value = { "/saveCat" }, method = RequestMethod.POST)
@@ -460,6 +486,32 @@ public class MasterApiController {
 			e.printStackTrace();
 			errorMessage.setError(true);
 			errorMessage.setMessage("Deletion Failed :EXC");
+
+		}
+		return errorMessage;
+	}
+
+	@RequestMapping(value = { "/blockHubUser" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage blockHubUser(@RequestParam("hsId") int hsId) {
+
+		ErrorMessage errorMessage = new ErrorMessage();
+
+		try {
+			int delete = hubUserRepo.blockHubUser(hsId);
+
+			if (delete == 1) {
+				errorMessage.setError(false);
+				errorMessage.setMessage("Block Successfully");
+			} else {
+				errorMessage.setError(true);
+				errorMessage.setMessage("Block Failed");
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			errorMessage.setError(true);
+			errorMessage.setMessage("Block Failed :EXC");
 
 		}
 		return errorMessage;
@@ -717,6 +769,32 @@ public class MasterApiController {
 		}
 		return errorMessage;
 	}
+
+	@RequestMapping(value = { "/blockMahasnaghUser" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage blockMahasnaghUser(@RequestParam("msId") int msId) {
+
+		ErrorMessage errorMessage = new ErrorMessage();
+
+		try {
+			int delete = mahasnaghUserRepo.blockMahasnaghUser(msId);
+
+			if (delete == 1) {
+				errorMessage.setError(false);
+				errorMessage.setMessage("Deleted Successfully");
+			} else {
+				errorMessage.setError(true);
+				errorMessage.setMessage("Deletion Failed");
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			errorMessage.setError(true);
+			errorMessage.setMessage("Deletion Failed :EXC");
+
+		}
+		return errorMessage;
+	}
 	// -------------------RouteSup----------------------------------
 
 	@RequestMapping(value = { "/saveRouteSup" }, method = RequestMethod.POST)
@@ -777,6 +855,32 @@ public class MasterApiController {
 
 		try {
 			int delete = routeSupRepo.deleteRouteSup(supId);
+
+			if (delete == 1) {
+				errorMessage.setError(false);
+				errorMessage.setMessage("Deleted Successfully");
+			} else {
+				errorMessage.setError(true);
+				errorMessage.setMessage("Deletion Failed");
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			errorMessage.setError(true);
+			errorMessage.setMessage("Deletion Failed :EXC");
+
+		}
+		return errorMessage;
+	}
+
+	@RequestMapping(value = { "/blockRouteSup" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage blockRouteSup(@RequestParam("supId") int supId) {
+
+		ErrorMessage errorMessage = new ErrorMessage();
+
+		try {
+			int delete = routeSupRepo.blockRouteSup(supId);
 
 			if (delete == 1) {
 				errorMessage.setError(false);
@@ -935,6 +1039,62 @@ public class MasterApiController {
 				loginResponse.setError(false);
 				loginResponse.setMsg("login successfully");
 				loginResponse.setHubUser(hb);
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			loginResponse.setError(true);
+			loginResponse.setMsg("login Failed");
+		}
+
+		return loginResponse;
+	}
+
+	// -------------Add new staff member==Hub User-------------
+
+	@RequestMapping(value = { "/saveHubUserExisting" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage saveHubUserExisting(@RequestBody HubUser hubUser) {
+		ErrorMessage errorMessage = new ErrorMessage();
+		HubUser res = new HubUser();
+
+		res = hubUserRepo.findByHsContactNoAndIsUsed(hubUser.getHsContactNo(), 1);
+		try {
+
+			if (res == null) {
+
+				res = hubUserRepo.saveAndFlush(hubUser);
+				errorMessage.setMessage("Save Successfully");
+
+			} else {
+				errorMessage.setMessage("Mobile No Already Exist");
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return errorMessage;
+	}
+
+	// -----------Mahasangh user Login--------------------
+
+	@RequestMapping(value = { "/loginResponseMah" }, method = RequestMethod.POST)
+	public @ResponseBody LoginResponseMU loginResponseMah(@RequestParam("msContactNo") String msContactNo,
+			@RequestParam("msPwd") String msPwd) {
+
+		LoginResponseMU loginResponse = new LoginResponseMU();
+		try {
+
+			MahasnaghUser mu = mahasnaghUserRepo.findByMsContactNoAndMsPwdAndIsUsed(msContactNo, msPwd, 1);
+			if (mu == null) {
+				loginResponse.setError(true);
+				loginResponse.setMsg("login Failed");
+			} else {
+				loginResponse.setError(false);
+				loginResponse.setMsg("login successfully");
+				loginResponse.setMahasnaghUser(mu);
 			}
 
 		} catch (Exception e) {

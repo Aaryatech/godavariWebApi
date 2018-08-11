@@ -21,4 +21,11 @@ public interface MahasnaghUserRepo extends JpaRepository<MahasnaghUser, Integer>
 
 	MahasnaghUser findByMsIdAndIsUsed(int msId, int i);
 
+	@Transactional
+	@Modifying
+	@Query("UPDATE MahasnaghUser SET isBlock=0    WHERE ms_id=:msId ")
+	int blockMahasnaghUser(@Param("msId") int msId);
+
+	MahasnaghUser findByMsContactNoAndMsPwdAndIsUsed(String msContactNo, String msPwd, int i);
+
 }

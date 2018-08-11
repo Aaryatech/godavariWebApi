@@ -8,7 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "m_item_hsn")
+@Table(name = "m_mahasangh_user")
 public class MahasnaghUser {
 
 	@Id
@@ -16,7 +16,7 @@ public class MahasnaghUser {
 	@Column(name = "ms_id")
 	private int msId;
 
-	private String hubsId;
+	private String hubIds;
 	private String msEngName;
 	private String msMarName;
 	private String msContactNo;
@@ -33,12 +33,12 @@ public class MahasnaghUser {
 		this.msId = msId;
 	}
 
-	public String getHubsId() {
-		return hubsId;
+	public String getHubIds() {
+		return hubIds;
 	}
 
-	public void setHubsId(String hubsId) {
-		this.hubsId = hubsId;
+	public void setHubIds(String hubIds) {
+		this.hubIds = hubIds;
 	}
 
 	public String getMsEngName() {
@@ -99,7 +99,7 @@ public class MahasnaghUser {
 
 	@Override
 	public String toString() {
-		return "MahasnaghUser [msId=" + msId + ", hubsId=" + hubsId + ", msEngName=" + msEngName + ", msMarName="
+		return "MahasnaghUser [msId=" + msId + ", hubIds=" + hubIds + ", msEngName=" + msEngName + ", msMarName="
 				+ msMarName + ", msContactNo=" + msContactNo + ", msPwd=" + msPwd + ", isBlock=" + isBlock
 				+ ", isAdmin=" + isAdmin + ", isUsed=" + isUsed + "]";
 	}

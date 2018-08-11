@@ -229,13 +229,13 @@ public class OrderApiController {
 	}
 
 	@RequestMapping(value = { "/getItemwiseOrder" }, method = RequestMethod.POST)
-	public @ResponseBody List<ItemwiseOrder> getItemwiseOrder(@RequestParam("date") String date) {
+	public @ResponseBody List<ItemwiseOrder> getItemwiseOrder(@RequestParam("orderDate") String orderDate) {
 
 		List<ItemwiseOrder> orderList = new ArrayList<ItemwiseOrder>();
 
 		try {
 
-			orderList = itemwiseOrderRepo.getItemwiseOrder(date);
+			orderList = itemwiseOrderRepo.getItemwiseOrder(orderDate);
 
 		} catch (Exception e) {
 
@@ -247,7 +247,7 @@ public class OrderApiController {
 	}
 
 	@RequestMapping(value = { "/getDistwiseOrder" }, method = RequestMethod.POST)
-	public @ResponseBody List<DistwiseOrder> getDistwiseOrder(@RequestParam("date") String date) {
+	public @ResponseBody List<DistwiseOrder> getDistwiseOrder(@RequestParam("orderDate") String orderDate) {
 
 		List<DistwiseOrder> distOrderList = new ArrayList<DistwiseOrder>();
 
@@ -260,7 +260,7 @@ public class OrderApiController {
 			for (int i = 0; i < distList.size(); i++) {
 
 				List<GetOrderDetail> orderDetailList = getOrderDetailRepo
-						.getDistwiseOrderDetail(distList.get(i).getDistId(), date);
+						.getDistwiseOrderDetail(distList.get(i).getDistId(), orderDate);
 
 				if (!orderDetailList.isEmpty()) {
 					DistwiseOrder distwiseOrder = new DistwiseOrder();

@@ -17,10 +17,17 @@ public interface HubUserRepo extends JpaRepository<HubUser, Integer> {
 	@Query("UPDATE HubUser SET isUsed=0    WHERE hs_id=:hsId ")
 	int deleteHubUser(@Param("hsId") int hsId);
 
+	@Transactional
+	@Modifying
+	@Query("UPDATE HubUser SET isBlock=0    WHERE hs_id=:hsId ")
+	int blockHubUser(@Param("hsId") int hsId);
+
 	List<HubUser> findByIsUsed(int i);
 
 	HubUser findByHsIdAndIsUsed(int hsId, int i);
 
 	HubUser findByHsContactNoAndHsPwdAndIsUsed(String hsContactNo, String hsPwd, int i);
+
+	HubUser findByHsContactNoAndIsUsed(String hsContactNo, int i);
 
 }
