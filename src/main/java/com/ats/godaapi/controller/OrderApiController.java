@@ -20,6 +20,7 @@ import com.ats.godaapi.model.DistwiseOrder;
 import com.ats.godaapi.model.ErrorMessage;
 import com.ats.godaapi.model.GetOrder;
 import com.ats.godaapi.model.GetOrderDetail;
+import com.ats.godaapi.model.HubUser;
 import com.ats.godaapi.model.ItemwiseOrder;
 import com.ats.godaapi.model.Order;
 import com.ats.godaapi.model.OrderDetail;
@@ -27,6 +28,7 @@ import com.ats.godaapi.model.Setting;
 import com.ats.godaapi.repository.DistributorRepository;
 import com.ats.godaapi.repository.GetOrderDetailRepo;
 import com.ats.godaapi.repository.GetOrderRepo;
+import com.ats.godaapi.repository.HubUserRepo;
 import com.ats.godaapi.repository.ItemRepo;
 import com.ats.godaapi.repository.ItemwiseOrderRepo;
 import com.ats.godaapi.repository.OrderDetailRepo;
@@ -35,6 +37,9 @@ import com.ats.godaapi.repository.SettingRepo;
 
 @RestController
 public class OrderApiController {
+
+	@Autowired
+	HubUserRepo hubUserRepo;
 
 	@Autowired
 	SettingRepo settingRepo;
@@ -319,7 +324,7 @@ public class OrderApiController {
 
 		try {
 
-			DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a");
+			DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");
 			Date date = new Date();
 			String time = dateFormat.format(date);
 			System.out.println(time);
@@ -328,7 +333,8 @@ public class OrderApiController {
 			System.out.println(calobj.getTime());
 
 			setList = settingRepo.getTime(time);
-			if (setList != null) {
+			System.out.println("SetList" + setList.toString());
+			if (!setList.isEmpty()) {
 				orderRes = orderRepo.saveAndFlush(order);
 				System.out.println("orderResListDeatil" + orderRes.getOrderDetailList());
 
@@ -339,6 +345,90 @@ public class OrderApiController {
 					System.out.println("orderDetailList" + orderDetailList.toString());
 					orderRes.setOrderDetailList(orderDetailList);
 				}
+				errorMessage.setError(false);
+				errorMessage.setMessage("successfully Saved ");
+			} else {
+				errorMessage.setMessage("Time not Match");
+
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			errorMessage.setError(true);
+			errorMessage.setMessage("failed to Save ");
+
+		}
+		return errorMessage;
+
+	}
+
+	@RequestMapping(value = { "/saveDistributorBySetting" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage saveDistributorBySetting(@RequestBody Distributor distributor) {
+
+		ErrorMessage errorMessage = new ErrorMessage();
+		Distributor distRes = new Distributor();
+
+		System.out.println("distributor" + distributor.toString());
+		List<Setting> setList = new ArrayList<Setting>();
+
+		try {
+
+			DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");
+			Date date = new Date();
+			String time = dateFormat.format(date);
+			System.out.println(time);
+
+			Calendar calobj = Calendar.getInstance();
+			System.out.println(calobj.getTime());
+
+			setList = settingRepo.getTime(time);
+			System.out.println("SetList" + setList.toString());
+			if (!setList.isEmpty()) {
+				distRes = distributorRepository.saveAndFlush(distributor);
+
+				errorMessage.setError(false);
+				errorMessage.setMessage("successfully Saved ");
+			} else {
+				errorMessage.setMessage("Time not Match");
+
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			errorMessage.setError(true);
+			errorMessage.setMessage("failed to Save ");
+
+		}
+		return errorMessage;
+
+	}
+
+	@RequestMapping(value = { "/saveHubUserBySetting" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage saveHubUserBySetting(@RequestBody HubUser hubUser) {
+
+		ErrorMessage errorMessage = new ErrorMessage();
+		HubUser res = new HubUser();
+
+		System.out.println("hubUser" + hubUser.toString());
+		List<Setting> setList = new ArrayList<Setting>();
+
+		try {
+
+			DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");
+			Date date = new Date();
+			String time = dateFormat.format(date);
+			System.out.println(time);
+
+			Calendar calobj = Calendar.getInstance();
+			System.out.println(calobj.getTime());
+
+			setList = settingRepo.getTime(time);
+			System.out.println("SetList" + setList.toString());
+			if (!setList.isEmpty()) {
+				res = hubUserRepo.saveAndFlush(hubUser);
+
 				errorMessage.setError(false);
 				errorMessage.setMessage("successfully Saved ");
 			} else {
