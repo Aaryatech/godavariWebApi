@@ -22,6 +22,7 @@ import com.ats.godaapi.model.GetOrder;
 import com.ats.godaapi.model.GetOrderDetail;
 import com.ats.godaapi.model.HubUser;
 import com.ats.godaapi.model.ItemwiseOrder;
+import com.ats.godaapi.model.MahasnaghUser;
 import com.ats.godaapi.model.Order;
 import com.ats.godaapi.model.OrderDetail;
 import com.ats.godaapi.model.Setting;
@@ -31,6 +32,7 @@ import com.ats.godaapi.repository.GetOrderRepo;
 import com.ats.godaapi.repository.HubUserRepo;
 import com.ats.godaapi.repository.ItemRepo;
 import com.ats.godaapi.repository.ItemwiseOrderRepo;
+import com.ats.godaapi.repository.MahasnaghUserRepo;
 import com.ats.godaapi.repository.OrderDetailRepo;
 import com.ats.godaapi.repository.OrderRepo;
 import com.ats.godaapi.repository.SettingRepo;
@@ -43,6 +45,9 @@ public class OrderApiController {
 
 	@Autowired
 	SettingRepo settingRepo;
+
+	@Autowired
+	MahasnaghUserRepo mahasnaghUserRepo;
 
 	@Autowired
 	OrderRepo orderRepo;
@@ -404,6 +409,48 @@ public class OrderApiController {
 		return errorMessage;
 
 	}
+
+/*	@RequestMapping(value = { "/saveMahasanghUserBySetting" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage saveMahasanghUserBySetting(@RequestBody MahasnaghUser mah) {
+
+		ErrorMessage errorMessage = new ErrorMessage();
+		MahasnaghUser mahRes = new MahasnaghUser();
+
+		System.out.println("mahRes" + mahRes.toString());
+		List<Setting> setList = new ArrayList<Setting>();
+
+		try {
+
+			DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");
+			Date date = new Date();
+			String time = dateFormat.format(date);
+			System.out.println(time);
+
+			Calendar calobj = Calendar.getInstance();
+			System.out.println(calobj.getTime());
+
+			setList = settingRepo.getTime(time);
+			System.out.println("SetList" + setList.toString());
+			if (!setList.isEmpty()) {
+				mahRes = mahasnaghUserRepo.saveAndFlush(mah);
+
+				errorMessage.setError(false);
+				errorMessage.setMessage("successfully Saved ");
+			} else {
+				errorMessage.setMessage("Time not Match");
+
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			errorMessage.setError(true);
+			errorMessage.setMessage("failed to Save ");
+
+		}
+		return errorMessage;
+
+	}*/
 
 	@RequestMapping(value = { "/saveHubUserBySetting" }, method = RequestMethod.POST)
 	public @ResponseBody ErrorMessage saveHubUserBySetting(@RequestBody HubUser hubUser) {
