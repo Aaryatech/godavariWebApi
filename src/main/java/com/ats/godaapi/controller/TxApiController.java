@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ats.godaapi.model.Config;
 import com.ats.godaapi.model.ErrorMessage;
+import com.ats.godaapi.model.Notification;
 import com.ats.godaapi.model.Setting;
 import com.ats.godaapi.model.Test;
 import com.ats.godaapi.repository.ConfigRepo;
+import com.ats.godaapi.repository.NotifiRepo;
 import com.ats.godaapi.repository.SettingRepo;
 import com.ats.godaapi.repository.TestRepo;
 
@@ -30,6 +32,9 @@ public class TxApiController {
 
 	@Autowired
 	TestRepo testRepo;
+
+	@Autowired
+	NotifiRepo notifiRepo;
 
 	// -------------------Test------------------------
 
@@ -222,6 +227,104 @@ public class TxApiController {
 			e.printStackTrace();
 			errorMessage.setError(true);
 			errorMessage.setMessage("Deletion Failed :EXC");
+
+		}
+		return errorMessage;
+	}
+
+	// ------------------------Notification----------
+
+	@RequestMapping(value = { "/saveNotifi" }, method = RequestMethod.POST)
+	public @ResponseBody Notification saveNotifi(@RequestBody Notification noti) {
+
+		Notification res = new Notification();
+
+		try {
+
+			res = notifiRepo.saveAndFlush(noti);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return res;
+	}
+
+	@RequestMapping(value = { "/getAllNotiById" }, method = RequestMethod.POST)
+	public @ResponseBody List<Notification> getAllNotiById(@RequestParam("notifiTo") int notifiTo,
+			@RequestParam("notifiType") int notifiType, @RequestParam("isRead") int isRead) {
+
+		List<Notification> notiList = new ArrayList<Notification>();
+
+		try {
+			notiList = notifiRepo.findByNotifiToAndNotifiTypeAndIsRead(notifiTo, notifiType, isRead);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return notiList;
+
+	}
+
+	@RequestMapping(value = { "/getNotiByNotifiId" }, method = RequestMethod.POST)
+	public @ResponseBody Notification getNotiByNotifiId(@RequestParam("notifiId") int notifiId) {
+
+		Notification noti = null;
+		try {
+			noti = notifiRepo.findByNotifiId(notifiId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return noti;
+
+	}
+
+	@RequestMapping(value = { "/getAllNotiFications" }, method = RequestMethod.GET)
+	public @ResponseBody List<Notification> getAllNotiFications() {
+
+		List<Notification> notiList = new ArrayList<Notification>();
+
+		try {
+
+			notiList = notifiRepo.findAll();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return notiList;
+
+	}
+
+	@RequestMapping(value = { "/updateRead" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage updateRead(@RequestParam("notifiId") int notifiId,
+			@RequestParam("isRead") int isRead) {
+
+		ErrorMessage errorMessage = new ErrorMessage();
+
+		try {
+			int delete = notifiRepo.updateRead(notifiId, isRead);
+
+			if (delete == 1) {
+				errorMessage.setError(false);
+				errorMessage.setMessage("Updated Successfully");
+			} else {
+				errorMessage.setError(true);
+				errorMessage.setMessage("Update Failed");
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			errorMessage.setError(true);
+			errorMessage.setMessage("Update Failed :EXC");
 
 		}
 		return errorMessage;
