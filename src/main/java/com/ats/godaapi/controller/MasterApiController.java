@@ -449,6 +449,24 @@ public class MasterApiController {
 
 	}
 
+	@RequestMapping(value = { "/getHubUserByUserType" }, method = RequestMethod.POST)
+	public @ResponseBody List<HubUser> getHubUserByUserType(@RequestParam("userType") List<Integer> userType) {
+
+		List<HubUser> hubUserList = new ArrayList<HubUser>();
+
+		try {
+
+			hubUserList = hubUserRepo.getHubUserByUserType(userType);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return hubUserList;
+
+	}
+
 	@RequestMapping(value = { "/getHubUserByHsId" }, method = RequestMethod.POST)
 	public @ResponseBody HubUser getHubUserByHsId(@RequestParam("hsId") int hsId) {
 
