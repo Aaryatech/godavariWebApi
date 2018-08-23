@@ -410,47 +410,43 @@ public class OrderApiController {
 
 	}
 
-/*	@RequestMapping(value = { "/saveMahasanghUserBySetting" }, method = RequestMethod.POST)
-	public @ResponseBody ErrorMessage saveMahasanghUserBySetting(@RequestBody MahasnaghUser mah) {
-
-		ErrorMessage errorMessage = new ErrorMessage();
-		MahasnaghUser mahRes = new MahasnaghUser();
-
-		System.out.println("mahRes" + mahRes.toString());
-		List<Setting> setList = new ArrayList<Setting>();
-
-		try {
-
-			DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");
-			Date date = new Date();
-			String time = dateFormat.format(date);
-			System.out.println(time);
-
-			Calendar calobj = Calendar.getInstance();
-			System.out.println(calobj.getTime());
-
-			setList = settingRepo.getTime(time);
-			System.out.println("SetList" + setList.toString());
-			if (!setList.isEmpty()) {
-				mahRes = mahasnaghUserRepo.saveAndFlush(mah);
-
-				errorMessage.setError(false);
-				errorMessage.setMessage("successfully Saved ");
-			} else {
-				errorMessage.setMessage("Time not Match");
-
-			}
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-			errorMessage.setError(true);
-			errorMessage.setMessage("failed to Save ");
-
-		}
-		return errorMessage;
-
-	}*/
+	/*
+	 * @RequestMapping(value = { "/saveMahasanghUserBySetting" }, method =
+	 * RequestMethod.POST) public @ResponseBody ErrorMessage
+	 * saveMahasanghUserBySetting(@RequestBody MahasnaghUser mah) {
+	 * 
+	 * ErrorMessage errorMessage = new ErrorMessage(); MahasnaghUser mahRes = new
+	 * MahasnaghUser();
+	 * 
+	 * System.out.println("mahRes" + mahRes.toString()); List<Setting> setList = new
+	 * ArrayList<Setting>();
+	 * 
+	 * try {
+	 * 
+	 * DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss"); Date date = new
+	 * Date(); String time = dateFormat.format(date); System.out.println(time);
+	 * 
+	 * Calendar calobj = Calendar.getInstance();
+	 * System.out.println(calobj.getTime());
+	 * 
+	 * setList = settingRepo.getTime(time); System.out.println("SetList" +
+	 * setList.toString()); if (!setList.isEmpty()) { mahRes =
+	 * mahasnaghUserRepo.saveAndFlush(mah);
+	 * 
+	 * errorMessage.setError(false); errorMessage.setMessage("successfully Saved ");
+	 * } else { errorMessage.setMessage("Time not Match");
+	 * 
+	 * }
+	 * 
+	 * } catch (Exception e) {
+	 * 
+	 * e.printStackTrace(); errorMessage.setError(true);
+	 * errorMessage.setMessage("failed to Save ");
+	 * 
+	 * } return errorMessage;
+	 * 
+	 * }
+	 */
 
 	@RequestMapping(value = { "/saveHubUserBySetting" }, method = RequestMethod.POST)
 	public @ResponseBody ErrorMessage saveHubUserBySetting(@RequestBody HubUser hubUser) {
@@ -491,6 +487,31 @@ public class OrderApiController {
 
 		}
 		return errorMessage;
+
+	}
+
+	@RequestMapping(value = { "/getOrderHistoryDistwise" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetOrder> getOrderHistoryDistwise(@RequestParam("date") String date,
+			@RequestParam("distId") int distId) {
+
+		List<GetOrder> orderHeaderList = new ArrayList<GetOrder>();
+
+		try {
+
+			orderHeaderList = getOrderRepo.getOrderDist(date, distId);
+
+			for (int i = 0; i < orderHeaderList.size(); i++) {
+				List<GetOrderDetail> orderDetailList = getOrderDetailRepo
+						.getOrderDetailByItemwise(orderHeaderList.get(i).getOrderHeaderId());
+				orderHeaderList.get(i).setGetOrderDetailList(orderDetailList);
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return orderHeaderList;
 
 	}
 

@@ -34,7 +34,7 @@ public class GetOrderDetail {
 	private String itemMarName;
 	private String itemEngDesc;
 	private String itemMarDesc;
-	private String itemUom;
+	private String uomName;
 
 	public int getOrderDetailId() {
 		return orderDetailId;
@@ -172,12 +172,12 @@ public class GetOrderDetail {
 		this.itemMarDesc = itemMarDesc;
 	}
 
-	public String getItemUom() {
-		return itemUom;
+	public String getUomName() {
+		return uomName;
 	}
 
-	public void setItemUom(String itemUom) {
-		this.itemUom = itemUom;
+	public void setUomName(String uomName) {
+		this.uomName = uomName;
 	}
 
 	@Override
@@ -187,7 +187,7 @@ public class GetOrderDetail {
 				+ msQty + ", itemTotal=" + itemTotal + ", deliverQty=" + deliverQty + ", itemCgst=" + itemCgst
 				+ ", itemSgst=" + itemSgst + ", itemIgst=" + itemIgst + ", itemBasicValue=" + itemBasicValue
 				+ ", itemEngName=" + itemEngName + ", itemMarName=" + itemMarName + ", itemEngDesc=" + itemEngDesc
-				+ ", itemMarDesc=" + itemMarDesc + ", itemUom=" + itemUom + "]";
+				+ ", itemMarDesc=" + itemMarDesc + ", uomName=" + uomName + "]";
 	}
 
 }
