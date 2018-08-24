@@ -27,6 +27,7 @@ import com.ats.godaapi.model.LoginResponseSup;
 import com.ats.godaapi.model.MahasanghUser;
 import com.ats.godaapi.model.Route;
 import com.ats.godaapi.model.RouteSup;
+import com.ats.godaapi.model.Uom;
 import com.ats.godaapi.repository.CatItemListRepo;
 import com.ats.godaapi.repository.CategoryRepo;
 import com.ats.godaapi.repository.DistributorRepository;
@@ -37,12 +38,16 @@ import com.ats.godaapi.repository.ItemRepo;
 import com.ats.godaapi.repository.MahasnaghUserRepo;
 import com.ats.godaapi.repository.RouteRepository;
 import com.ats.godaapi.repository.RouteSupRepo;
+import com.ats.godaapi.repository.UomRepo;
 
 @RestController
 public class MasterApiController {
 
 	@Autowired
 	HubRepository hubRepository;
+
+	@Autowired
+	UomRepo uomRepo;
 
 	@Autowired
 	CatItemListRepo catItemListRepo;
@@ -70,6 +75,85 @@ public class MasterApiController {
 
 	@Autowired
 	ItemRepo itemRepo;
+
+	// -------------------UOM------------------------
+
+	@RequestMapping(value = { "/saveUom" }, method = RequestMethod.POST)
+	public @ResponseBody Uom saveUom(@RequestBody Uom uom) {
+
+		Uom res = new Uom();
+
+		try {
+
+			res = uomRepo.saveAndFlush(uom);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return res;
+	}
+
+	@RequestMapping(value = { "/getUomByUomId" }, method = RequestMethod.POST)
+	public @ResponseBody Uom getUomByUomId(@RequestParam("uomId") int uomId) {
+
+		Uom uom = null;
+		try {
+			uom = uomRepo.findByUomIdAndIsUsed(uomId, 1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return uom;
+
+	}
+
+	@RequestMapping(value = { "/getAllUomByIsUsed" }, method = RequestMethod.GET)
+	public @ResponseBody List<Uom> getAllUomByIsUsed() {
+
+		List<Uom> uomList = new ArrayList<Uom>();
+
+		try {
+
+			uomList = uomRepo.findByIsUsed(1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return uomList;
+
+	}
+
+	@RequestMapping(value = { "/deleteUom" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage deleteUom(@RequestParam("uomId") int uomId) {
+
+		ErrorMessage errorMessage = new ErrorMessage();
+
+		try {
+			int delete = uomRepo.deleteUom(uomId);
+
+			if (delete == 1) {
+				errorMessage.setError(false);
+				errorMessage.setMessage("Deleted Successfully");
+			} else {
+				errorMessage.setError(true);
+				errorMessage.setMessage("Deletion Failed");
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			errorMessage.setError(true);
+			errorMessage.setMessage("Deletion Failed :EXC");
+
+		}
+		return errorMessage;
+	}
 
 	// -------------------Hub------------------------
 
