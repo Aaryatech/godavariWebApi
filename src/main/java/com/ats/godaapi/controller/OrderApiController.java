@@ -22,7 +22,7 @@ import com.ats.godaapi.model.GetOrder;
 import com.ats.godaapi.model.GetOrderDetail;
 import com.ats.godaapi.model.HubUser;
 import com.ats.godaapi.model.ItemwiseOrder;
-import com.ats.godaapi.model.MahasnaghUser;
+import com.ats.godaapi.model.MahasanghUser;
 import com.ats.godaapi.model.Order;
 import com.ats.godaapi.model.OrderDetail;
 import com.ats.godaapi.model.Setting;

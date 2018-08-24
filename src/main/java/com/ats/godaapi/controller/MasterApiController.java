@@ -24,7 +24,7 @@ import com.ats.godaapi.model.LoginResHubUser;
 import com.ats.godaapi.model.LoginResponseDist;
 import com.ats.godaapi.model.LoginResponseMU;
 import com.ats.godaapi.model.LoginResponseSup;
-import com.ats.godaapi.model.MahasnaghUser;
+import com.ats.godaapi.model.MahasanghUser;
 import com.ats.godaapi.model.Route;
 import com.ats.godaapi.model.RouteSup;
 import com.ats.godaapi.repository.CatItemListRepo;
@@ -712,9 +712,9 @@ public class MasterApiController {
 	// -------------------MahasnaghUser----------------------------------
 
 	@RequestMapping(value = { "/saveMahasnaghUser" }, method = RequestMethod.POST)
-	public @ResponseBody MahasnaghUser saveMahasnaghUser(@RequestBody MahasnaghUser mahasnaghUser) {
+	public @ResponseBody MahasanghUser saveMahasnaghUser(@RequestBody MahasanghUser mahasnaghUser) {
 
-		MahasnaghUser res = new MahasnaghUser();
+		MahasanghUser res = new MahasanghUser();
 
 		try {
 
@@ -729,9 +729,9 @@ public class MasterApiController {
 	}
 
 	@RequestMapping(value = { "/getAllMSByIsUsed" }, method = RequestMethod.GET)
-	public @ResponseBody List<MahasnaghUser> getAllMSByIsUsed() {
+	public @ResponseBody List<MahasanghUser> getAllMSByIsUsed() {
 
-		List<MahasnaghUser> msList = new ArrayList<MahasnaghUser>();
+		List<MahasanghUser> msList = new ArrayList<MahasanghUser>();
 
 		try {
 
@@ -747,9 +747,9 @@ public class MasterApiController {
 	}
 
 	@RequestMapping(value = { "/getMsByMsId" }, method = RequestMethod.POST)
-	public @ResponseBody MahasnaghUser getMsByMsId(@RequestParam("msId") int msId) {
+	public @ResponseBody MahasanghUser getMsByMsId(@RequestParam("msId") int msId) {
 
-		MahasnaghUser ms = null;
+		MahasanghUser ms = null;
 		try {
 			ms = mahasnaghUserRepo.findByMsIdAndIsUsed(msId, 1);
 
@@ -1105,7 +1105,7 @@ public class MasterApiController {
 		LoginResponseMU loginResponse = new LoginResponseMU();
 		try {
 
-			MahasnaghUser mu = mahasnaghUserRepo.findByMsContactNoAndMsPwdAndIsUsed(msContactNo, msPwd, 1);
+			MahasanghUser mu = mahasnaghUserRepo.findByMsContactNoAndMsPwdAndIsUsed(msContactNo, msPwd, 1);
 			if (mu == null) {
 				loginResponse.setError(true);
 				loginResponse.setMsg("login Failed");
@@ -1128,9 +1128,9 @@ public class MasterApiController {
 	// -------------Add new staff member==MahasnaghUser -------------
 
 	@RequestMapping(value = { "/saveMahasanghUserExisting" }, method = RequestMethod.POST)
-	public @ResponseBody ErrorMessage saveMahasanghUserExisting(@RequestBody MahasnaghUser mahasnaghUser) {
+	public @ResponseBody ErrorMessage saveMahasanghUserExisting(@RequestBody MahasanghUser mahasnaghUser) {
 		ErrorMessage errorMessage = new ErrorMessage();
-		MahasnaghUser res = new MahasnaghUser();
+		MahasanghUser res = new MahasanghUser();
 
 		res = mahasnaghUserRepo.findByMsContactNoAndIsUsed(mahasnaghUser.getMsContactNo(), 1);
 		try {

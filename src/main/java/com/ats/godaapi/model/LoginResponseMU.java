@@ -4,7 +4,7 @@ public class LoginResponseMU {
 
 	private boolean error;
 	private String msg;
-	private MahasnaghUser mahasnaghUser;
+	private MahasanghUser mahasnaghUser;
 
 	public boolean isError() {
 		return error;
@@ -22,11 +22,11 @@ public class LoginResponseMU {
 		this.msg = msg;
 	}
 
-	public MahasnaghUser getMahasnaghUser() {
+	public MahasanghUser getMahasnaghUser() {
 		return mahasnaghUser;
 	}
 
-	public void setMahasnaghUser(MahasnaghUser mahasnaghUser) {
+	public void setMahasnaghUser(MahasanghUser mahasnaghUser) {
 		this.mahasnaghUser = mahasnaghUser;
 	}
 
