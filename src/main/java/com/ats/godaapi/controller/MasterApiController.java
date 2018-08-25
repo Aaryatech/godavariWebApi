@@ -1283,8 +1283,8 @@ public class MasterApiController {
 
 	}
 
-	@RequestMapping(value = { "/getAllCatwiseItemList1" }, method = RequestMethod.GET)
-	public @ResponseBody List<GetCatItemList> getAllCatwiseItemList1() {
+	@RequestMapping(value = { "/getAllCatwiseItemListByDistId" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetCatItemList> getAllCatwiseItemListByDistId(@RequestParam("distId") int distId) {
 
 		List<Category> catList = new ArrayList<Category>();
 		List<GetCatItemList> catItemList = new ArrayList<GetCatItemList>();
@@ -1307,14 +1307,17 @@ public class MasterApiController {
 				catItem.setCatPic(cat.getCatPic());
 				catItem.setIsUsed(cat.getIsUsed());
 
-				List<GetItem> itemList = getItemRepo.getData(cat.getCatId(), currDate);
+				List<GetItem> getItemList = getItemRepo.getDataByDistId(distId, cat.getCatId(), currDate);
 
-				catItem.setGetItemList(itemList);
+				catItem.setGetItemList(getItemList);
 
 				catItemList.add(catItem);
+
 			}
 
-		} catch (Exception e) {
+		} catch (
+
+		Exception e) {
 
 			e.printStackTrace();
 
