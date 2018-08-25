@@ -1283,4 +1283,44 @@ public class MasterApiController {
 
 	}
 
+	@RequestMapping(value = { "/getAllCatwiseItemList1" }, method = RequestMethod.GET)
+	public @ResponseBody List<GetCatItemList> getAllCatwiseItemList1() {
+
+		List<Category> catList = new ArrayList<Category>();
+		List<GetCatItemList> catItemList = new ArrayList<GetCatItemList>();
+
+		try {
+			Date now = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			String currDate = sdf.format(now.getTime());
+
+			catList = categoryRepo.findByIsUsed(1);
+
+			for (int i = 0; i < catList.size(); i++) {
+
+				Category cat = catList.get(i);
+
+				GetCatItemList catItem = new GetCatItemList();
+				catItem.setCatEngName(cat.getCatEngName());
+				catItem.setCatId(cat.getCatId());
+				catItem.setCatMarName(cat.getCatMarName());
+				catItem.setCatPic(cat.getCatPic());
+				catItem.setIsUsed(cat.getIsUsed());
+
+				List<GetItem> itemList = getItemRepo.getData(cat.getCatId(), currDate);
+
+				catItem.setGetItemList(itemList);
+
+				catItemList.add(catItem);
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return catItemList;
+
+	}
+
 }
