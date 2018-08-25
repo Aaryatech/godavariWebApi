@@ -1,7 +1,8 @@
 package com.ats.godaapi.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import com.ats.godaapi.model.CatItemList;
 import com.ats.godaapi.model.Category;
 import com.ats.godaapi.model.Distributor;
 import com.ats.godaapi.model.ErrorMessage;
+import com.ats.godaapi.model.GetCatItemList;
+import com.ats.godaapi.model.GetItem;
 import com.ats.godaapi.model.Hub;
 import com.ats.godaapi.model.HubUser;
 import com.ats.godaapi.model.Item;
@@ -31,6 +34,8 @@ import com.ats.godaapi.model.Uom;
 import com.ats.godaapi.repository.CatItemListRepo;
 import com.ats.godaapi.repository.CategoryRepo;
 import com.ats.godaapi.repository.DistributorRepository;
+import com.ats.godaapi.repository.GetCatItemListRepo;
+import com.ats.godaapi.repository.GetItemRepo;
 import com.ats.godaapi.repository.HubRepository;
 import com.ats.godaapi.repository.HubUserRepo;
 import com.ats.godaapi.repository.ItemHsnRepo;
@@ -45,6 +50,12 @@ public class MasterApiController {
 
 	@Autowired
 	HubRepository hubRepository;
+
+	@Autowired
+	GetItemRepo getItemRepo;
+
+	@Autowired
+	GetCatItemListRepo getCatItemListRepo;
 
 	@Autowired
 	UomRepo uomRepo;
@@ -1235,4 +1246,41 @@ public class MasterApiController {
 		}
 		return errorMessage;
 	}
+
+	@RequestMapping(value = { "/getAllCatwiseItemListByCatId" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetCatItemList> getAllCatwiseItemListByCatId(@RequestParam("catId") int catId) {
+
+		Category cat = new Category();
+		List<GetCatItemList> catItemList = new ArrayList<GetCatItemList>();
+
+		try {
+
+			Date now = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			String currDate = sdf.format(now.getTime());
+
+			cat = categoryRepo.findByCatIdAndIsUsed(catId, 1);
+
+			GetCatItemList catItem = new GetCatItemList();
+			catItem.setCatEngName(cat.getCatEngName());
+			catItem.setCatId(cat.getCatId());
+			catItem.setCatMarName(cat.getCatMarName());
+			catItem.setCatPic(cat.getCatPic());
+			catItem.setIsUsed(cat.getIsUsed());
+
+			List<GetItem> itemList = getItemRepo.getData(cat.getCatId(), currDate);
+
+			catItem.setGetItemList(itemList);
+
+			catItemList.add(catItem);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return catItemList;
+
+	}
+
 }
