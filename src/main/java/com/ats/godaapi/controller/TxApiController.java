@@ -330,4 +330,21 @@ public class TxApiController {
 		return errorMessage;
 	}
 
+	@RequestMapping(value = { "/getNotiForHubByHubId" }, method = RequestMethod.POST)
+	public @ResponseBody List<Notification> getNotiForHubByHubId(@RequestParam("notifiTo") int notifiTo) {
+
+		List<Notification> notiList = new ArrayList<Notification>();
+
+		try {
+			notiList = notifiRepo.findByNotifiToAndNotifiType(notifiTo, 1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return notiList;
+
+	}
+
 }
