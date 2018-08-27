@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ats.godaapi.model.Distributor;
+import com.ats.godaapi.model.GetOrder;
 
 public interface DistributorRepository extends JpaRepository<Distributor, Integer> {
 
@@ -34,5 +35,10 @@ public interface DistributorRepository extends JpaRepository<Distributor, Intege
 	@Modifying
 	@Query("UPDATE Distributor SET isBlock=0    WHERE dist_id=:distId ")
 	int blockDistributor(@Param("distId") int distId);
+
+	List<Distributor> findByRouteIdAndIsUsed(int routeId, int i);
+
+	@Query(value = "SELECT d.* FROM m_dist d WHERE d.is_used=1 AND d.dist_id IN(:distIdList)", nativeQuery = true)
+	List<Distributor> getDistListById(@Param("distIdList") List<Integer> distIdList);
 
 }

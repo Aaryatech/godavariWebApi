@@ -1,6 +1,7 @@
 package com.ats.godaapi.controller;
 
 import java.util.ArrayList;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +12,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ats.godaapi.common.Firebase;
 import com.ats.godaapi.model.Config;
+import com.ats.godaapi.model.Distributor;
 import com.ats.godaapi.model.ErrorMessage;
 import com.ats.godaapi.model.Notification;
 import com.ats.godaapi.model.Setting;
 import com.ats.godaapi.model.Test;
 import com.ats.godaapi.repository.ConfigRepo;
+import com.ats.godaapi.repository.DistributorRepository;
 import com.ats.godaapi.repository.NotifiRepo;
+import com.ats.godaapi.repository.RouteRepository;
 import com.ats.godaapi.repository.SettingRepo;
 import com.ats.godaapi.repository.TestRepo;
 
@@ -35,6 +40,12 @@ public class TxApiController {
 
 	@Autowired
 	NotifiRepo notifiRepo;
+
+	@Autowired
+	RouteRepository routeRepository;
+
+	@Autowired
+	DistributorRepository distributorRepository;
 
 	// -------------------Test------------------------
 
@@ -253,13 +264,51 @@ public class TxApiController {
 
 	@RequestMapping(value = { "/saveNotifiByRouteId" }, method = RequestMethod.POST)
 	public @ResponseBody Notification saveNotifiByRouteId(@RequestBody Notification noti,
-			@RequestParam("notifiTo") int notifiTo) {
+			@RequestParam("routeId") int routeId) {
 
 		Notification res = new Notification();
+		List<Distributor> dist = new ArrayList<>();
 
 		try {
 
+			dist = distributorRepository.findByRouteIdAndIsUsed(routeId, 1);
+
 			res = notifiRepo.saveAndFlush(noti);
+
+			if (res != null) {
+
+				for (int j = 0; j < dist.size(); j++) {
+					Firebase.sendPushNotification(dist.get(j).getToken(), " Notification", "Message", 2);
+				}
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return res;
+	}
+
+	@RequestMapping(value = { "/saveNotifiByDistIdList" }, method = RequestMethod.POST)
+	public @ResponseBody Notification saveNotifiByDistIdList(@RequestBody Notification noti,
+			@RequestParam("distIdList") List<Integer> distIdList) {
+
+		Notification res = new Notification();
+		List<Distributor> dist = new ArrayList<>();
+
+		try {
+
+			dist = distributorRepository.getDistListById(distIdList);
+
+			res = notifiRepo.saveAndFlush(noti);
+
+			if (res != null) {
+
+				for (int j = 0; j < dist.size(); j++) {
+					Firebase.sendPushNotification(dist.get(j).getToken(), " Notification", "Message", 2);
+				}
+			}
 
 		} catch (Exception e) {
 
