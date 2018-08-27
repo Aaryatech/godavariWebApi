@@ -251,6 +251,24 @@ public class TxApiController {
 		return res;
 	}
 
+	@RequestMapping(value = { "/saveNotifiByRouteId" }, method = RequestMethod.POST)
+	public @ResponseBody Notification saveNotifiByRouteId(@RequestBody Notification noti,
+			@RequestParam("notifiTo") int notifiTo) {
+
+		Notification res = new Notification();
+
+		try {
+
+			res = notifiRepo.saveAndFlush(noti);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return res;
+	}
+
 	@RequestMapping(value = { "/getAllNotiById" }, method = RequestMethod.POST)
 	public @ResponseBody List<Notification> getAllNotiById(@RequestParam("notifiTo") int notifiTo,
 			@RequestParam("notifiType") int notifiType, @RequestParam("isRead") int isRead) {

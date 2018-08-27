@@ -19,6 +19,7 @@ import com.ats.godaapi.model.Distributor;
 import com.ats.godaapi.model.ErrorMessage;
 import com.ats.godaapi.model.GetCatItemList;
 import com.ats.godaapi.model.GetItem;
+import com.ats.godaapi.model.GetRoute;
 import com.ats.godaapi.model.Hub;
 import com.ats.godaapi.model.HubUser;
 import com.ats.godaapi.model.Item;
@@ -36,6 +37,7 @@ import com.ats.godaapi.repository.CategoryRepo;
 import com.ats.godaapi.repository.DistributorRepository;
 import com.ats.godaapi.repository.GetCatItemListRepo;
 import com.ats.godaapi.repository.GetItemRepo;
+import com.ats.godaapi.repository.GetRouteRepo;
 import com.ats.godaapi.repository.HubRepository;
 import com.ats.godaapi.repository.HubUserRepo;
 import com.ats.godaapi.repository.ItemHsnRepo;
@@ -50,6 +52,9 @@ public class MasterApiController {
 
 	@Autowired
 	HubRepository hubRepository;
+
+	@Autowired
+	GetRouteRepo getRouteRepo;
 
 	@Autowired
 	GetItemRepo getItemRepo;
@@ -288,6 +293,24 @@ public class MasterApiController {
 		try {
 
 			routeList = routeRepository.findByIsUsed(1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return routeList;
+
+	}
+
+	@RequestMapping(value = { "/getAllGetRouteByIsUsed" }, method = RequestMethod.GET)
+	public @ResponseBody List<GetRoute> getAllGetRouteByIsUsed() {
+
+		List<GetRoute> routeList = new ArrayList<GetRoute>();
+
+		try {
+
+			routeList = getRouteRepo.getRouteHubName();
 
 		} catch (Exception e) {
 
