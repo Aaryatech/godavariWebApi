@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ats.godaapi.model.Distributor;
-import com.ats.godaapi.model.GetOrder;
 
 public interface DistributorRepository extends JpaRepository<Distributor, Integer> {
 
