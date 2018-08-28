@@ -456,6 +456,36 @@ public class MasterApiController {
 		}
 		return errorMessage;
 	}
+
+	@RequestMapping(value = { "/updatePasswordDist" }, method = RequestMethod.POST)
+	public @ResponseBody LoginResponseDist updatePasswordDist(@RequestParam("distId") int distId,
+			@RequestParam("distPwd") String distPwd) {
+
+		LoginResponseDist errorMessage = new LoginResponseDist();
+
+		try {
+			Distributor dist = distributorRepository.updatePwd(distId, distPwd);
+
+			if (dist == null) {
+				errorMessage.setError(true);
+				errorMessage.setMsg("update Failed");
+
+			} else {
+
+				errorMessage.setError(false);
+				errorMessage.setMsg("update Successfully");
+				errorMessage.setDistributor(dist);
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			errorMessage.setError(true);
+			errorMessage.setMsg("update Failed :EXC");
+
+		}
+		return errorMessage;
+	}
 	// -------------------Category------------------------
 
 	@RequestMapping(value = { "/saveCat" }, method = RequestMethod.POST)
@@ -1329,47 +1359,6 @@ public class MasterApiController {
 
 	}
 
-	@RequestMapping(value = { "/getAllCatwiseItemListByDistId" }, method = RequestMethod.POST)
-	public @ResponseBody List<GetCatItemList> getAllCatwiseItemListByDistId(@RequestParam("distId") int distId) {
-
-		List<Category> catList = new ArrayList<Category>();
-		List<GetCatItemList> catItemList = new ArrayList<GetCatItemList>();
-
-		try {
-			Date now = new Date();
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			String currDate = sdf.format(now.getTime());
-
-			catList = categoryRepo.findByIsUsed(1);
-
-			for (int i = 0; i < catList.size(); i++) {
-
-				Category cat = catList.get(i);
-
-				GetCatItemList catItem = new GetCatItemList();
-				catItem.setCatEngName(cat.getCatEngName());
-				catItem.setCatId(cat.getCatId());
-				catItem.setCatMarName(cat.getCatMarName());
-				catItem.setCatPic(cat.getCatPic());
-				catItem.setIsUsed(cat.getIsUsed());
-
-				List<GetItem> getItemList = getItemRepo.getDataByDistId(distId, cat.getCatId(), currDate);
-
-				catItem.setGetItemList(getItemList);
-
-				catItemList.add(catItem);
-
-			}
-
-		} catch (
-
-		Exception e) {
-
-			e.printStackTrace();
-
-		}
-		return catItemList;
-
-	}
+	
 
 }

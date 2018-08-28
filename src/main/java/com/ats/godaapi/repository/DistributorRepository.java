@@ -40,4 +40,9 @@ public interface DistributorRepository extends JpaRepository<Distributor, Intege
 	@Query(value = "SELECT d.* FROM m_dist d WHERE d.is_used=1 AND d.dist_id IN(:distIdList)", nativeQuery = true)
 	List<Distributor> getDistListById(@Param("distIdList") List<Integer> distIdList);
 
+	@Transactional
+	@Modifying
+	@Query("UPDATE Distributor SET dist_pwd=:distPwd   WHERE dist_id=:distId ")
+	Distributor updatePwd(@Param("distId") int distId, @Param("distPwd") String distPwd);
+
 }

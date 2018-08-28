@@ -15,9 +15,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ats.godaapi.model.Category;
 import com.ats.godaapi.model.Distributor;
 import com.ats.godaapi.model.DistwiseOrder;
 import com.ats.godaapi.model.ErrorMessage;
+import com.ats.godaapi.model.GetCatItemList;
+import com.ats.godaapi.model.GetItem;
 import com.ats.godaapi.model.GetOrder;
 import com.ats.godaapi.model.GetOrderDetail;
 import com.ats.godaapi.model.HubUser;
@@ -26,7 +29,9 @@ import com.ats.godaapi.model.MahasanghUser;
 import com.ats.godaapi.model.Order;
 import com.ats.godaapi.model.OrderDetail;
 import com.ats.godaapi.model.Setting;
+import com.ats.godaapi.repository.CategoryRepo;
 import com.ats.godaapi.repository.DistributorRepository;
+import com.ats.godaapi.repository.GetItemRepo;
 import com.ats.godaapi.repository.GetOrderDetailRepo;
 import com.ats.godaapi.repository.GetOrderRepo;
 import com.ats.godaapi.repository.HubUserRepo;
@@ -42,6 +47,12 @@ public class OrderApiController {
 
 	@Autowired
 	HubUserRepo hubUserRepo;
+
+	@Autowired
+	CategoryRepo categoryRepo;
+
+	@Autowired
+	GetItemRepo getItemRepo;
 
 	@Autowired
 	SettingRepo settingRepo;
@@ -474,6 +485,49 @@ public class OrderApiController {
 
 		}
 		return orderHeaderList;
+
+	}
+
+	@RequestMapping(value = { "/getAllCatwiseItemListByDistId" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetCatItemList> getAllCatwiseItemListByDistId(@RequestParam("distId") int distId) {
+
+		List<Category> catList = new ArrayList<Category>();
+		List<GetCatItemList> catItemList = new ArrayList<GetCatItemList>();
+
+		try {
+			Date now = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			String currDate = sdf.format(now.getTime());
+
+			catList = categoryRepo.findByIsUsed(1);
+
+			for (int i = 0; i < catList.size(); i++) {
+
+				Category cat = catList.get(i);
+
+				GetCatItemList catItem = new GetCatItemList();
+				catItem.setCatEngName(cat.getCatEngName());
+				catItem.setCatId(cat.getCatId());
+				catItem.setCatMarName(cat.getCatMarName());
+				catItem.setCatPic(cat.getCatPic());
+				catItem.setIsUsed(cat.getIsUsed());
+
+				List<GetItem> getItemList = getItemRepo.getDataByDistId(distId, cat.getCatId(), currDate);
+
+				catItem.setGetItemList(getItemList);
+
+				catItemList.add(catItem);
+
+			}
+
+		} catch (
+
+		Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return catItemList;
 
 	}
 
