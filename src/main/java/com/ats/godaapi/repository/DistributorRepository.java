@@ -43,6 +43,6 @@ public interface DistributorRepository extends JpaRepository<Distributor, Intege
 	@Transactional
 	@Modifying
 	@Query("UPDATE Distributor SET dist_pwd=:distPwd   WHERE dist_id=:distId ")
-	Distributor updatePwd(@Param("distId") int distId, @Param("distPwd") String distPwd);
+	int updatePwd(@Param("distId") int distId, @Param("distPwd") String distPwd);
 
 }

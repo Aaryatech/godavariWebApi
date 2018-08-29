@@ -464,17 +464,20 @@ public class MasterApiController {
 		LoginResponseDist errorMessage = new LoginResponseDist();
 
 		try {
-			Distributor dist = distributorRepository.updatePwd(distId, distPwd);
+			int dist = distributorRepository.updatePwd(distId, distPwd);
+			Distributor distributor = distributorRepository.findByDistIdAndIsUsed(distId, 1);
 
-			if (dist == null) {
-				errorMessage.setError(true);
-				errorMessage.setMsg("update Failed");
-
-			} else {
+			if (dist == 1) {
 
 				errorMessage.setError(false);
 				errorMessage.setMsg("update Successfully");
-				errorMessage.setDistributor(dist);
+
+				errorMessage.setDistributor(distributor);
+
+			} else {
+				errorMessage.setError(true);
+				errorMessage.setMsg("update Failed");
+
 			}
 
 		} catch (Exception e) {
@@ -1358,7 +1361,5 @@ public class MasterApiController {
 		return catItemList;
 
 	}
-
-	
 
 }
