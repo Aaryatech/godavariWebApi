@@ -41,7 +41,7 @@ public class TxApiController {
 	@Autowired
 	NotifiRepo notifiRepo;
 
-	@Autowired
+	@Autowired 
 	RouteRepository routeRepository;
 
 	@Autowired
