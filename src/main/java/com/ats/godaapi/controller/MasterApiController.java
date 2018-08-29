@@ -1348,7 +1348,7 @@ public class MasterApiController {
 			catItem.setIsUsed(cat.getIsUsed());
 
 			List<GetItem> itemList = getItemRepo.getData(cat.getCatId(), currDate);
-
+ 
 			catItem.setAllItemList(itemList);
 
 			catItemList.add(catItem);

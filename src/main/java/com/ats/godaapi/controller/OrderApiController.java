@@ -584,7 +584,7 @@ public class OrderApiController {
 							e.printStackTrace();
 						}
 					}
-				}
+				} 
 
 				catItem.setAllItemList(list);
 

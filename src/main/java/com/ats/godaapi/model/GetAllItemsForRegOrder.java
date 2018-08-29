@@ -81,7 +81,7 @@ public class GetAllItemsForRegOrder {
 	public void setItemEngDesc(String itemEngDesc) {
 		this.itemEngDesc = itemEngDesc;
 	}
-	public String getItemMarDesc() {
+	public String getItemMarDesc() { 
 		return itemMarDesc;
 	}
 	public void setItemMarDesc(String itemMarDesc) {
