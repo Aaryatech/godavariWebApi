@@ -41,7 +41,7 @@ public class TxApiController {
 	@Autowired
 	NotifiRepo notifiRepo;
 
-	@Autowired 
+	@Autowired
 	RouteRepository routeRepository;
 
 	@Autowired
@@ -273,15 +273,12 @@ public class TxApiController {
 
 			dist = distributorRepository.findByRouteIdAndIsUsed(routeId, 1);
 
-			
-			
-
 			if (res != null) {
 
 				for (int j = 0; j < dist.size(); j++) {
-					
+
 					noti.setNotifiTo(dist.get(j).getDistId());
-				
+
 					res = notifiRepo.saveAndFlush(noti);
 					Firebase.sendPushNotification(dist.get(j).getToken(), " Notification", "Message", 2);
 				}
@@ -306,12 +303,10 @@ public class TxApiController {
 
 			dist = distributorRepository.getDistListById(distIdList);
 
-			
-
 			if (res != null) {
 
 				for (int j = 0; j < dist.size(); j++) {
-					
+
 					noti.setNotifiTo(dist.get(j).getDistId());
 					res = notifiRepo.saveAndFlush(noti);
 					Firebase.sendPushNotification(dist.get(j).getToken(), " Notification", "Message", 2);
@@ -350,6 +345,22 @@ public class TxApiController {
 		Notification noti = null;
 		try {
 			noti = notifiRepo.findByNotifiId(notifiId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return noti;
+
+	}
+
+	@RequestMapping(value = { "/getNotiByDistId" }, method = RequestMethod.POST)
+	public @ResponseBody List<Notification> getNotiByDistId(@RequestParam("notifiTo") int notifiTo) {
+
+		List<Notification> noti = new ArrayList<>();
+		try {
+			noti = notifiRepo.findByNotifiToAndNotifiType(notifiTo, 2);
 
 		} catch (Exception e) {
 

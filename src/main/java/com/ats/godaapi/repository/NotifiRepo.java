@@ -23,4 +23,6 @@ public interface NotifiRepo extends JpaRepository<Notification, Integer> {
 
 	List<Notification> findByNotifiToAndNotifiType(int notifiTo, int i);
 
+	List<Notification> findByNotifiTo(int notifiTo);
+
 }
