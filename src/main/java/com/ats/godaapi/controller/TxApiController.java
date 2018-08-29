@@ -273,11 +273,16 @@ public class TxApiController {
 
 			dist = distributorRepository.findByRouteIdAndIsUsed(routeId, 1);
 
-			res = notifiRepo.saveAndFlush(noti);
+			
+			
 
 			if (res != null) {
 
 				for (int j = 0; j < dist.size(); j++) {
+					
+					noti.setNotifiTo(dist.get(j).getDistId());
+				
+					res = notifiRepo.saveAndFlush(noti);
 					Firebase.sendPushNotification(dist.get(j).getToken(), " Notification", "Message", 2);
 				}
 			}
@@ -301,11 +306,14 @@ public class TxApiController {
 
 			dist = distributorRepository.getDistListById(distIdList);
 
-			res = notifiRepo.saveAndFlush(noti);
+			
 
 			if (res != null) {
 
 				for (int j = 0; j < dist.size(); j++) {
+					
+					noti.setNotifiTo(dist.get(j).getDistId());
+					res = notifiRepo.saveAndFlush(noti);
 					Firebase.sendPushNotification(dist.get(j).getToken(), " Notification", "Message", 2);
 				}
 			}
