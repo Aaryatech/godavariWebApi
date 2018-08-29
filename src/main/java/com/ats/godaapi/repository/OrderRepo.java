@@ -3,7 +3,10 @@ package com.ats.godaapi.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import com.ats.godaapi.model.Config;
 import com.ats.godaapi.model.Order;
 
 public interface OrderRepo extends JpaRepository<Order, Integer> {
@@ -13,5 +16,10 @@ public interface OrderRepo extends JpaRepository<Order, Integer> {
 	List<Order> findByDistId(int distId);
 
 	List<Order> findByOrderDate(String orderDate);
+	Order findByOrderDateAndOrderType(String orderDate,int orderType);
 
+	
+
+	
+	
 }

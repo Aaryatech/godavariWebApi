@@ -1326,7 +1326,7 @@ public class MasterApiController {
 		return errorMessage;
 	}
 
-	@RequestMapping(value = { "/getAllCatwiseItemListByCatId" }, method = RequestMethod.POST)
+	/*@RequestMapping(value = { "/getAllCatwiseItemListByCatId" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetCatItemList> getAllCatwiseItemListByCatId(@RequestParam("catId") int catId) {
 
 		Category cat = new Category();
@@ -1349,7 +1349,7 @@ public class MasterApiController {
 
 			List<GetItem> itemList = getItemRepo.getData(cat.getCatId(), currDate);
 
-			catItem.setGetItemList(itemList);
+			catItem.setAllItemList(itemList);
 
 			catItemList.add(catItem);
 
@@ -1360,6 +1360,6 @@ public class MasterApiController {
 		}
 		return catItemList;
 
-	}
+	}*/
 
 }

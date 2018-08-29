@@ -24,7 +24,7 @@ public interface ConfigRepo extends JpaRepository<Config, Integer> {
 
 	
 	@Query(value = "SELECT * FROM t_config WHERE config_id=( SELECT t_setting.config_id FROM `t_setting` WHERE hub_id=:hubId )", nativeQuery = true)
-	Config getItemConfig(@Param("hubId") int hubId);
+	List<Config> getItemConfig(@Param("hubId") int hubId);
 	
 
 }

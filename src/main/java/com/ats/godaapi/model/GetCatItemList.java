@@ -21,7 +21,7 @@ public class GetCatItemList {
 	private int isUsed;
 
 	@Transient
-	List<GetItem> getItemList;
+	List<GetAllItemsForRegOrder> allItemList;
 
 	public int getCatId() {
 		return catId;
@@ -59,22 +59,23 @@ public class GetCatItemList {
 		return isUsed;
 	}
 
+	public List<GetAllItemsForRegOrder> getAllItemList() {
+		return allItemList;
+	}
+
+	public void setAllItemList(List<GetAllItemsForRegOrder> allItemList) {
+		this.allItemList = allItemList;
+	}
+
 	public void setIsUsed(int isUsed) {
 		this.isUsed = isUsed;
-	}
-
-	public List<GetItem> getGetItemList() {
-		return getItemList;
-	}
-
-	public void setGetItemList(List<GetItem> getItemList) {
-		this.getItemList = getItemList;
 	}
 
 	@Override
 	public String toString() {
 		return "GetCatItemList [catId=" + catId + ", catEngName=" + catEngName + ", catMarName=" + catMarName
-				+ ", catPic=" + catPic + ", isUsed=" + isUsed + ", getItemList=" + getItemList + "]";
+				+ ", catPic=" + catPic + ", isUsed=" + isUsed + ", allItemList=" + allItemList + "]";
 	}
 
+	
 }
