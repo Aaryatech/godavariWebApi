@@ -16,11 +16,13 @@ import com.ats.godaapi.common.Firebase;
 import com.ats.godaapi.model.Config;
 import com.ats.godaapi.model.Distributor;
 import com.ats.godaapi.model.ErrorMessage;
+import com.ats.godaapi.model.GetSetting;
 import com.ats.godaapi.model.Notification;
 import com.ats.godaapi.model.Setting;
 import com.ats.godaapi.model.Test;
 import com.ats.godaapi.repository.ConfigRepo;
 import com.ats.godaapi.repository.DistributorRepository;
+import com.ats.godaapi.repository.GetSettingRepo;
 import com.ats.godaapi.repository.NotifiRepo;
 import com.ats.godaapi.repository.RouteRepository;
 import com.ats.godaapi.repository.SettingRepo;
@@ -46,6 +48,9 @@ public class TxApiController {
 
 	@Autowired
 	DistributorRepository distributorRepository;
+
+	@Autowired
+	GetSettingRepo getSettingRepo;
 
 	// -------------------Test------------------------
 
@@ -430,6 +435,24 @@ public class TxApiController {
 
 		}
 		return notiList;
+
+	}
+
+	@RequestMapping(value = { "/getSettingHubName" }, method = RequestMethod.GET)
+	public @ResponseBody List<GetSetting> getSettingHubName() {
+
+		List<GetSetting> setList = new ArrayList<GetSetting>();
+
+		try {
+
+			setList = getSettingRepo.getSetting();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return setList;
 
 	}
 
