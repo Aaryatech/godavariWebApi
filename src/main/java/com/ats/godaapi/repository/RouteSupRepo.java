@@ -28,4 +28,9 @@ public interface RouteSupRepo extends JpaRepository<RouteSup, Integer> {
 	@Query("UPDATE RouteSup SET isBlock=0    WHERE sup_id=:supId ")
 	int blockRouteSup(@Param("supId") int supId);
 
+	@Query(value = "SELECT v.* FROM m_route_supervisor v  WHERE v.sup_id NOT IN (SELECT supervisor_id FROM t_route_allocation "
+			+ "WHERE  :fromDate BETWEEN t_route_allocation.from_date AND t_route_allocation.to_date AND :toDate BETWEEN"
+			+ " t_route_allocation.from_date AND t_route_allocation.to_date  ) AND v.is_used=1", nativeQuery = true)
+	List<RouteSup> getSupBetDate(@Param("fromDate") String fromDate, @Param("toDate") String toDate);
+
 }

@@ -18,12 +18,14 @@ import com.ats.godaapi.model.Distributor;
 import com.ats.godaapi.model.ErrorMessage;
 import com.ats.godaapi.model.GetSetting;
 import com.ats.godaapi.model.Notification;
+import com.ats.godaapi.model.RouteAllocation;
 import com.ats.godaapi.model.Setting;
 import com.ats.godaapi.model.Test;
 import com.ats.godaapi.repository.ConfigRepo;
 import com.ats.godaapi.repository.DistributorRepository;
 import com.ats.godaapi.repository.GetSettingRepo;
 import com.ats.godaapi.repository.NotifiRepo;
+import com.ats.godaapi.repository.RouteAllocationRepo;
 import com.ats.godaapi.repository.RouteRepository;
 import com.ats.godaapi.repository.SettingRepo;
 import com.ats.godaapi.repository.TestRepo;
@@ -33,6 +35,9 @@ public class TxApiController {
 
 	@Autowired
 	SettingRepo settingRepo;
+
+	@Autowired
+	RouteAllocationRepo routeAllocationRepo;
 
 	@Autowired
 	ConfigRepo configRepo;
@@ -51,6 +56,59 @@ public class TxApiController {
 
 	@Autowired
 	GetSettingRepo getSettingRepo;
+
+	// -------------------RouteAllocation------------------------
+
+	@RequestMapping(value = { "/saveRouteAllocation" }, method = RequestMethod.POST)
+	public @ResponseBody RouteAllocation saveRouteAllocation(@RequestBody RouteAllocation routeAllocation) {
+
+		RouteAllocation res = new RouteAllocation();
+
+		try {
+
+			res = routeAllocationRepo.saveAndFlush(routeAllocation);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return res;
+	}
+
+	@RequestMapping(value = { "/getAllRouteAllocation" }, method = RequestMethod.GET)
+	public @ResponseBody List<RouteAllocation> getAllRouteAllocation() {
+
+		List<RouteAllocation> rtList = new ArrayList<RouteAllocation>();
+
+		try {
+
+			rtList = routeAllocationRepo.findAll();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return rtList;
+
+	}
+
+	@RequestMapping(value = { "/getRouteAllocationByTrId" }, method = RequestMethod.POST)
+	public @ResponseBody RouteAllocation getRouteAllocationByTrId(@RequestParam("trId") int trId) {
+
+		RouteAllocation ra = null;
+		try {
+			ra = routeAllocationRepo.findByTrId(trId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return ra;
+
+	}
 
 	// -------------------Test------------------------
 
