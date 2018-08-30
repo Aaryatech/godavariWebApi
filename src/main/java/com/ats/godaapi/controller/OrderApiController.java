@@ -540,8 +540,6 @@ public class OrderApiController {
 			System.out.println("curr date - " + currDate);
 			order = orderRepo.findByOrderDateAndOrderType(currDate, 0);
 
-
-
 			GetOrderHeader getOrderHeader = new GetOrderHeader();
 
 			if (order != null) {

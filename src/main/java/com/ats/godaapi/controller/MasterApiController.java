@@ -1326,8 +1326,8 @@ public class MasterApiController {
 		return errorMessage;
 	}
 
-	/*@RequestMapping(value = { "/getAllCatwiseItemListByCatId" }, method = RequestMethod.POST)
-	public @ResponseBody List<GetCatItemList> getAllCatwiseItemListByCatId(@RequestParam("catId") int catId) {
+	/* @RequestMapping(value = { "/getAllCatwiseItemListByCatId" }, method = RequestMethod.POST)
+	   public @ResponseBody List<GetCatItemList> getAllCatwiseItemListByCatId(@RequestParam("catId") int catId) {
 
 		Category cat = new Category();
 		List<GetCatItemList> catItemList = new ArrayList<GetCatItemList>();
