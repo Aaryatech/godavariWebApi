@@ -109,6 +109,29 @@ public class TxApiController {
 		return res;
 	}
 
+	@RequestMapping(value = { "/saveSettingList" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage saveSettingList(@RequestBody List<Setting> settingList) {
+		ErrorMessage errorMessage = new ErrorMessage();
+
+		try {
+
+			for (int i = 0; i < settingList.size(); i++) {
+
+				Setting res = settingRepo.save(settingList.get(i));
+			}
+			errorMessage.setError(false);
+			errorMessage.setMessage("successfully Saved ");
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			errorMessage.setError(true);
+			errorMessage.setMessage("failed to Save ");
+
+		}
+		return errorMessage;
+	}
+
 	@RequestMapping(value = { "/getSettingBySettingId" }, method = RequestMethod.POST)
 	public @ResponseBody Setting getSettingBySettingId(@RequestParam("settingId") int settingId) {
 
