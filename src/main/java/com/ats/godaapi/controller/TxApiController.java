@@ -328,16 +328,31 @@ public class TxApiController {
 		List<Distributor> dist = new ArrayList<>();
 
 		try {
+			if (distIdList.contains(0)) {
 
-			dist = distributorRepository.getDistListById(distIdList);
+				if (res != null) {
 
-			if (res != null) {
+					dist = distributorRepository.findByIsUsed(1);
 
-				for (int j = 0; j < dist.size(); j++) {
+					for (int j = 0; j < dist.size(); j++) {
 
-					noti.setNotifiTo(dist.get(j).getDistId());
-					res = notifiRepo.saveAndFlush(noti);
-					Firebase.sendPushNotification(dist.get(j).getToken(), " Notification", "Message", 2);
+						noti.setNotifiTo(dist.get(j).getDistId());
+						res = notifiRepo.saveAndFlush(noti);
+						Firebase.sendPushNotification(dist.get(j).getToken(), " Notification", "Message", 2);
+					}
+				}
+			} else {
+
+				dist = distributorRepository.getDistListById(distIdList);
+
+				if (res != null) {
+
+					for (int j = 0; j < dist.size(); j++) {
+
+						noti.setNotifiTo(dist.get(j).getDistId());
+						res = notifiRepo.saveAndFlush(noti);
+						Firebase.sendPushNotification(dist.get(j).getToken(), " Notification", "Message", 2);
+					}
 				}
 			}
 

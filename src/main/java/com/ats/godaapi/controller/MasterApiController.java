@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ats.godaapi.model.CatItemList;
 import com.ats.godaapi.model.Category;
 import com.ats.godaapi.model.Distributor;
+import com.ats.godaapi.model.Driver;
 import com.ats.godaapi.model.ErrorMessage;
 import com.ats.godaapi.model.GetCatItemList;
 import com.ats.godaapi.model.GetItem;
@@ -33,9 +34,11 @@ import com.ats.godaapi.model.MahasanghUser;
 import com.ats.godaapi.model.Route;
 import com.ats.godaapi.model.RouteSup;
 import com.ats.godaapi.model.Uom;
+import com.ats.godaapi.model.Vehicle;
 import com.ats.godaapi.repository.CatItemListRepo;
 import com.ats.godaapi.repository.CategoryRepo;
 import com.ats.godaapi.repository.DistributorRepository;
+import com.ats.godaapi.repository.DriverRepo;
 import com.ats.godaapi.repository.GetCatItemListRepo;
 import com.ats.godaapi.repository.GetItemNameRepo;
 import com.ats.godaapi.repository.GetItemRepo;
@@ -48,12 +51,16 @@ import com.ats.godaapi.repository.MahasnaghUserRepo;
 import com.ats.godaapi.repository.RouteRepository;
 import com.ats.godaapi.repository.RouteSupRepo;
 import com.ats.godaapi.repository.UomRepo;
+import com.ats.godaapi.repository.VehicleRepo;
 
 @RestController
 public class MasterApiController {
 
 	@Autowired
 	HubRepository hubRepository;
+
+	@Autowired
+	VehicleRepo vehicleRepo;
 
 	@Autowired
 	GetItemNameRepo getItemNameRepo;
@@ -96,6 +103,167 @@ public class MasterApiController {
 
 	@Autowired
 	ItemRepo itemRepo;
+
+	@Autowired
+	DriverRepo driverRepo;
+
+	// -------------------Driver------------------------
+
+	@RequestMapping(value = { "/saveDriver" }, method = RequestMethod.POST)
+	public @ResponseBody Driver saveDriver(@RequestBody Driver driver) {
+
+		Driver res = new Driver();
+
+		try {
+
+			res = driverRepo.saveAndFlush(driver);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return res;
+	}
+
+	@RequestMapping(value = { "/getAllDriverByIsUsed" }, method = RequestMethod.GET)
+	public @ResponseBody List<Driver> getAllDriverByIsUsed() {
+
+		List<Driver> driList = new ArrayList<Driver>();
+
+		try {
+
+			driList = driverRepo.findByIsUsed(1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return driList;
+
+	}
+
+	@RequestMapping(value = { "/getDriverByDriverId" }, method = RequestMethod.POST)
+	public @ResponseBody Driver getDriverByDriverId(@RequestParam("driverId") int driverId) {
+
+		Driver driver = null;
+		try {
+			driver = driverRepo.findByDriverIdAndIsUsed(driverId, 1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return driver;
+
+	}
+
+	@RequestMapping(value = { "/deleteDriver" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage deleteDriver(@RequestParam("driverId") int driverId) {
+
+		ErrorMessage errorMessage = new ErrorMessage();
+
+		try {
+			int delete = driverRepo.deleteDriver(driverId);
+
+			if (delete == 1) {
+				errorMessage.setError(false);
+				errorMessage.setMessage("Deleted Successfully");
+			} else {
+				errorMessage.setError(true);
+				errorMessage.setMessage("Deletion Failed");
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			errorMessage.setError(true);
+			errorMessage.setMessage("Deletion Failed :EXC");
+
+		}
+		return errorMessage;
+	}
+
+	// -------------------Vehicle------------------------
+
+	@RequestMapping(value = { "/saveVehicle" }, method = RequestMethod.POST)
+	public @ResponseBody Vehicle saveVehicle(@RequestBody Vehicle vehicle) {
+
+		Vehicle res = new Vehicle();
+
+		try {
+
+			res = vehicleRepo.saveAndFlush(vehicle);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return res;
+	}
+
+	@RequestMapping(value = { "/getAllVehByIsUsed" }, method = RequestMethod.GET)
+	public @ResponseBody List<Vehicle> getAllVehByIsUsed() {
+
+		List<Vehicle> vehList = new ArrayList<Vehicle>();
+
+		try {
+
+			vehList = vehicleRepo.findByIsUsed(1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return vehList;
+
+	}
+
+	@RequestMapping(value = { "/getVehicleByVehId" }, method = RequestMethod.POST)
+	public @ResponseBody Vehicle getVehicleByVehId(@RequestParam("vehicleId") int vehicleId) {
+
+		Vehicle driver = null;
+		try {
+			driver = vehicleRepo.findByVehicleIdAndIsUsed(vehicleId, 1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return driver;
+
+	}
+
+	@RequestMapping(value = { "/deleteVehicle" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage deleteVehicle(@RequestParam("vehicleId") int vehicleId) {
+
+		ErrorMessage errorMessage = new ErrorMessage();
+
+		try {
+			int delete = vehicleRepo.deleteVehicle(vehicleId);
+
+			if (delete == 1) {
+				errorMessage.setError(false);
+				errorMessage.setMessage("Deleted Successfully");
+			} else {
+				errorMessage.setError(true);
+				errorMessage.setMessage("Deletion Failed");
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			errorMessage.setError(true);
+			errorMessage.setMessage("Deletion Failed :EXC");
+
+		}
+		return errorMessage;
+	}
 
 	// -------------------UOM------------------------
 
@@ -1326,40 +1494,39 @@ public class MasterApiController {
 		return errorMessage;
 	}
 
-	/* @RequestMapping(value = { "/getAllCatwiseItemListByCatId" }, method = RequestMethod.POST)
-	   public @ResponseBody List<GetCatItemList> getAllCatwiseItemListByCatId(@RequestParam("catId") int catId) {
-
-		Category cat = new Category();
-		List<GetCatItemList> catItemList = new ArrayList<GetCatItemList>();
-
-		try {
-
-			Date now = new Date();
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			String currDate = sdf.format(now.getTime());
-
-			cat = categoryRepo.findByCatIdAndIsUsed(catId, 1);
-
-			GetCatItemList catItem = new GetCatItemList();
-			catItem.setCatEngName(cat.getCatEngName());
-			catItem.setCatId(cat.getCatId());
-			catItem.setCatMarName(cat.getCatMarName());
-			catItem.setCatPic(cat.getCatPic());
-			catItem.setIsUsed(cat.getIsUsed());
-
-			List<GetItem> itemList = getItemRepo.getData(cat.getCatId(), currDate);
- 
-			catItem.setAllItemList(itemList);
-
-			catItemList.add(catItem);
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-
-		}
-		return catItemList;
-
-	}*/
+	/*
+	 * @RequestMapping(value = { "/getAllCatwiseItemListByCatId" }, method =
+	 * RequestMethod.POST) public @ResponseBody List<GetCatItemList>
+	 * getAllCatwiseItemListByCatId(@RequestParam("catId") int catId) {
+	 * 
+	 * Category cat = new Category(); List<GetCatItemList> catItemList = new
+	 * ArrayList<GetCatItemList>();
+	 * 
+	 * try {
+	 * 
+	 * Date now = new Date(); SimpleDateFormat sdf = new
+	 * SimpleDateFormat("yyyy-MM-dd"); String currDate = sdf.format(now.getTime());
+	 * 
+	 * cat = categoryRepo.findByCatIdAndIsUsed(catId, 1);
+	 * 
+	 * GetCatItemList catItem = new GetCatItemList();
+	 * catItem.setCatEngName(cat.getCatEngName()); catItem.setCatId(cat.getCatId());
+	 * catItem.setCatMarName(cat.getCatMarName());
+	 * catItem.setCatPic(cat.getCatPic()); catItem.setIsUsed(cat.getIsUsed());
+	 * 
+	 * List<GetItem> itemList = getItemRepo.getData(cat.getCatId(), currDate);
+	 * 
+	 * catItem.setAllItemList(itemList);
+	 * 
+	 * catItemList.add(catItem);
+	 * 
+	 * } catch (Exception e) {
+	 * 
+	 * e.printStackTrace();
+	 * 
+	 * } return catItemList;
+	 * 
+	 * }
+	 */
 
 }
