@@ -1,8 +1,6 @@
 package com.ats.godaapi.controller;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +16,6 @@ import com.ats.godaapi.model.Category;
 import com.ats.godaapi.model.Distributor;
 import com.ats.godaapi.model.Driver;
 import com.ats.godaapi.model.ErrorMessage;
-import com.ats.godaapi.model.GetCatItemList;
-import com.ats.godaapi.model.GetItem;
 import com.ats.godaapi.model.GetItemName;
 import com.ats.godaapi.model.GetRoute;
 import com.ats.godaapi.model.Hub;
