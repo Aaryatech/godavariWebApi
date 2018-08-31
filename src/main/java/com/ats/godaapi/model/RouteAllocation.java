@@ -21,6 +21,7 @@ public class RouteAllocation {
 	private int routeId;
 	private int vehicleId;
 	private int supervisorId;
+	private int driverId;
 
 	public int getTrId() {
 		return trId;
@@ -70,10 +71,19 @@ public class RouteAllocation {
 		this.supervisorId = supervisorId;
 	}
 
+	public int getDriverId() {
+		return driverId;
+	}
+
+	public void setDriverId(int driverId) {
+		this.driverId = driverId;
+	}
+
 	@Override
 	public String toString() {
 		return "RouteAllocation [trId=" + trId + ", fromDate=" + fromDate + ", toDate=" + toDate + ", routeId="
-				+ routeId + ", vehicleId=" + vehicleId + ", supervisorId=" + supervisorId + "]";
+				+ routeId + ", vehicleId=" + vehicleId + ", supervisorId=" + supervisorId + ", driverId=" + driverId
+				+ "]";
 	}
 
 }
