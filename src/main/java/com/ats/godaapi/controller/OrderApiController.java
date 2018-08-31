@@ -608,7 +608,11 @@ public class OrderApiController {
 
 		try {
 
-			orderHeaderList = getOrderRepo.getOrder();
+			Date now = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			String currDate = sdf.format(now.getTime());
+
+			orderHeaderList = getOrderRepo.getOrder(currDate);
 
 		} catch (Exception e) {
 
