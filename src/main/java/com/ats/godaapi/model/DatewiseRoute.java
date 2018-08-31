@@ -11,16 +11,16 @@ import javax.persistence.Transient;
 @Entity
 public class DatewiseRoute {
 	@Id
-	private Date currDate;
+	private String currDate;
 
 	@Transient
 	List<RouteAllocationWithName> routeAllocationList;
 
-	public Date getCurrDate() {
+	public String getCurrDate() {
 		return currDate;
 	}
 
-	public void setCurrDate(Date currDate) {
+	public void setCurrDate(String currDate) {
 		this.currDate = currDate;
 	}
 

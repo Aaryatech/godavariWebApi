@@ -1,8 +1,10 @@
 package com.ats.godaapi.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,14 +14,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ats.godaapi.model.DatewiseRoute;
 import com.ats.godaapi.model.Driver;
 import com.ats.godaapi.model.GetRoute;
 import com.ats.godaapi.model.ReportData;
+import com.ats.godaapi.model.RouteAllocationWithName;
 import com.ats.godaapi.model.RouteSup;
 import com.ats.godaapi.model.Vehicle;
 import com.ats.godaapi.repository.DriverRepo;
 import com.ats.godaapi.repository.GetRouteRepo;
 import com.ats.godaapi.repository.ReportDataRepo;
+import com.ats.godaapi.repository.RouteAllocationWithNameRepo;
 import com.ats.godaapi.repository.RouteSupRepo;
 import com.ats.godaapi.repository.VehicleRepo;
 
@@ -28,6 +33,9 @@ public class ReportDataApiController {
 
 	@Autowired
 	ReportDataRepo reportDataRepo;
+
+	@Autowired
+	RouteAllocationWithNameRepo routeAllocationWithNameRepo;
 
 	@Autowired
 	GetRouteRepo getRouteRepo;
@@ -167,6 +175,50 @@ public class ReportDataApiController {
 
 		}
 		return driverList;
+
+	}
+
+	@RequestMapping(value = { "/getRouteAllocationDatewise" }, method = RequestMethod.GET)
+	public @ResponseBody List<DatewiseRoute> getRouteAllocationDatewise() {
+
+		List<DatewiseRoute> routeDateList = new ArrayList<DatewiseRoute>();
+		DatewiseRoute datewiseRoute = new DatewiseRoute();
+
+		List<RouteAllocationWithName> routeList = new ArrayList<RouteAllocationWithName>();
+
+		try {
+
+			Date day1 = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			String currDate = sdf.format(day1.getTime());
+			System.out.println("currDate" + currDate);
+			System.out.println("sdf" + sdf);
+			routeList = routeAllocationWithNameRepo.getRouteAllocationDatewise(currDate);
+			datewiseRoute.setCurrDate(currDate);
+			datewiseRoute.setRouteAllocationList(routeList);
+			routeDateList.add(datewiseRoute);
+
+			System.out.println("routeList" + routeList.toString());
+
+			for (int i = 0; i < 4; i++) {
+
+				datewiseRoute = new DatewiseRoute();
+				day1 = new Date(day1.getTime() + TimeUnit.DAYS.toMillis(1));
+				System.err.println();
+				currDate = sdf.format(day1.getTime());
+				routeList = routeAllocationWithNameRepo.getRouteAllocationDatewise(currDate);
+
+				datewiseRoute.setCurrDate(currDate);
+				datewiseRoute.setRouteAllocationList(routeList);
+				routeDateList.add(datewiseRoute);
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return routeDateList;
 
 	}
 }
