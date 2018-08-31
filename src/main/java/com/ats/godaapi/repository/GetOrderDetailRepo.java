@@ -22,4 +22,7 @@ public interface GetOrderDetailRepo extends JpaRepository<GetOrderDetail, Intege
 	@Query(value = "SELECT d.*,i.item_eng_name,i.item_mar_name,i.item_eng_desc,i.item_mar_desc,u.uom_name FROM t_order_detail d,t_order_header h,m_item i,m_uom u WHERE d.order_header_id=h.order_header_id  AND h.order_date=:orderDate AND h.dist_id=:distId AND i.item_id=d.item_id AND u.uom_id=i.item_uom_id", nativeQuery = true)
 	List<GetOrderDetail> getDistwiseOrderDetail(@Param("distId") int distId, @Param("orderDate") String orderDate);
 
+	@Query(value = "SELECT d.*,i.item_eng_name,i.item_mar_name,i.item_eng_desc,i.item_mar_desc,u.uom_name FROM t_order_detail d,t_order_header h,m_item i,m_uom u WHERE d.order_header_id=h.order_header_id  AND i.item_id=d.item_id AND u.uom_id=i.item_uom_id AND d.order_header_id=:orderHeaderId", nativeQuery = true)
+	List<GetOrderDetail> getOrderDetail(@Param("orderHeaderId") int orderHeaderId);
+
 }

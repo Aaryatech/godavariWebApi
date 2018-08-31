@@ -582,7 +582,7 @@ public class OrderApiController {
 							e.printStackTrace();
 						}
 					}
-				} 
+				}
 
 				catItem.setAllItemList(list);
 
@@ -598,6 +598,44 @@ public class OrderApiController {
 
 		}
 		return getAllCatwiseItemResp;
+
+	}
+
+	@RequestMapping(value = { "/getOrderByTypeAndStatus" }, method = RequestMethod.GET)
+	public @ResponseBody List<GetOrder> getOrderByTypeAndStatus() {
+
+		List<GetOrder> orderHeaderList = new ArrayList<GetOrder>();
+
+		try {
+
+			orderHeaderList = getOrderRepo.getOrder();
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return orderHeaderList;
+
+	}
+
+	@RequestMapping(value = { "/getOrderByOrderHeaderId" }, method = RequestMethod.POST)
+	public @ResponseBody GetOrder getOrderByOrderHeaderId(@RequestParam("orderHeaderId") int orderHeaderId) {
+
+		GetOrder getOrder = new GetOrder();
+
+		try {
+
+			getOrder = getOrderRepo.getOrderByOrderHeaderid(orderHeaderId);
+			List<GetOrderDetail> orderDetailList = getOrderDetailRepo.getOrderDetail(orderHeaderId);
+			getOrder.setGetOrderDetailList(orderDetailList);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return getOrder;
 
 	}
 

@@ -19,4 +19,10 @@ public interface GetOrderRepo extends JpaRepository<GetOrder, Integer> {
 	@Query(value = "SELECT h.*,d.dist_eng_name,d.dist_mar_name,d.dist_add_mar,d.dist_add_eng ,s.sup_eng_name,s.sup_mar_name FROM t_order_header h,m_dist d,m_route_supervisor s WHERE h.order_date=:orderDate AND h.dist_id=:distId AND d.dist_id=h.dist_id AND s.sup_id=h.sup_id", nativeQuery = true)
 	List<GetOrder> getOrderDist(@Param("orderDate") String date, @Param("distId") int distId);
 
+	@Query(value = "SELECT h.*,d.dist_eng_name,d.dist_mar_name,d.dist_add_mar,d.dist_add_eng ,s.sup_eng_name,s.sup_mar_name FROM t_order_header h,m_dist d,m_route_supervisor s WHERE  d.dist_id=h.dist_id AND s.sup_id=h.sup_id AND h.order_type=0 AND h.order_status=0", nativeQuery = true)
+	List<GetOrder> getOrder();
+
+	@Query(value = "SELECT h.*,d.dist_eng_name,d.dist_mar_name,d.dist_add_mar,d.dist_add_eng ,s.sup_eng_name,s.sup_mar_name FROM t_order_header h,m_dist d,m_route_supervisor s WHERE  d.dist_id=h.dist_id AND s.sup_id=h.sup_id AND h.order_header_id=:orderHeaderId", nativeQuery = true)
+	GetOrder getOrderByOrderHeaderid(@Param("orderHeaderId") int orderHeaderId);
+
 }
