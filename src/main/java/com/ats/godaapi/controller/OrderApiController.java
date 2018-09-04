@@ -538,7 +538,7 @@ public class OrderApiController {
 
 			Order order = null;
 			System.out.println("curr date - " + currDate);
-			order = orderRepo.findByOrderDateAndOrderType(currDate, 0);
+			order = orderRepo.findByOrderDateAndDistIdAndOrderType(currDate, distId,0);
 
 			GetOrderHeader getOrderHeader = new GetOrderHeader();
 
