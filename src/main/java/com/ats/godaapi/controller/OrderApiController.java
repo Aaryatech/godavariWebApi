@@ -29,11 +29,15 @@ import com.ats.godaapi.model.GetItem;
 import com.ats.godaapi.model.GetOrder;
 import com.ats.godaapi.model.GetOrderDetail;
 import com.ats.godaapi.model.GetOrderHeader;
+import com.ats.godaapi.model.GetOrderRoute;
+import com.ats.godaapi.model.GetRouteData;
 import com.ats.godaapi.model.HubUser;
 import com.ats.godaapi.model.ItemwiseOrder;
 import com.ats.godaapi.model.MahasanghUser;
 import com.ats.godaapi.model.Order;
 import com.ats.godaapi.model.OrderDetail;
+import com.ats.godaapi.model.Route;
+import com.ats.godaapi.model.RouteAllocation;
 import com.ats.godaapi.model.Setting;
 import com.ats.godaapi.repository.CategoryRepo;
 import com.ats.godaapi.repository.ConfigRepo;
@@ -42,12 +46,15 @@ import com.ats.godaapi.repository.GetAllItemsForRegOrderRepo;
 import com.ats.godaapi.repository.GetItemRepo;
 import com.ats.godaapi.repository.GetOrderDetailRepo;
 import com.ats.godaapi.repository.GetOrderRepo;
+import com.ats.godaapi.repository.GetOrderRouteRepo;
 import com.ats.godaapi.repository.HubUserRepo;
 import com.ats.godaapi.repository.ItemRepo;
 import com.ats.godaapi.repository.ItemwiseOrderRepo;
 import com.ats.godaapi.repository.MahasnaghUserRepo;
 import com.ats.godaapi.repository.OrderDetailRepo;
 import com.ats.godaapi.repository.OrderRepo;
+import com.ats.godaapi.repository.RouteAllocationRepo;
+import com.ats.godaapi.repository.RouteRepository;
 import com.ats.godaapi.repository.SettingRepo;
 
 @RestController
@@ -94,6 +101,15 @@ public class OrderApiController {
 
 	@Autowired
 	GetAllItemsForRegOrderRepo getAllItemsForRegOrderRepo;
+
+	@Autowired
+	RouteAllocationRepo routeAllocationRepo;
+
+	@Autowired
+	RouteRepository routeRepository;
+
+	@Autowired
+	GetOrderRouteRepo getOrderRouteRepo;
 
 	@RequestMapping(value = { "/saveOrderHeaderDetail" }, method = RequestMethod.POST)
 	public @ResponseBody ErrorMessage saveOrderHeaderDetail(@RequestBody Order order) {
@@ -538,7 +554,7 @@ public class OrderApiController {
 
 			Order order = null;
 			System.out.println("curr date - " + currDate);
-			order = orderRepo.findByOrderDateAndDistIdAndOrderType(currDate, distId,0);
+			order = orderRepo.findByOrderDateAndDistIdAndOrderType(currDate, distId, 0);
 
 			GetOrderHeader getOrderHeader = new GetOrderHeader();
 
@@ -622,11 +638,11 @@ public class OrderApiController {
 		return orderHeaderList;
 
 	}
-	
-	//getOrderByHubIdStausAndType
+
+	// getOrderByHubIdStausAndType
 	@RequestMapping(value = { "/getOrderByHubIdStausAndType" }, method = RequestMethod.POST)
-	public @ResponseBody List<GetOrder> getOrderByHubIdStausAndType(@RequestParam("orderType") int orderType,@RequestParam("orderStatus") int orderStatus,
-			@RequestParam("hubId") int hubId) {
+	public @ResponseBody List<GetOrder> getOrderByHubIdStausAndType(@RequestParam("orderType") int orderType,
+			@RequestParam("orderStatus") int orderStatus, @RequestParam("hubId") int hubId) {
 
 		List<GetOrder> orderHeaderList = new ArrayList<GetOrder>();
 
@@ -636,7 +652,7 @@ public class OrderApiController {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			String currDate = sdf.format(now.getTime());
 
-			orderHeaderList = getOrderRepo.getOrderByHubIdStausAndType(currDate, orderType, orderStatus,hubId);
+			orderHeaderList = getOrderRepo.getOrderByHubIdStausAndType(currDate, orderType, orderStatus, hubId);
 
 		} catch (Exception e) {
 
@@ -646,8 +662,6 @@ public class OrderApiController {
 		return orderHeaderList;
 
 	}
-	
-	
 
 	@RequestMapping(value = { "/getOrderByOrderHeaderId" }, method = RequestMethod.POST)
 	public @ResponseBody GetOrder getOrderByOrderHeaderId(@RequestParam("orderHeaderId") int orderHeaderId) {
@@ -666,6 +680,53 @@ public class OrderApiController {
 
 		}
 		return getOrder;
+
+	}
+
+	@RequestMapping(value = { "/getOrderRouteAllocation" }, method = RequestMethod.POST)
+	public @ResponseBody GetRouteData getOrderRouteAllocation(@RequestParam("supervisorId") int supervisorId) {
+
+		RouteAllocation routeAllocation = new RouteAllocation();
+		Route route = new Route();
+		List<Distributor> distList = new ArrayList<>();
+		GetOrderRoute getOrderRoute = new GetOrderRoute();
+		List<GetOrderRoute> getOrderRouteList = new ArrayList<>();
+		List<GetRouteData> getRouteList = new ArrayList<>();
+		GetRouteData getRoute = new GetRouteData();
+
+		try {
+
+			Date now = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			String currDate = sdf.format(now.getTime());
+
+			routeAllocation = routeAllocationRepo.getRouteAllocation(currDate, supervisorId);
+			route = routeRepository.findByRouteIdAndIsUsed(routeAllocation.getRouteId(), 1);
+
+			distList = distributorRepository.findByRouteIdAndIsUsed(route.getRouteId(), 1);
+			for (int i = 0; i < distList.size(); i++) {
+				getOrderRoute = new GetOrderRoute();
+
+				getOrderRoute = getOrderRouteRepo.getOrderRoute(currDate, distList.get(i).getDistId());
+
+				System.out.println("orderHeaderId" + getOrderRoute.getOrderHeaderId());
+
+				List<GetOrderDetail> orderDetailList = getOrderDetailRepo
+						.getOrderDetail(getOrderRoute.getOrderHeaderId());
+
+				getOrderRoute.setGetOrderDetailList(orderDetailList);
+				getOrderRouteList.add(getOrderRoute);
+				getRoute.setRoute(route);
+				getRoute.setGetOrderList(getOrderRouteList);
+
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return getRoute;
 
 	}
 
