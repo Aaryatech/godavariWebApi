@@ -33,8 +33,8 @@ public interface GetOrderRepo extends JpaRepository<GetOrder, Integer> {
 			+ "  s.sup_eng_name, s.sup_mar_name   FROM "
 			+ " t_order_header h, m_dist d, m_route_supervisor s "
 			+ "  WHERE d.hub_id=:hubId and  d.dist_id=h.dist_id "
-			+ "  AND s.sup_id=h.sup_id  AND h.order_type=:orderType "
+			+ "  AND s.sup_id=h.sup_id  AND h.order_type IN (:orderType) "
 			+ "  AND h.order_status=:orderStatus AND h.order_date=:currDate", nativeQuery = true)
-	List<GetOrder> getOrderByHubIdStausAndType(@Param("currDate") String currDate,@Param("orderType") int orderType,@Param("orderStatus") int orderStatus,@Param("hubId") int hubId);
+	List<GetOrder> getOrderByHubIdStausAndType(@Param("currDate") String currDate,@Param("orderType") List<Integer> orderType,@Param("orderStatus") int orderStatus,@Param("hubId") int hubId);
 
 }

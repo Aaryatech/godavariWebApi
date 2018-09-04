@@ -642,18 +642,16 @@ public class OrderApiController {
 
 	// getOrderByHubIdStausAndType
 	@RequestMapping(value = { "/getOrderByHubIdStausAndType" }, method = RequestMethod.POST)
-	public @ResponseBody List<GetOrder> getOrderByHubIdStausAndType(@RequestParam("orderType") int orderType,
-			@RequestParam("orderStatus") int orderStatus, @RequestParam("hubId") int hubId) {
+	public @ResponseBody List<GetOrder> getOrderByHubIdStausAndType(@RequestParam("orderType") List<Integer> orderType,
+			@RequestParam("orderStatus") int orderStatus, @RequestParam("hubId") int hubId,
+			@RequestParam("date") String date) {
 
 		List<GetOrder> orderHeaderList = new ArrayList<GetOrder>();
 
 		try {
+			System.err.println("Order Date  " + date);
 
-			Date now = new Date();
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			String currDate = sdf.format(now.getTime());
-
-			orderHeaderList = getOrderRepo.getOrderByHubIdStausAndType(currDate, orderType, orderStatus, hubId);
+			orderHeaderList = getOrderRepo.getOrderByHubIdStausAndType(date, orderType, orderStatus, hubId);
 
 		} catch (Exception e) {
 
@@ -743,21 +741,23 @@ public class OrderApiController {
 		try {
 			errorMessage.setError(true);
 			errorMessage.setMessage("Update Failed");
-			
+
 			if (orderList.size() > 0) {
-				
+
 				for (int i = 0; i < orderList.size(); i++) {
 
-					if (orderList.get(i).getMsQty()>=0) {
+					if (orderList.get(i).getMsQty() >= 0) {
 						updateResult = orderDetailRepo.updateMsQty(orderList.get(i).getMsQty(),
 								orderList.get(i).getItemTotal(), orderList.get(i).getOrderDetailId());
 
-					} /*else if (orderList.get(i).getMsQty() > 0) {
-
-						updateResult = orderDetailRepo.deleteOrderDetail(orderList.get(i).getOrderDetailId());
-
-					}
-*/
+					} /*
+						 * else if (orderList.get(i).getMsQty() > 0) {
+						 * 
+						 * updateResult =
+						 * orderDetailRepo.deleteOrderDetail(orderList.get(i).getOrderDetailId());
+						 * 
+						 * }
+						 */
 					if (updateResult > 0) {
 
 						errorMessage.setError(false);
@@ -781,18 +781,18 @@ public class OrderApiController {
 
 				}
 			}
-			
-			int updateOrdHeader=orderRepo.updateOrderTotal(orderTotal, ordHeaderId);
+
+			int updateOrdHeader = orderRepo.updateOrderTotal(orderTotal, ordHeaderId);
 
 		} catch (Exception e) {
-			System.err.println("Exception in update Order By MS " +e.getMessage());
+			System.err.println("Exception in update Order By MS " + e.getMessage());
 
 			e.printStackTrace();
 			errorMessage.setError(true);
 			errorMessage.setMessage("failed to Update ");
 
 		}
-		
+
 		return errorMessage;
 
 	}
