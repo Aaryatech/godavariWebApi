@@ -797,4 +797,62 @@ public class OrderApiController {
 
 	}
 
+	@RequestMapping(value = { "/updateOrderByOrderQty" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage updateOrderByOrderQty(@RequestBody List<EditOrder> orderList) {
+
+		ErrorMessage errorMessage = new ErrorMessage();
+
+		int updateResult = 0;
+
+		try {
+			errorMessage.setError(true);
+			errorMessage.setMessage("Update Failed");
+
+			if (orderList.size() > 0) {
+
+				for (int i = 0; i < orderList.size(); i++) {
+
+					if (orderList.get(i).getOrderQty() >= 0) {
+						updateResult = orderDetailRepo.updateOrderQty(orderList.get(i).getOrderQty(),
+								orderList.get(i).getItemTotal(), orderList.get(i).getOrderDetailId());
+
+					}
+					if (updateResult > 0) {
+
+						errorMessage.setError(false);
+						errorMessage.setMessage("Update Success");
+
+					}
+				}
+			}
+
+			float orderTotal = 0;
+
+			int ordHeaderId = orderList.get(0).getOrderHeaderId();
+
+			List<OrderDetail> detailList = orderDetailRepo.findByOrderHeaderId(ordHeaderId);
+
+			if (detailList.size() > 0) {
+
+				for (int i = 0; i < detailList.size(); i++) {
+
+					orderTotal = orderTotal + detailList.get(i).getItemTotal();
+
+				}
+			}
+
+			int updateOrdHeader = orderRepo.updateOrderTotal(orderTotal, ordHeaderId);
+
+		} catch (Exception e) {
+			System.err.println("Exception in update Order By MS " + e.getMessage());
+
+			e.printStackTrace();
+			errorMessage.setError(true);
+			errorMessage.setMessage("failed to Update ");
+
+		}
+
+		return errorMessage;
+
+	}
 }

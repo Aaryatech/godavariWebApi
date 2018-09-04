@@ -16,18 +16,25 @@ public interface OrderDetailRepo extends JpaRepository<OrderDetail, Integer> {
 
 	List<OrderDetail> findByItemId(int itemId);
 
-	OrderDetail findByItemIdAndOrderHeaderId(int itemId,int orderHeaderId);
+	OrderDetail findByItemIdAndOrderHeaderId(int itemId, int orderHeaderId);
 
-	//Sachin
+	// Sachin
 	@Transactional
 	@Modifying
 	@Query("UPDATE OrderDetail SET msQty=:msQty,itemTotal=:itemTotal WHERE orderDetailId=:orderDetailId ")
-	int updateMsQty(@Param("msQty") int msQty,@Param("itemTotal") float itemTotal,@Param("orderDetailId") int orderDetailId);
+	int updateMsQty(@Param("msQty") int msQty, @Param("itemTotal") float itemTotal,
+			@Param("orderDetailId") int orderDetailId);
 
-	//Sachin
+	// Sachin
 	@Transactional
 	@Modifying
 	@Query("DELETE FROM OrderDetail  WHERE orderDetailId=:orderDetailId ")
 	int deleteOrderDetail(@Param("orderDetailId") int orderDetailId);
+
+	@Transactional
+	@Modifying
+	@Query("UPDATE OrderDetail SET orderQty=:orderQty,itemTotal=:itemTotal WHERE orderDetailId=:orderDetailId ")
+	int updateOrderQty(@Param("orderQty") int orderQty, @Param("itemTotal") float itemTotal,
+			@Param("orderDetailId") int orderDetailId);
 
 }
