@@ -21,6 +21,7 @@ import com.ats.godaapi.model.Category;
 import com.ats.godaapi.model.Config;
 import com.ats.godaapi.model.Distributor;
 import com.ats.godaapi.model.DistwiseOrder;
+import com.ats.godaapi.model.EditOrder;
 import com.ats.godaapi.model.EditOrderDataBean;
 import com.ats.godaapi.model.ErrorMessage;
 import com.ats.godaapi.model.GetAllCatwiseItemResp;
