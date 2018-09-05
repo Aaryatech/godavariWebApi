@@ -758,20 +758,29 @@ public class OrderApiController {
 				for (int i = 0; i < distList.size(); i++) {
 					GetOrderRoute getOrderRoute = new GetOrderRoute();
 
-					System.out.println("distList" + distList.toString());
-
+					System.out.println("distList------------------ " + distList.get(i).getDistId());
+					
 					getOrderRoute = getOrderRouteRepo.getOrderRoutebyDistId(currDate, distList.get(i).getDistId());
+					
+					if(getOrderRoute!=null) {
+						
+						System.out.println("getOrderRoute" + getOrderRoute.toString());
 
-					System.out.println("getOrderRoute" + getOrderRoute.toString());
+						System.out.println("orderHeaderId" + getOrderRoute.getOrderHeaderId());
 
-					System.out.println("orderHeaderId" + getOrderRoute.getOrderHeaderId());
+						List<GetOrderDetail> orderDetailList = getOrderDetailRepo
+								.getOrderDetail(getOrderRoute.getOrderHeaderId());
+						
+						getOrderRoute.setGetOrderDetailList(orderDetailList);
+						getOrderRouteList.add(getOrderRoute);
+						
+					}
 
-					List<GetOrderDetail> orderDetailList = getOrderDetailRepo
-							.getOrderDetail(getOrderRoute.getOrderHeaderId());
+					
+					
 					getRoute.setMsg("Success");
 					getRoute.setError(false);
-					getOrderRoute.setGetOrderDetailList(orderDetailList);
-					getOrderRouteList.add(getOrderRoute);
+					
 					getRoute.setRoute(route);
 					getRoute.setGetOrderList(getOrderRouteList);
 					getRoute.setMsg("Success");
