@@ -674,7 +674,7 @@ public class OrderApiController {
 	}
 
 	@RequestMapping(value = { "/getOrderByDistIdStausAndType" }, method = RequestMethod.POST)
-	public @ResponseBody List<GetOrder> getOrderByDistIdStausAndType(@RequestParam("orderType") List<Integer> orderType,
+	public @ResponseBody List<GetOrder> getOrderByDistIdStausAndType(
 			@RequestParam("orderStatus") int orderStatus, @RequestParam("distId") int distId,
 			@RequestParam("date") String date) {
 
@@ -683,7 +683,7 @@ public class OrderApiController {
 		try {
 			System.err.println("Order Date  " + date);
 
-			orderHeaderList = getOrderRepo.getOrderByDistIdStausAndType(date, orderType, orderStatus, distId);
+			orderHeaderList = getOrderRepo.getOrderByDistIdStausAndType(date,  orderStatus, distId);
 
 		} catch (Exception e) {
 
