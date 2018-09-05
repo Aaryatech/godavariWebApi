@@ -674,16 +674,20 @@ public class OrderApiController {
 	}
 
 	@RequestMapping(value = { "/getOrderByDistIdStausAndType" }, method = RequestMethod.POST)
-	public @ResponseBody List<GetOrder> getOrderByDistIdStausAndType(
-			@RequestParam("orderStatus") int orderStatus, @RequestParam("distId") int distId,
-			@RequestParam("date") String date) {
+	public @ResponseBody List<GetOrder> getOrderByDistIdStausAndType(@RequestParam("orderStatus") int orderStatus,
+			@RequestParam("distId") int distId, @RequestParam("date") String date) {
 
 		List<GetOrder> orderHeaderList = new ArrayList<GetOrder>();
 
 		try {
 			System.err.println("Order Date  " + date);
 
-			orderHeaderList = getOrderRepo.getOrderByDistIdStausAndType(date,  orderStatus, distId);
+			orderHeaderList = getOrderRepo.getOrderByDistIdStausAndType(date, orderStatus, distId);
+			for (int i = 0; i < orderHeaderList.size(); i++) {
+				List<GetOrderDetail> orderDetailList = getOrderDetailRepo
+						.getOrderDetail(orderHeaderList.get(i).getOrderHeaderId());
+				orderHeaderList.get(i).setGetOrderDetailList(orderDetailList);
+			}
 
 		} catch (Exception e) {
 
@@ -777,9 +781,12 @@ public class OrderApiController {
 
 					getRoute.setDetailId(dailyDistDeatil.getDetailId());
 
-				} else {
-
 				}
+				getRoute.setDayEndTime("0000-00-00 00:00:00");
+				getRoute.setDayStartTime(currTime);
+				getRoute.setHeaderId(dailyDistHeader.getHeaderId());
+				getRoute.setSupervisorId(supervisorId);
+
 			} else {
 				getRoute.setError(true);
 				getRoute.setMsg("Day Not Start");
