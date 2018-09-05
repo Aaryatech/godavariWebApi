@@ -16,4 +16,6 @@ public interface DailyDistDetailRepo extends JpaRepository<DailyDistDetail, Inte
 	int updateDailyDistDetail(@Param("detailId") int detailId, @Param("supervisorId") int supervisorId,
 			@Param("dayEndTime") String dayEndTime);
 
+	DailyDistDetail findByHeaderId(int headerId);
+
 }

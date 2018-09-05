@@ -1,7 +1,9 @@
 package com.ats.godaapi.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -59,6 +61,22 @@ public class DailyDistController {
 
 		}
 		return dailyDistHeader;
+
+	}
+
+	@RequestMapping(value = { "/getDailyDistByDate" }, method = RequestMethod.POST)
+	public @ResponseBody List<DailyDistHeader> getDailyDistByDate(@RequestParam("date") String date) {
+		List<DailyDistHeader> dailyDistHeaderList = new ArrayList<>();
+
+		try {
+			dailyDistHeaderList = dailyDistHeaderRepo.findByDate(date);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return dailyDistHeaderList;
 
 	}
 

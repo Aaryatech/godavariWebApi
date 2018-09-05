@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ats.godaapi.model.Category;
 import com.ats.godaapi.model.Config;
+import com.ats.godaapi.model.DailyDistDetail;
+import com.ats.godaapi.model.DailyDistHeader;
 import com.ats.godaapi.model.Distributor;
 import com.ats.godaapi.model.DistwiseOrder;
 import com.ats.godaapi.model.EditOrder;
@@ -43,6 +45,8 @@ import com.ats.godaapi.model.RouteAllocation;
 import com.ats.godaapi.model.Setting;
 import com.ats.godaapi.repository.CategoryRepo;
 import com.ats.godaapi.repository.ConfigRepo;
+import com.ats.godaapi.repository.DailyDistDetailRepo;
+import com.ats.godaapi.repository.DailyDistHeaderRepo;
 import com.ats.godaapi.repository.DistributorRepository;
 import com.ats.godaapi.repository.GetAllItemsForRegOrderRepo;
 import com.ats.godaapi.repository.GetItemRepo;
@@ -64,6 +68,12 @@ public class OrderApiController {
 
 	@Autowired
 	HubUserRepo hubUserRepo;
+
+	@Autowired
+	DailyDistDetailRepo dailyDistDetailRepo;
+
+	@Autowired
+	DailyDistHeaderRepo dailyDistHeaderRepo;
 
 	@Autowired
 	CategoryRepo categoryRepo;
@@ -663,6 +673,27 @@ public class OrderApiController {
 
 	}
 
+	@RequestMapping(value = { "/getOrderByDistIdStausAndType" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetOrder> getOrderByDistIdStausAndType(@RequestParam("orderType") List<Integer> orderType,
+			@RequestParam("orderStatus") int orderStatus, @RequestParam("distId") int distId,
+			@RequestParam("date") String date) {
+
+		List<GetOrder> orderHeaderList = new ArrayList<GetOrder>();
+
+		try {
+			System.err.println("Order Date  " + date);
+
+			orderHeaderList = getOrderRepo.getOrderByDistIdStausAndType(date, orderType, orderStatus, distId);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return orderHeaderList;
+
+	}
+
 	@RequestMapping(value = { "/getOrderByOrderHeaderId" }, method = RequestMethod.POST)
 	public @ResponseBody GetOrder getOrderByOrderHeaderId(@RequestParam("orderHeaderId") int orderHeaderId) {
 
@@ -697,33 +728,61 @@ public class OrderApiController {
 		try {
 
 			Date now = new Date();
+
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ");
 			String currDate = sdf.format(now.getTime());
+			String currTime = sdf1.format(now.getTime());
 
 			routeAllocation = routeAllocationRepo.getRouteAllocation(currDate, supervisorId);
-			route = routeRepository.findByRouteIdAndIsUsed(routeAllocation.getRouteId(), 1);
-			System.out.println("route" + route.toString());
-			distList = distributorRepository.findByRouteIdAndIsUsed(route.getRouteId(), 1);
-			for (int i = 0; i < distList.size(); i++) {
-				GetOrderRoute getOrderRoute = new GetOrderRoute();
 
-				System.out.println("distList" + distList.toString());
+			DailyDistHeader dailyDistHeader = new DailyDistHeader();
+			dailyDistHeader = dailyDistHeaderRepo.findByRouteIdAndDate(routeAllocation.getRouteId(), currDate);
 
-				getOrderRoute = getOrderRouteRepo.getOrderRoutebyDistId(currDate, distList.get(i).getDistId());
+			if (dailyDistHeader != null)
 
-				System.out.println("getOrderRoute" + getOrderRoute.toString());
+			{
 
-				System.out.println("orderHeaderId" + getOrderRoute.getOrderHeaderId());
+				DailyDistDetail dailyDistDeatil = null;
+				dailyDistDeatil = dailyDistDetailRepo.findByHeaderId(dailyDistHeader.getHeaderId());
 
-				List<GetOrderDetail> orderDetailList = getOrderDetailRepo
-						.getOrderDetail(getOrderRoute.getOrderHeaderId());
-				getRoute.setMsg("Success");
-				getRoute.setError(false);
-				getOrderRoute.setGetOrderDetailList(orderDetailList);
-				getOrderRouteList.add(getOrderRoute);
-				getRoute.setRoute(route);
-				getRoute.setGetOrderList(getOrderRouteList);
-				getRoute.setMsg("Success");
+				System.out.println("dailyDistDeatil" + dailyDistDeatil.toString());
+
+				route = routeRepository.findByRouteIdAndIsUsed(routeAllocation.getRouteId(), 1);
+				System.out.println("route" + route.toString());
+				distList = distributorRepository.findByRouteIdAndIsUsed(route.getRouteId(), 1);
+				for (int i = 0; i < distList.size(); i++) {
+					GetOrderRoute getOrderRoute = new GetOrderRoute();
+
+					System.out.println("distList" + distList.toString());
+
+					getOrderRoute = getOrderRouteRepo.getOrderRoutebyDistId(currDate, distList.get(i).getDistId());
+
+					System.out.println("getOrderRoute" + getOrderRoute.toString());
+
+					System.out.println("orderHeaderId" + getOrderRoute.getOrderHeaderId());
+
+					List<GetOrderDetail> orderDetailList = getOrderDetailRepo
+							.getOrderDetail(getOrderRoute.getOrderHeaderId());
+					getRoute.setMsg("Success");
+					getRoute.setError(false);
+					getOrderRoute.setGetOrderDetailList(orderDetailList);
+					getOrderRouteList.add(getOrderRoute);
+					getRoute.setRoute(route);
+					getRoute.setGetOrderList(getOrderRouteList);
+					getRoute.setMsg("Success");
+				}
+
+				if (dailyDistDeatil != null) {
+
+					getRoute.setDetailId(dailyDistDeatil.getDetailId());
+
+				} else {
+
+				}
+			} else {
+				getRoute.setError(true);
+				getRoute.setMsg("Day Not Start");
 
 			}
 
