@@ -752,6 +752,16 @@ public class OrderApiController {
 
 				System.out.println("dailyDistDeatil" + dailyDistDeatil.toString());
 
+				if (dailyDistDeatil != null) {
+
+					getRoute.setDetailId(dailyDistDeatil.getDetailId());
+
+				}
+				getRoute.setDayEndTime("0000-00-00 00:00:00");
+				getRoute.setDayStartTime(currTime);
+				getRoute.setHeaderId(dailyDistHeader.getHeaderId());
+				getRoute.setSupervisorId(supervisorId);
+
 				route = routeRepository.findByRouteIdAndIsUsed(routeAllocation.getRouteId(), 1);
 				System.out.println("route" + route.toString());
 				distList = distributorRepository.findByRouteIdAndIsUsed(route.getRouteId(), 1);
@@ -776,16 +786,6 @@ public class OrderApiController {
 					getRoute.setGetOrderList(getOrderRouteList);
 					getRoute.setMsg("Success");
 				}
-
-				if (dailyDistDeatil != null) {
-
-					getRoute.setDetailId(dailyDistDeatil.getDetailId());
-
-				}
-				getRoute.setDayEndTime("0000-00-00 00:00:00");
-				getRoute.setDayStartTime(currTime);
-				getRoute.setHeaderId(dailyDistHeader.getHeaderId());
-				getRoute.setSupervisorId(supervisorId);
 
 			} else {
 				getRoute.setError(true);
@@ -872,8 +872,8 @@ public class OrderApiController {
 
 	}
 
-	@RequestMapping(value = { "/updateOrderByOrderQty" }, method = RequestMethod.POST)
-	public @ResponseBody ErrorMessage updateOrderByOrderQty(@RequestBody List<EditOrder> orderList) {
+	@RequestMapping(value = { "/updateOrderByHubQty" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage updateOrderByHubQty(@RequestBody List<EditOrder> orderList) {
 
 		ErrorMessage errorMessage = new ErrorMessage();
 
@@ -888,8 +888,8 @@ public class OrderApiController {
 				for (int i = 0; i < orderList.size(); i++) {
 
 					if (orderList.get(i).getOrderQty() >= 0) {
-						updateResult = orderDetailRepo.updateOrderQty(orderList.get(i).getOrderQty(),
-								orderList.get(i).getItemTotal(), orderList.get(i).getOrderDetailId());
+						updateResult = orderDetailRepo.updateHubQty(orderList.get(i).getHubQty(),
+								orderList.get(i).getMsQty(), orderList.get(i).getOrderDetailId());
 
 					}
 					if (updateResult > 0) {
@@ -901,25 +901,8 @@ public class OrderApiController {
 				}
 			}
 
-			float orderTotal = 0;
-
-			int ordHeaderId = orderList.get(0).getOrderHeaderId();
-
-			List<OrderDetail> detailList = orderDetailRepo.findByOrderHeaderId(ordHeaderId);
-
-			if (detailList.size() > 0) {
-
-				for (int i = 0; i < detailList.size(); i++) {
-
-					orderTotal = orderTotal + detailList.get(i).getItemTotal();
-
-				}
-			}
-
-			int updateOrdHeader = orderRepo.updateOrderTotal(orderTotal, ordHeaderId);
-
 		} catch (Exception e) {
-			System.err.println("Exception in update Order By MS " + e.getMessage());
+			System.err.println("Exception in update Order By Hub " + e.getMessage());
 
 			e.printStackTrace();
 			errorMessage.setError(true);

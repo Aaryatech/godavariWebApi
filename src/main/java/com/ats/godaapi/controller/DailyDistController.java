@@ -31,13 +31,13 @@ public class DailyDistController {
 	// -------------------DailyDistHeader------------------------
 
 	@RequestMapping(value = { "/saveDailyDistHeader" }, method = RequestMethod.POST)
-	public @ResponseBody DailyDistHeader saveDailyDistHeader(@RequestBody DailyDistHeader dailyDistHeader) {
+	public @ResponseBody List<DailyDistHeader> saveDailyDistHeader(@RequestBody List<DailyDistHeader> dailyDistHeader) {
 
-		DailyDistHeader res = new DailyDistHeader();
+		List<DailyDistHeader> res = new ArrayList<>();
 
 		try {
 
-			res = dailyDistHeaderRepo.saveAndFlush(dailyDistHeader);
+			res = dailyDistHeaderRepo.saveAll(dailyDistHeader);
 
 		} catch (Exception e) {
 
