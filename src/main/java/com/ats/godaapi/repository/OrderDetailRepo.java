@@ -33,8 +33,7 @@ public interface OrderDetailRepo extends JpaRepository<OrderDetail, Integer> {
 
 	@Transactional
 	@Modifying
-	@Query("UPDATE OrderDetail SET orderQty=:orderQty,itemTotal=:itemTotal WHERE orderDetailId=:orderDetailId ")
-	int updateOrderQty(@Param("orderQty") int orderQty, @Param("itemTotal") float itemTotal,
-			@Param("orderDetailId") int orderDetailId);
+	@Query("UPDATE OrderDetail SET hubQty=:hubQty,msQty=:msQty WHERE orderDetailId=:orderDetailId ")
+	int updateHubQty(@Param("hubQty") int hubQty, @Param("msQty") int msQty, @Param("orderDetailId") int orderDetailId);
 
 }
