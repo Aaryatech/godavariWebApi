@@ -689,9 +689,9 @@ public class OrderApiController {
 		RouteAllocation routeAllocation = new RouteAllocation();
 		Route route = new Route();
 		List<Distributor> distList = new ArrayList<>();
-		GetOrderRoute getOrderRoute = new GetOrderRoute();
+
 		List<GetOrderRoute> getOrderRouteList = new ArrayList<>();
-		List<GetRouteData> getRouteList = new ArrayList<>();
+
 		GetRouteData getRoute = new GetRouteData();
 
 		try {
@@ -702,28 +702,36 @@ public class OrderApiController {
 
 			routeAllocation = routeAllocationRepo.getRouteAllocation(currDate, supervisorId);
 			route = routeRepository.findByRouteIdAndIsUsed(routeAllocation.getRouteId(), 1);
-
+			System.out.println("route" + route.toString());
 			distList = distributorRepository.findByRouteIdAndIsUsed(route.getRouteId(), 1);
 			for (int i = 0; i < distList.size(); i++) {
-				getOrderRoute = new GetOrderRoute();
+				GetOrderRoute getOrderRoute = new GetOrderRoute();
 
-				getOrderRoute = getOrderRouteRepo.getOrderRoute(currDate, distList.get(i).getDistId());
+				System.out.println("distList" + distList.toString());
+
+				getOrderRoute = getOrderRouteRepo.getOrderRoutebyDistId(currDate, distList.get(i).getDistId());
+
+				System.out.println("getOrderRoute" + getOrderRoute.toString());
 
 				System.out.println("orderHeaderId" + getOrderRoute.getOrderHeaderId());
 
 				List<GetOrderDetail> orderDetailList = getOrderDetailRepo
 						.getOrderDetail(getOrderRoute.getOrderHeaderId());
-
+				getRoute.setMsg("Success");
+				getRoute.setError(false);
 				getOrderRoute.setGetOrderDetailList(orderDetailList);
 				getOrderRouteList.add(getOrderRoute);
 				getRoute.setRoute(route);
 				getRoute.setGetOrderList(getOrderRouteList);
+				getRoute.setMsg("Success");
 
 			}
 
 		} catch (Exception e) {
 
 			e.printStackTrace();
+			getRoute.setError(true);
+			getRoute.setMsg("failed");
 
 		}
 		return getRoute;

@@ -10,6 +10,11 @@ public class GetRouteData {
 
 	@Transient
 	List<GetOrderRoute> getOrderList;
+	
+	private boolean error;
+	private String msg;
+	
+	
 
 	public Route getRoute() {
 		return route;
@@ -17,6 +22,23 @@ public class GetRouteData {
 
 	public void setRoute(Route route) {
 		this.route = route;
+	}
+	
+
+	public boolean isError() {
+		return error;
+	}
+
+	public void setError(boolean error) {
+		this.error = error;
+	}
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
 	}
 
 	public List<GetOrderRoute> getGetOrderList() {
@@ -29,7 +51,8 @@ public class GetRouteData {
 
 	@Override
 	public String toString() {
-		return "GetRouteData [route=" + route + ", getOrderList=" + getOrderList + "]";
+		return "GetRouteData [route=" + route + ", getOrderList=" + getOrderList + ", error=" + error + ", msg=" + msg
+				+ "]";
 	}
 
 }
