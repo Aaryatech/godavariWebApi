@@ -413,7 +413,8 @@ public class TxApiController {
 
 						noti.setNotifiTo(dist.get(j).getDistId());
 						res = notifiRepo.saveAndFlush(noti);
-						Firebase.sendPushNotification(dist.get(j).getToken(), " Notification", "Message", 2);
+						// Firebase.sendPushNotification(dist.get(j).getToken(), " Notification",
+						// "Message", 2);
 					}
 				}
 			} else {
@@ -426,7 +427,7 @@ public class TxApiController {
 
 						noti.setNotifiTo(dist.get(j).getDistId());
 						res = notifiRepo.saveAndFlush(noti);
-						Firebase.sendPushNotification(dist.get(j).getToken(), " Notification", "Message", 2);
+						//Firebase.sendPushNotification(dist.get(j).getToken(), " Notification", "Message", 2);
 					}
 				}
 			}
