@@ -551,6 +551,22 @@ public class MasterApiController {
 
 	}
 
+	@RequestMapping(value = { "/getDistributorByRouteId" }, method = RequestMethod.POST)
+	public @ResponseBody List<Distributor> getDistributorByRouteId(@RequestParam("routeId") int routeId) {
+
+		List<Distributor> distList = new ArrayList<>();
+		try {
+			distList = distributorRepository.findByRouteIdAndIsUsed(routeId, 1);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return distList;
+
+	}
+
 	@RequestMapping(value = { "/getAllDistByIsUsed" }, method = RequestMethod.GET)
 	public @ResponseBody List<Distributor> getAllDistByIsUsed() {
 
