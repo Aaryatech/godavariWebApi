@@ -368,24 +368,26 @@ public class TxApiController {
 	@RequestMapping(value = { "/saveNotifiByRouteId" }, method = RequestMethod.POST)
 	public @ResponseBody Notification saveNotifiByRouteId(@RequestBody Notification noti,
 			@RequestParam("routeId") int routeId) {
-
+System.err.println("route ");
 		Notification res = new Notification();
 		List<Distributor> dist = new ArrayList<>();
 
 		try {
 
 			dist = distributorRepository.findByRouteIdAndIsUsed(routeId, 1);
-
-			if (res != null) {
+System.err.println("dist "+dist.toString());
+		
 
 				for (int j = 0; j < dist.size(); j++) {
 
 					noti.setNotifiTo(dist.get(j).getDistId());
 
 					res = notifiRepo.saveAndFlush(noti);
-					Firebase.sendPushNotification(dist.get(j).getToken(), " Notification", "Message", 2);
+					System.out.println("res" + res);
+					// Firebase.sendPushNotification(dist.get(j).getToken(), " Notification",
+					// "Message", 2);
 				}
-			}
+			
 
 		} catch (Exception e) {
 
@@ -398,6 +400,7 @@ public class TxApiController {
 	@RequestMapping(value = { "/saveNotifiByDistIdList" }, method = RequestMethod.POST)
 	public @ResponseBody Notification saveNotifiByDistIdList(@RequestBody Notification noti,
 			@RequestParam("distIdList") List<Integer> distIdList) {
+		System.err.println("saveNotifiByDistIdList ");
 
 		Notification res = new Notification();
 		List<Distributor> dist = new ArrayList<>();
@@ -405,7 +408,7 @@ public class TxApiController {
 		try {
 			if (distIdList.contains(0)) {
 
-				if (res != null) {
+				
 
 					dist = distributorRepository.findByIsUsed(1);
 
@@ -415,7 +418,7 @@ public class TxApiController {
 						res = notifiRepo.saveAndFlush(noti);
 						// Firebase.sendPushNotification(dist.get(j).getToken(), " Notification",
 						// "Message", 2);
-					}
+					
 				}
 			} else {
 
@@ -427,7 +430,8 @@ public class TxApiController {
 
 						noti.setNotifiTo(dist.get(j).getDistId());
 						res = notifiRepo.saveAndFlush(noti);
-						//Firebase.sendPushNotification(dist.get(j).getToken(), " Notification", "Message", 2);
+						// Firebase.sendPushNotification(dist.get(j).getToken(), " Notification",
+						// "Message", 2);
 					}
 				}
 			}
