@@ -551,6 +551,23 @@ public class TxApiController {
 
 	}
 
+	@RequestMapping(value = { "/getNotiByNotifiType" }, method = RequestMethod.POST)
+	public @ResponseBody List<Notification> getNotiByNotifiType(@RequestParam("notifiType") List<Integer> notifiType) {
+
+		List<Notification> notiList = new ArrayList<Notification>();
+
+		try {
+			notiList = notifiRepo.findByNotifiType(notifiType);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return notiList;
+
+	}
+
 	@RequestMapping(value = { "/getSettingHubName" }, method = RequestMethod.GET)
 	public @ResponseBody List<GetSetting> getSettingHubName() {
 

@@ -25,4 +25,7 @@ public interface NotifiRepo extends JpaRepository<Notification, Integer> {
 
 	List<Notification> findByNotifiTo(int notifiTo);
 
+	@Query(value = "SELECT * FROM t_notifications WHERE t_notifications.notifi_type IN(:notifiType)", nativeQuery = true)
+	List<Notification> findByNotifiType(@Param("notifiType") List<Integer> notifiType);
+
 }
