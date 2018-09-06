@@ -765,10 +765,11 @@ public class OrderApiController {
 					dailyDistDeatil.setHeaderId(dailyDistHeader.getHeaderId());
 					dailyDistDeatil.setSupervisorId(supervisorId);
 					dailyDistDeatil.setDayStartTime(currTime);
-					dailyDistDeatil.setDayEndTime("0000-00-00 00:00:00");
+					dailyDistDeatil.setDayEndTime(currTime);
 
 					DailyDistDetail res = dailyDistDetailRepo.saveAndFlush(dailyDistDeatil);
 					getRoute.setDetailId(res.getDetailId());
+				
 				}
 
 				route = routeRepository.findByRouteIdAndIsUsed(routeAllocation.getRouteId(), 1);
