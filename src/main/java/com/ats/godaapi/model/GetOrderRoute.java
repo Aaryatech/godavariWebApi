@@ -57,7 +57,7 @@ public class GetOrderRoute {
 	private int isUsed;
 
 	@Transient
-	List<GetOrderDetail> getOrderDetailList;
+	List<GetOrderDetailForSupervisor> getOrderDetailList;
 
 	public int getOrderHeaderId() {
 		return orderHeaderId;
@@ -211,13 +211,7 @@ public class GetOrderRoute {
 		this.orderStatus = orderStatus;
 	}
 
-	public List<GetOrderDetail> getGetOrderDetailList() {
-		return getOrderDetailList;
-	}
-
-	public void setGetOrderDetailList(List<GetOrderDetail> getOrderDetailList) {
-		this.getOrderDetailList = getOrderDetailList;
-	}
+	
 
 	public String getDistEngName() {
 		return distEngName;
@@ -353,6 +347,15 @@ public class GetOrderRoute {
 
 	public void setIsUsed(int isUsed) {
 		this.isUsed = isUsed;
+	}
+	
+	
+	public List<GetOrderDetailForSupervisor> getGetOrderDetailList() {
+		return getOrderDetailList;
+	}
+
+	public void setGetOrderDetailList(List<GetOrderDetailForSupervisor> getOrderDetailList) {
+		this.getOrderDetailList = getOrderDetailList;
 	}
 
 	@Override

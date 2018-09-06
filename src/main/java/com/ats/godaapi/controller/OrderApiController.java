@@ -32,6 +32,7 @@ import com.ats.godaapi.model.GetCatItemList;
 import com.ats.godaapi.model.GetItem;
 import com.ats.godaapi.model.GetOrder;
 import com.ats.godaapi.model.GetOrderDetail;
+import com.ats.godaapi.model.GetOrderDetailForSupervisor;
 import com.ats.godaapi.model.GetOrderHeader;
 import com.ats.godaapi.model.GetOrderRoute;
 import com.ats.godaapi.model.GetRouteData;
@@ -51,6 +52,7 @@ import com.ats.godaapi.repository.DistributorRepository;
 import com.ats.godaapi.repository.GetAllItemsForRegOrderRepo;
 import com.ats.godaapi.repository.GetItemRepo;
 import com.ats.godaapi.repository.GetOrderDetailRepo;
+import com.ats.godaapi.repository.GetOrderDetailWithCatRepository;
 import com.ats.godaapi.repository.GetOrderRepo;
 import com.ats.godaapi.repository.GetOrderRouteRepo;
 import com.ats.godaapi.repository.HubUserRepo;
@@ -122,6 +124,10 @@ public class OrderApiController {
 
 	@Autowired
 	GetOrderRouteRepo getOrderRouteRepo;
+	
+	
+	@Autowired
+	GetOrderDetailWithCatRepository  detailWithCatRepository;
 
 	@RequestMapping(value = { "/saveOrderHeaderDetail" }, method = RequestMethod.POST)
 	public @ResponseBody ErrorMessage saveOrderHeaderDetail(@RequestBody Order order) {
@@ -747,20 +753,23 @@ public class OrderApiController {
 
 			{
 
-				DailyDistDetail dailyDistDeatil = null;
-				dailyDistDeatil = dailyDistDetailRepo.findByHeaderId(dailyDistHeader.getHeaderId());
-
-				System.out.println("dailyDistDeatil" + dailyDistDeatil.toString());
+				DailyDistDetail dailyDistDeatil = dailyDistDetailRepo.findByHeaderId(dailyDistHeader.getHeaderId());
 
 				if (dailyDistDeatil != null) {
 
 					getRoute.setDetailId(dailyDistDeatil.getDetailId());
 
+				} else {
+
+					dailyDistDeatil = new DailyDistDetail();
+					dailyDistDeatil.setHeaderId(dailyDistHeader.getHeaderId());
+					dailyDistDeatil.setSupervisorId(supervisorId);
+					dailyDistDeatil.setDayStartTime(currTime);
+					dailyDistDeatil.setDayEndTime("0000-00-00 00:00:00");
+
+					DailyDistDetail res = dailyDistDetailRepo.saveAndFlush(dailyDistDeatil);
+					getRoute.setDetailId(res.getDetailId());
 				}
-				getRoute.setDayEndTime("0000-00-00 00:00:00");
-				getRoute.setDayStartTime(currTime);
-				getRoute.setHeaderId(dailyDistHeader.getHeaderId());
-				getRoute.setSupervisorId(supervisorId);
 
 				route = routeRepository.findByRouteIdAndIsUsed(routeAllocation.getRouteId(), 1);
 				System.out.println("route" + route.toString());
@@ -769,38 +778,34 @@ public class OrderApiController {
 					GetOrderRoute getOrderRoute = new GetOrderRoute();
 
 					System.out.println("distList------------------ " + distList.get(i).getDistId());
-					
+
 					getOrderRoute = getOrderRouteRepo.getOrderRoutebyDistId(currDate, distList.get(i).getDistId());
-					
-					if(getOrderRoute!=null) {
-						
+
+					if (getOrderRoute != null) {
+
 						System.out.println("getOrderRoute" + getOrderRoute.toString());
 
 						System.out.println("orderHeaderId" + getOrderRoute.getOrderHeaderId());
 
-						List<GetOrderDetail> orderDetailList = getOrderDetailRepo
+						List<GetOrderDetailForSupervisor> orderDetailList = detailWithCatRepository
 								.getOrderDetail(getOrderRoute.getOrderHeaderId());
-						
+
 						getOrderRoute.setGetOrderDetailList(orderDetailList);
 						getOrderRouteList.add(getOrderRoute);
-						 
-						
-						
+
 					}
 
-					
-					
 					getRoute.setMsg("Success");
 					getRoute.setError(false);
-					
+
 					getRoute.setRoute(route);
 					getRoute.setGetOrderList(getOrderRouteList);
-					getRoute.setMsg("Success");
+
 				}
 
 			} else {
 				getRoute.setError(true);
-				getRoute.setMsg("Day Not Start");
+				getRoute.setMsg("Day Not Started.");
 
 			}
 
