@@ -1,6 +1,7 @@
 package com.ats.godaapi.controller;
 
 import java.text.DateFormat;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,11 +30,11 @@ import com.ats.godaapi.model.ErrorMessage;
 import com.ats.godaapi.model.GetAllCatwiseItemResp;
 import com.ats.godaapi.model.GetAllItemsForRegOrder;
 import com.ats.godaapi.model.GetCatItemList;
-import com.ats.godaapi.model.GetItem;
 import com.ats.godaapi.model.GetOrder;
 import com.ats.godaapi.model.GetOrderDetail;
 import com.ats.godaapi.model.GetOrderDetailForSupervisor;
 import com.ats.godaapi.model.GetOrderHeader;
+import com.ats.godaapi.model.GetOrderHub;
 import com.ats.godaapi.model.GetOrderRoute;
 import com.ats.godaapi.model.GetRouteData;
 import com.ats.godaapi.model.HubUser;
@@ -53,6 +54,7 @@ import com.ats.godaapi.repository.GetAllItemsForRegOrderRepo;
 import com.ats.godaapi.repository.GetItemRepo;
 import com.ats.godaapi.repository.GetOrderDetailRepo;
 import com.ats.godaapi.repository.GetOrderDetailWithCatRepository;
+import com.ats.godaapi.repository.GetOrderHubRepo;
 import com.ats.godaapi.repository.GetOrderRepo;
 import com.ats.godaapi.repository.GetOrderRouteRepo;
 import com.ats.godaapi.repository.HubUserRepo;
@@ -67,6 +69,9 @@ import com.ats.godaapi.repository.SettingRepo;
 
 @RestController
 public class OrderApiController {
+
+	@Autowired
+	GetOrderHubRepo getOrderHubRepo;
 
 	@Autowired
 	HubUserRepo hubUserRepo;
@@ -124,10 +129,9 @@ public class OrderApiController {
 
 	@Autowired
 	GetOrderRouteRepo getOrderRouteRepo;
-	
-	
+
 	@Autowired
-	GetOrderDetailWithCatRepository  detailWithCatRepository;
+	GetOrderDetailWithCatRepository detailWithCatRepository;
 
 	@RequestMapping(value = { "/saveOrderHeaderDetail" }, method = RequestMethod.POST)
 	public @ResponseBody ErrorMessage saveOrderHeaderDetail(@RequestBody Order order) {
@@ -636,9 +640,9 @@ public class OrderApiController {
 	}
 
 	@RequestMapping(value = { "/getOrderByTypeAndStatus" }, method = RequestMethod.GET)
-	public @ResponseBody List<GetOrder> getOrderByTypeAndStatus() {
+	public @ResponseBody List<GetOrderHub> getOrderByTypeAndStatus() {
 
-		List<GetOrder> orderHeaderList = new ArrayList<GetOrder>();
+		List<GetOrderHub> orderHeaderList = new ArrayList<GetOrderHub>();
 
 		try {
 
@@ -646,7 +650,7 @@ public class OrderApiController {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			String currDate = sdf.format(now.getTime());
 
-			orderHeaderList = getOrderRepo.getOrder(currDate);
+			orderHeaderList = getOrderHubRepo.getOrderHub(currDate);
 
 		} catch (Exception e) {
 
@@ -705,13 +709,13 @@ public class OrderApiController {
 	}
 
 	@RequestMapping(value = { "/getOrderByOrderHeaderId" }, method = RequestMethod.POST)
-	public @ResponseBody GetOrder getOrderByOrderHeaderId(@RequestParam("orderHeaderId") int orderHeaderId) {
+	public @ResponseBody GetOrderHub getOrderByOrderHeaderId(@RequestParam("orderHeaderId") int orderHeaderId) {
 
-		GetOrder getOrder = new GetOrder();
+		GetOrderHub getOrder = new GetOrderHub();
 
 		try {
 
-			getOrder = getOrderRepo.getOrderByOrderHeaderid(orderHeaderId);
+			getOrder = getOrderHubRepo.getOrderByOrderHeaderId(orderHeaderId);
 			List<GetOrderDetail> orderDetailList = getOrderDetailRepo.getOrderDetail(orderHeaderId);
 			getOrder.setGetOrderDetailList(orderDetailList);
 
@@ -769,7 +773,7 @@ public class OrderApiController {
 
 					DailyDistDetail res = dailyDistDetailRepo.saveAndFlush(dailyDistDeatil);
 					getRoute.setDetailId(res.getDetailId());
-				
+
 				}
 
 				route = routeRepository.findByRouteIdAndIsUsed(routeAllocation.getRouteId(), 1);
@@ -906,7 +910,8 @@ public class OrderApiController {
 
 					if (orderList.get(i).getOrderQty() >= 0) {
 						updateResult = orderDetailRepo.updateHubQty(orderList.get(i).getHubQty(),
-								orderList.get(i).getMsQty(), orderList.get(i).getOrderDetailId());
+								orderList.get(i).getMsQty(), orderList.get(i).getItemTotal(),
+								orderList.get(i).getOrderDetailId());
 
 					}
 					if (updateResult > 0) {
@@ -917,6 +922,23 @@ public class OrderApiController {
 					}
 				}
 			}
+
+			float orderTotal = 0;
+
+			int ordHeaderId = orderList.get(0).getOrderHeaderId();
+
+			List<OrderDetail> detailList = orderDetailRepo.findByOrderHeaderId(ordHeaderId);
+
+			if (detailList.size() > 0) {
+
+				for (int i = 0; i < detailList.size(); i++) {
+
+					orderTotal = orderTotal + detailList.get(i).getItemTotal();
+
+				}
+			}
+
+			int updateOrdHeader = orderRepo.updateOrderTotal(orderTotal, ordHeaderId);
 
 		} catch (Exception e) {
 			System.err.println("Exception in update Order By Hub " + e.getMessage());

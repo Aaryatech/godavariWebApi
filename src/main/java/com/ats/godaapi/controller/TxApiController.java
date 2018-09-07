@@ -12,10 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ats.godaapi.common.Firebase;
 import com.ats.godaapi.model.Config;
 import com.ats.godaapi.model.Distributor;
 import com.ats.godaapi.model.ErrorMessage;
+import com.ats.godaapi.model.GetNotification;
+import com.ats.godaapi.model.GetNotificationRoute;
 import com.ats.godaapi.model.GetSetting;
 import com.ats.godaapi.model.Notification;
 import com.ats.godaapi.model.RouteAllocation;
@@ -368,26 +369,99 @@ public class TxApiController {
 	@RequestMapping(value = { "/saveNotifiByRouteId" }, method = RequestMethod.POST)
 	public @ResponseBody Notification saveNotifiByRouteId(@RequestBody Notification noti,
 			@RequestParam("routeId") int routeId) {
-System.err.println("route ");
+		System.err.println("route ");
 		Notification res = new Notification();
 		List<Distributor> dist = new ArrayList<>();
 
 		try {
 
 			dist = distributorRepository.findByRouteIdAndIsUsed(routeId, 1);
-System.err.println("dist "+dist.toString());
-		
+			System.err.println("dist " + dist.toString());
+
+			for (int j = 0; j < dist.size(); j++) {
+
+				noti.setNotifiTo(dist.get(j).getDistId());
+
+				res = notifiRepo.saveAndFlush(noti);
+				System.out.println("res" + res);
+				// Firebase.sendPushNotification(dist.get(j).getToken(), " Notification",
+				// "Message", 2);
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return res;
+	}
+
+	@RequestMapping(value = { "/saveNotificationByRouteId" }, method = RequestMethod.POST)
+	public @ResponseBody GetNotificationRoute saveNotificationByRouteId(@RequestBody GetNotificationRoute noti) {
+
+		Notification res = new Notification();
+		List<Distributor> dist = new ArrayList<>();
+
+		try {
+
+			dist = distributorRepository.findByRouteIdAndIsUsed(noti.getRouteId(), 1);
+			System.err.println("dist " + dist.toString());
+
+			for (int j = 0; j < dist.size(); j++) {
+
+				System.out.println("size" + dist.size());
+
+				res.setNotifiTo(dist.get(j).getRouteId());
+
+				res = notifiRepo.saveAndFlush(noti.getNotification());
+				System.out.println("res------------------===" + res.toString());
+
+				// Firebase.sendPushNotification(dist.get(j).getToken(), " Notification",
+				// "Message", 2);
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return noti;
+	}
+
+	@RequestMapping(value = { "/saveNotiByDistIdList" }, method = RequestMethod.POST)
+	public @ResponseBody Notification saveNotiByDistIdList(@RequestBody GetNotification noti) {
+		System.err.println("saveNotifiByDistIdList ");
+
+		Notification res = new Notification();
+		List<Distributor> dist = new ArrayList<>();
+
+		try {
+
+			if (noti.getDistIdList().contains(0)) {
+
+				dist = distributorRepository.findByIsUsed(1);
+				System.out.println("dist" + dist.toString());
 
 				for (int j = 0; j < dist.size(); j++) {
+					res.setNotifiTo(dist.get(j).getDistId());
 
-					noti.setNotifiTo(dist.get(j).getDistId());
+					res = notifiRepo.saveAndFlush(noti.getNotification());
 
-					res = notifiRepo.saveAndFlush(noti);
-					System.out.println("res" + res);
-					// Firebase.sendPushNotification(dist.get(j).getToken(), " Notification",
-					// "Message", 2);
+					System.out.println("res---------------------" + res);
+
 				}
-			
+			} else {
+
+				dist = distributorRepository.getDistListById(noti.getDistIdList());
+
+				for (int j = 0; j < dist.size(); j++) {
+					res.setNotifiTo(dist.get(j).getDistId());
+
+					res = notifiRepo.saveAndFlush(noti.getNotification());
+					System.out.println("res---------------------" + res);
+
+				}
+			}
 
 		} catch (Exception e) {
 
@@ -408,17 +482,15 @@ System.err.println("dist "+dist.toString());
 		try {
 			if (distIdList.contains(0)) {
 
-				
+				dist = distributorRepository.findByIsUsed(1);
 
-					dist = distributorRepository.findByIsUsed(1);
+				for (int j = 0; j < dist.size(); j++) {
 
-					for (int j = 0; j < dist.size(); j++) {
+					noti.setNotifiTo(dist.get(j).getDistId());
+					res = notifiRepo.saveAndFlush(noti);
+					// Firebase.sendPushNotification(dist.get(j).getToken(), " Notification",
+					// "Message", 2);
 
-						noti.setNotifiTo(dist.get(j).getDistId());
-						res = notifiRepo.saveAndFlush(noti);
-						// Firebase.sendPushNotification(dist.get(j).getToken(), " Notification",
-						// "Message", 2);
-					
 				}
 			} else {
 
