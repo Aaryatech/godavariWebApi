@@ -25,4 +25,9 @@ public interface OrderRepo extends JpaRepository<Order, Integer> {
 	@Modifying
 	@Query("UPDATE Order SET orderTotal=:orderTotal WHERE orderHeaderId=:orderHeaderId ")
 	int updateOrderTotal(@Param("orderTotal") float orderTotal,@Param("orderHeaderId") int orderHeaderId);
+	
+	@Transactional
+	@Modifying
+	@Query("UPDATE Order SET orderStatus=:orderStatus WHERE orderHeaderId IN (:orderHeaderIdList)")
+	int updateOrderHeadStatus(@Param("orderStatus") int orderStatus,@Param("orderHeaderIdList") List<Integer> orderHeaderIdList);
 }

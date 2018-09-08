@@ -17,6 +17,7 @@ import com.ats.godaapi.model.Distributor;
 import com.ats.godaapi.model.Driver;
 import com.ats.godaapi.model.ErrorMessage;
 import com.ats.godaapi.model.GetItemName;
+import com.ats.godaapi.model.GetOrder;
 import com.ats.godaapi.model.GetRoute;
 import com.ats.godaapi.model.Hub;
 import com.ats.godaapi.model.HubUser;
@@ -44,13 +45,18 @@ import com.ats.godaapi.repository.HubUserRepo;
 import com.ats.godaapi.repository.ItemHsnRepo;
 import com.ats.godaapi.repository.ItemRepo;
 import com.ats.godaapi.repository.MahasnaghUserRepo;
+import com.ats.godaapi.repository.OrderRepo;
 import com.ats.godaapi.repository.RouteRepository;
 import com.ats.godaapi.repository.RouteSupRepo;
 import com.ats.godaapi.repository.UomRepo;
 import com.ats.godaapi.repository.VehicleRepo;
+import com.sun.org.apache.xalan.internal.xsltc.cmdline.getopt.GetOpt;
 
 @RestController
 public class MasterApiController {
+
+	@Autowired
+	OrderRepo orderRepo;
 
 	@Autowired
 	HubRepository hubRepository;
@@ -1503,6 +1509,41 @@ public class MasterApiController {
 			e.printStackTrace();
 
 		}
+		return errorMessage;
+	}
+
+	// Sachin Update Order Header Status for Production
+	// updateOrderStatus
+
+	@RequestMapping(value = { "/updateOrderStatus" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage updateOrderStatusMethod(
+			@RequestParam("orderHeaderList") List<Integer> orderHeaderList,
+			@RequestParam("orderStatus") int orderStatus) {
+		
+		ErrorMessage errorMessage = new ErrorMessage();
+		
+		int res;
+		
+		try {
+
+			res = orderRepo.updateOrderHeadStatus(orderStatus, orderHeaderList);
+
+			if (res > 0) {
+				
+				errorMessage.setError(false);
+				errorMessage.setMessage("success Update Order Header");
+				
+			}
+			
+
+		} catch (Exception e) {
+			
+			System.err.println("exc in update order " + e.getMessage());
+			e.printStackTrace();
+			errorMessage.setError(true);
+
+		}
+
 		return errorMessage;
 	}
 
