@@ -440,6 +440,7 @@ public class TxApiController {
 			if (noti.getDistIdList().contains(0)) {
 
 				dist = distributorRepository.findByIsUsed(1);
+				
 				System.out.println("dist" + dist.toString());
 
 				for (int j = 0; j < dist.size(); j++) {
@@ -453,12 +454,13 @@ public class TxApiController {
 			} else {
 
 				dist = distributorRepository.getDistListById(noti.getDistIdList());
+				System.out.println("dist in else " + dist.toString());
 
 				for (int j = 0; j < dist.size(); j++) {
 					res.setNotifiTo(dist.get(j).getDistId());
 
 					res = notifiRepo.saveAndFlush(noti.getNotification());
-					System.out.println("res---------------------" + res);
+					System.out.println("res in else ---------------------" + res);
 
 				}
 			}
