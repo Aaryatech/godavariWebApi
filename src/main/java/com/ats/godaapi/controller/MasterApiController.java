@@ -1,6 +1,7 @@
 package com.ats.godaapi.controller;
 
 import java.util.ArrayList;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,6 @@ import com.ats.godaapi.repository.RouteRepository;
 import com.ats.godaapi.repository.RouteSupRepo;
 import com.ats.godaapi.repository.UomRepo;
 import com.ats.godaapi.repository.VehicleRepo;
-import com.sun.org.apache.xalan.internal.xsltc.cmdline.getopt.GetOpt;
 
 @RestController
 public class MasterApiController {

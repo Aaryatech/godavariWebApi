@@ -898,47 +898,66 @@ public class OrderApiController {
 
 		ErrorMessage errorMessage = new ErrorMessage();
 
-		int updateResult = 0;
+		List<Setting> setList = new ArrayList<Setting>();
 
 		try {
-			errorMessage.setError(true);
-			errorMessage.setMessage("Update Failed");
 
-			if (orderList.size() > 0) {
+			DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");
+			Date date = new Date();
+			String time = dateFormat.format(date);
+			System.out.println(time);
 
-				for (int i = 0; i < orderList.size(); i++) {
+			Calendar calobj = Calendar.getInstance();
+			System.out.println(calobj.getTime());
 
-					if (orderList.get(i).getOrderQty() >= 0) {
-						updateResult = orderDetailRepo.updateHubQty(orderList.get(i).getHubQty(),
-								orderList.get(i).getMsQty(), orderList.get(i).getItemTotal(),
-								orderList.get(i).getOrderDetailId());
+			setList = settingRepo.getTimeForHub(time);
+			System.out.println("SetList" + setList.toString());
+			if (!setList.isEmpty()) {
 
+				int updateResult = 0;
+
+				errorMessage.setError(true);
+				errorMessage.setMessage("Update Failed");
+
+				if (orderList.size() > 0) {
+
+					for (int i = 0; i < orderList.size(); i++) {
+
+						if (orderList.get(i).getOrderQty() >= 0) {
+							updateResult = orderDetailRepo.updateHubQty(orderList.get(i).getHubQty(),
+									orderList.get(i).getMsQty(), orderList.get(i).getItemTotal(),
+									orderList.get(i).getOrderDetailId());
+
+						}
+						if (updateResult > 0) {
+
+							errorMessage.setError(false);
+							errorMessage.setMessage("Update Success");
+
+						}
 					}
-					if (updateResult > 0) {
+				}
 
-						errorMessage.setError(false);
-						errorMessage.setMessage("Update Success");
+				float orderTotal = 0;
+
+				int ordHeaderId = orderList.get(0).getOrderHeaderId();
+
+				List<OrderDetail> detailList = orderDetailRepo.findByOrderHeaderId(ordHeaderId);
+
+				if (detailList.size() > 0) {
+
+					for (int i = 0; i < detailList.size(); i++) {
+
+						orderTotal = orderTotal + detailList.get(i).getItemTotal();
 
 					}
 				}
+
+				int updateOrdHeader = orderRepo.updateOrderTotal(orderTotal, ordHeaderId);
+			} else {
+				errorMessage.setMessage("Time not Match");
+
 			}
-
-			float orderTotal = 0;
-
-			int ordHeaderId = orderList.get(0).getOrderHeaderId();
-
-			List<OrderDetail> detailList = orderDetailRepo.findByOrderHeaderId(ordHeaderId);
-
-			if (detailList.size() > 0) {
-
-				for (int i = 0; i < detailList.size(); i++) {
-
-					orderTotal = orderTotal + detailList.get(i).getItemTotal();
-
-				}
-			}
-
-			int updateOrdHeader = orderRepo.updateOrderTotal(orderTotal, ordHeaderId);
 
 		} catch (Exception e) {
 			System.err.println("Exception in update Order By Hub " + e.getMessage());
