@@ -661,6 +661,28 @@ public class OrderApiController {
 
 	}
 
+	@RequestMapping(value = { "/getOrderByStatus" }, method = RequestMethod.GET)
+	public @ResponseBody List<GetOrderHub> getOrderByStatus() {
+
+		List<GetOrderHub> orderHeaderList = new ArrayList<GetOrderHub>();
+
+		try {
+
+			Date now = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			String currDate = sdf.format(now.getTime());
+
+			orderHeaderList = getOrderHubRepo.getOrderHubByStatus(currDate);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return orderHeaderList;
+
+	}
+
 	// getOrderByHubIdStausAndType
 	@RequestMapping(value = { "/getOrderByHubIdStausAndType" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetOrder> getOrderByHubIdStausAndType(@RequestParam("orderType") List<Integer> orderType,

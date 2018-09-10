@@ -33,4 +33,6 @@ public interface RouteSupRepo extends JpaRepository<RouteSup, Integer> {
 			+ " t_route_allocation.from_date AND t_route_allocation.to_date  ) AND v.is_used=1", nativeQuery = true)
 	List<RouteSup> getSupBetDate(@Param("fromDate") String fromDate, @Param("toDate") String toDate);
 
+	RouteSup findBySupContactNoAndIsUsed(String supContactNo, int i);
+
 }

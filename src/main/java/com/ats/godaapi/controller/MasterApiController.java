@@ -18,7 +18,6 @@ import com.ats.godaapi.model.Distributor;
 import com.ats.godaapi.model.Driver;
 import com.ats.godaapi.model.ErrorMessage;
 import com.ats.godaapi.model.GetItemName;
-import com.ats.godaapi.model.GetOrder;
 import com.ats.godaapi.model.GetRoute;
 import com.ats.godaapi.model.Hub;
 import com.ats.godaapi.model.HubUser;
@@ -1502,6 +1501,35 @@ public class MasterApiController {
 			if (res == null) {
 
 				res = mahasnaghUserRepo.saveAndFlush(mahasnaghUser);
+				errorMessage.setError(false);
+				errorMessage.setMessage("Save Successfully");
+
+			} else {
+				errorMessage.setError(true);
+				errorMessage.setMessage("Mobile No Already Exist");
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return errorMessage;
+	}
+
+	// -------------Add new Route Supervisor==Route Supervisor -------------
+
+	@RequestMapping(value = { "/saveRouteSuperVisorExisting" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage saveRouteSuperVisorExisting(@RequestBody RouteSup routeSup) {
+		ErrorMessage errorMessage = new ErrorMessage();
+		RouteSup res = new RouteSup();
+
+		res = routeSupRepo.findBySupContactNoAndIsUsed(routeSup.getSupContactNo(), 1);
+		try {
+
+			if (res == null) {
+
+				res = routeSupRepo.saveAndFlush(routeSup);
 				errorMessage.setError(false);
 				errorMessage.setMessage("Save Successfully");
 
