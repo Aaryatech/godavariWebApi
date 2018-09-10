@@ -175,8 +175,28 @@ public class TxApiController {
 		try {
 
 			for (int i = 0; i < settingList.size(); i++) {
+				
+				int isDailyExist=0;
+
+				List<Config> configList = configRepo.getItemConfig(settingList.get(i).getHubId());
+				
+				for(int j=0;j<configList.size();j++) {
+					
+					if(configList.get(j).getConfigType()==3) {
+						
+						isDailyExist=1;
+						System.err.println("is daily exist =1 don't call insert");
+						
+						break;
+					}
+					
+					
+				}
+				if(isDailyExist==0) {
+					System.err.println("is daily exist =0 Call Insert ->saveSettingList");
 
 				Setting res = settingRepo.save(settingList.get(i));
+				}
 			}
 			errorMessage.setError(false);
 			errorMessage.setMessage("successfully Saved ");
