@@ -1072,20 +1072,24 @@ public class MasterApiController {
 	// -------------------MahasnaghUser----------------------------------
 
 	@RequestMapping(value = { "/saveMahasnaghUser" }, method = RequestMethod.POST)
-	public @ResponseBody MahasanghUser saveMahasnaghUser(@RequestBody MahasanghUser mahasnaghUser) {
-
+	public @ResponseBody ErrorMessage saveMahasnaghUser(@RequestBody MahasanghUser mahasnaghUser) {
+		ErrorMessage errorMessage = new ErrorMessage();
 		MahasanghUser res = new MahasanghUser();
 
 		try {
 
 			res = mahasnaghUserRepo.saveAndFlush(mahasnaghUser);
+			errorMessage.setError(false);
+			errorMessage.setMessage("Save Successfully");
 
 		} catch (Exception e) {
 
 			e.printStackTrace();
+			errorMessage.setError(true);
+			errorMessage.setMessage("Save Failed");
 
 		}
-		return res;
+		return errorMessage;
 	}
 
 	@RequestMapping(value = { "/getAllMSByIsUsed" }, method = RequestMethod.GET)
@@ -1519,24 +1523,24 @@ public class MasterApiController {
 	public @ResponseBody ErrorMessage updateOrderStatusMethod(
 			@RequestParam("orderHeaderList") List<Integer> orderHeaderList,
 			@RequestParam("orderStatus") int orderStatus) {
-		
+
 		ErrorMessage errorMessage = new ErrorMessage();
-		
+
 		int res;
-		
+
 		try {
 
 			res = orderRepo.updateOrderHeadStatus(orderStatus, orderHeaderList);
 
 			if (res > 0) {
-				
+
 				errorMessage.setError(false);
 				errorMessage.setMessage("success Update Order Header");
-				
+
 			}
-			
+
 		} catch (Exception e) {
-			
+
 			System.err.println("exc in update order " + e.getMessage());
 			e.printStackTrace();
 			errorMessage.setError(true);
@@ -1545,40 +1549,5 @@ public class MasterApiController {
 
 		return errorMessage;
 	}
-
-	/*
-	 * @RequestMapping(value = { "/getAllCatwiseItemListByCatId" }, method =
-	 * RequestMethod.POST) public @ResponseBody List<GetCatItemList>
-	 * getAllCatwiseItemListByCatId(@RequestParam("catId") int catId) {
-	 * 
-	 * Category cat = new Category(); List<GetCatItemList> catItemList = new
-	 * ArrayList<GetCatItemList>();
-	 * 
-	 * try {
-	 * 
-	 * Date now = new Date(); SimpleDateFormat sdf = new
-	 * SimpleDateFormat("yyyy-MM-dd"); String currDate = sdf.format(now.getTime());
-	 * 
-	 * cat = categoryRepo.findByCatIdAndIsUsed(catId, 1);
-	 * 
-	 * GetCatItemList catItem = new GetCatItemList();
-	 * catItem.setCatEngName(cat.getCatEngName()); catItem.setCatId(cat.getCatId());
-	 * catItem.setCatMarName(cat.getCatMarName());
-	 * catItem.setCatPic(cat.getCatPic()); catItem.setIsUsed(cat.getIsUsed());
-	 * 
-	 * List<GetItem> itemList = getItemRepo.getData(cat.getCatId(), currDate);
-	 * 
-	 * catItem.setAllItemList(itemList);
-	 * 
-	 * catItemList.add(catItem);
-	 * 
-	 * } catch (Exception e) {
-	 * 
-	 * e.printStackTrace();
-	 * 
-	 * } return catItemList;
-	 * 
-	 * }
-	 */
 
 }
