@@ -392,7 +392,7 @@ public class OrderApiController {
 
 		try {
 
-			DateFormat dateFormat = new SimpleDateFormat("hh:mm:a");
+			DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 			Date date = new Date();
 			String time = dateFormat.format(date);
 			System.out.println(time);
