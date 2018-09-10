@@ -1445,9 +1445,11 @@ public class MasterApiController {
 			if (res == null) {
 
 				res = hubUserRepo.saveAndFlush(hubUser);
+				errorMessage.setError(false);
 				errorMessage.setMessage("Save Successfully");
 
 			} else {
+				errorMessage.setError(true);
 				errorMessage.setMessage("Mobile No Already Exist");
 			}
 
@@ -1517,6 +1519,31 @@ public class MasterApiController {
 		return errorMessage;
 	}
 
+	@RequestMapping(value = { "/saveDistributorExisting" }, method = RequestMethod.POST)
+	public @ResponseBody ErrorMessage saveDistributorExisting(@RequestBody Distributor distributor) {
+		ErrorMessage errorMessage = new ErrorMessage();
+		Distributor res = new Distributor();
+		res = distributorRepository.findByDistContactNoAndIsUsed(distributor.getDistContactNo(), 1);
+		try {
+
+			if (res == null) {
+
+				res = distributorRepository.saveAndFlush(distributor);
+				errorMessage.setError(false);
+				errorMessage.setMessage("Save Successfully");
+
+			} else {
+				errorMessage.setError(true);
+				errorMessage.setMessage("Mobile No Already Exist");
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return errorMessage;
+	}
 	// -------------Add new Route Supervisor==Route Supervisor -------------
 
 	@RequestMapping(value = { "/saveRouteSuperVisorExisting" }, method = RequestMethod.POST)
