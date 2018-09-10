@@ -1502,9 +1502,11 @@ public class MasterApiController {
 			if (res == null) {
 
 				res = mahasnaghUserRepo.saveAndFlush(mahasnaghUser);
+				errorMessage.setError(false);
 				errorMessage.setMessage("Save Successfully");
 
 			} else {
+				errorMessage.setError(true);
 				errorMessage.setMessage("Mobile No Already Exist");
 			}
 
