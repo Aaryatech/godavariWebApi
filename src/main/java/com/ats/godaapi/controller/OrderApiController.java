@@ -685,16 +685,16 @@ public class OrderApiController {
 
 	// getOrderByHubIdStausAndType
 	@RequestMapping(value = { "/getOrderByHubIdStausAndType" }, method = RequestMethod.POST)
-	public @ResponseBody List<GetOrder> getOrderByHubIdStausAndType(@RequestParam("orderType") List<Integer> orderType,
-			@RequestParam("orderStatus") int orderStatus, @RequestParam("hubId") int hubId,
-			@RequestParam("date") String date) {
+	public @ResponseBody List<GetOrderHub> getOrderByHubIdStausAndType(
+			@RequestParam("orderType") List<Integer> orderType, @RequestParam("orderStatus") int orderStatus,
+			@RequestParam("hubId") int hubId, @RequestParam("date") String date) {
 
-		List<GetOrder> orderHeaderList = new ArrayList<GetOrder>();
+		List<GetOrderHub> orderHeaderList = new ArrayList<GetOrderHub>();
 
 		try {
 			System.err.println("Order Date  " + date);
 
-			orderHeaderList = getOrderRepo.getOrderByHubIdStausAndType(date, orderType, orderStatus, hubId);
+			orderHeaderList = getOrderHubRepo.getOrderHubByHubIdStausAndType(date, orderType, orderStatus, hubId);
 
 		} catch (Exception e) {
 
@@ -924,7 +924,7 @@ public class OrderApiController {
 
 		try {
 
-			DateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");
+			DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 			Date date = new Date();
 			String time = dateFormat.format(date);
 			System.out.println(time);
