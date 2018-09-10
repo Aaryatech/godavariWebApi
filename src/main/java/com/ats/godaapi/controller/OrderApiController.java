@@ -705,6 +705,7 @@ public class OrderApiController {
 
 	}
 
+	
 	@RequestMapping(value = { "/getOrderByDistIdStausAndType" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetOrder> getOrderByDistIdStausAndType(@RequestParam("orderStatus") int orderStatus,
 			@RequestParam("distId") int distId, @RequestParam("date") String date) {
