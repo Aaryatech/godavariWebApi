@@ -559,6 +559,22 @@ public class TxApiController {
 
 	}
 
+	@RequestMapping(value = { "/getNotiByRouteSupId" }, method = RequestMethod.POST)
+	public @ResponseBody List<Notification> getNotiByRouteSupId(@RequestParam("notifiTo") int notifiTo) {
+
+		List<Notification> noti = new ArrayList<>();
+		try {
+			noti = notifiRepo.findByNotifiToAndNotifiType(notifiTo, 0);
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return noti;
+
+	}
+
 	@RequestMapping(value = { "/getAllNotiFications" }, method = RequestMethod.GET)
 	public @ResponseBody List<Notification> getAllNotiFications() {
 
