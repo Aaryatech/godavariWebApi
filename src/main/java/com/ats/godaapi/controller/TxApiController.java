@@ -58,6 +58,110 @@ public class TxApiController {
 	@Autowired
 	GetSettingRepo getSettingRepo;
 
+	@RequestMapping(value = { "/saveNotificationByRouteId" }, method = RequestMethod.POST)
+	public @ResponseBody GetNotificationRoute saveNotificationByRouteId(@RequestBody GetNotificationRoute noti) {
+
+		Notification notObejct = new Notification();
+		List<Distributor> dist = new ArrayList<Distributor>();
+
+		try {
+
+			dist = distributorRepository.findByRouteIdAndIsUsed(noti.getRouteId(), 1);
+			System.err.println("dist List Size : by route Id and is used  = " + dist.size());
+
+			for (int j = 0; j < dist.size(); j++) {
+
+				System.out.println("in for : dist[j=]" + j);
+
+				notObejct = new Notification();
+
+				notObejct.setNotifiTo(dist.get(j).getDistId());
+				notObejct.setIsRead(noti.getNotification().getIsRead());
+				notObejct.setNotifiDate(noti.getNotification().getNotifiDate());
+				notObejct.setNotifiDatetime(noti.getNotification().getNotifiDatetime());
+				notObejct.setNotifiFrom(noti.getNotification().getNotifiFrom());
+				notObejct.setNotifiId(noti.getNotification().getNotifiId());
+				notObejct.setNotifiText(noti.getNotification().getNotifiText());
+				notObejct.setNotifiType(noti.getNotification().getNotifiType());
+
+				Notification insetRes = notifiRepo.saveAndFlush(notObejct);
+
+				System.out.println("insetRes------------------===" + insetRes.toString());
+
+				// Firebase.sendPushNotification(dist.get(j).getToken(), " Notification",
+				// "Message", 2);
+			}
+
+		} catch (Exception e) {
+
+			System.err.println("exception in saveNotificationByRouteId : @tx api  " + e.getMessage());
+
+			e.printStackTrace();
+
+		}
+		return noti;
+	}
+
+	@RequestMapping(value = { "/saveNotiByDistIdList" }, method = RequestMethod.POST)
+	public @ResponseBody GetNotification saveNotiByDistIdList(@RequestBody GetNotification noti) {
+		System.err.println(" inside saveNotifiByDistIdList ");
+		GetNotification getNotif = new GetNotification();
+		Notification notObejct = new Notification();
+		List<Distributor> dist = new ArrayList<>();
+
+		try {
+
+			if (noti.getDistIdList().contains(-1)) {
+
+				dist = distributorRepository.findByIsUsed(1);
+
+				for (int j = 0; j < dist.size(); j++) {
+
+					notObejct = new Notification();
+
+					notObejct.setNotifiTo(dist.get(j).getDistId());
+					notObejct.setIsRead(noti.getNotification().getIsRead());
+					notObejct.setNotifiDate(noti.getNotification().getNotifiDate());
+					notObejct.setNotifiDatetime(noti.getNotification().getNotifiDatetime());
+					notObejct.setNotifiFrom(noti.getNotification().getNotifiFrom());
+					notObejct.setNotifiId(noti.getNotification().getNotifiId());
+					notObejct.setNotifiText(noti.getNotification().getNotifiText());
+					notObejct.setNotifiType(noti.getNotification().getNotifiType());
+
+					Notification insetRes = notifiRepo.saveAndFlush(notObejct);
+
+				}
+			} else {
+				dist = distributorRepository.getDistListById(noti.getDistIdList());
+
+				for (int j = 0; j < noti.getDistIdList().size(); j++) {
+
+					notObejct = new Notification();
+
+					notObejct.setNotifiTo(noti.getDistIdList().get(j));
+					notObejct.setIsRead(noti.getNotification().getIsRead());
+					notObejct.setNotifiDate(noti.getNotification().getNotifiDate());
+					notObejct.setNotifiDatetime(noti.getNotification().getNotifiDatetime());
+					notObejct.setNotifiFrom(noti.getNotification().getNotifiFrom());
+					notObejct.setNotifiId(noti.getNotification().getNotifiId());
+					notObejct.setNotifiText(noti.getNotification().getNotifiText());
+					notObejct.setNotifiType(noti.getNotification().getNotifiType());
+
+					Notification insetRes = notifiRepo.saveAndFlush(notObejct);
+
+				}
+			}
+
+		} catch (Exception e) {
+
+			System.err.println("Excption in Save Noti by Dist Ids " + e.getMessage());
+
+			e.printStackTrace();
+
+		}
+		return getNotif;
+	}
+
 	// -------------------RouteAllocation------------------------
 
 	@RequestMapping(value = { "/saveRouteAllocation" }, method = RequestMethod.POST)
@@ -175,27 +279,26 @@ public class TxApiController {
 		try {
 
 			for (int i = 0; i < settingList.size(); i++) {
-				
-				int isDailyExist=0;
+
+				int isDailyExist = 0;
 
 				List<Config> configList = configRepo.getItemConfig(settingList.get(i).getHubId());
-				
-				for(int j=0;j<configList.size();j++) {
-					
-					if(configList.get(j).getConfigType()==3) {
-						
-						isDailyExist=1;
+
+				for (int j = 0; j < configList.size(); j++) {
+
+					if (configList.get(j).getConfigType() == 3) {
+
+						isDailyExist = 1;
 						System.err.println("is daily exist =1 don't call insert");
-						
+
 						break;
 					}
-					
-					
+
 				}
-				if(isDailyExist==0) {
+				if (isDailyExist == 0) {
 					System.err.println("is daily exist =0 Call Insert ->saveSettingList");
 
-				Setting res = settingRepo.save(settingList.get(i));
+					Setting res = settingRepo.save(settingList.get(i));
 				}
 			}
 			errorMessage.setError(false);
@@ -377,158 +480,6 @@ public class TxApiController {
 		try {
 
 			res = notifiRepo.saveAll(noti);
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-
-		}
-		return res;
-	}
-
-	@RequestMapping(value = { "/saveNotifiByRouteId" }, method = RequestMethod.POST)
-	public @ResponseBody Notification saveNotifiByRouteId(@RequestBody Notification noti,
-			@RequestParam("routeId") int routeId) {
-		System.err.println("route ");
-		Notification res = new Notification();
-		List<Distributor> dist = new ArrayList<>();
-
-		try {
-
-			dist = distributorRepository.findByRouteIdAndIsUsed(routeId, 1);
-			System.err.println("dist " + dist.toString());
-
-			for (int j = 0; j < dist.size(); j++) {
-
-				noti.setNotifiTo(dist.get(j).getDistId());
-
-				res = notifiRepo.saveAndFlush(noti);
-				System.out.println("res" + res);
-				// Firebase.sendPushNotification(dist.get(j).getToken(), " Notification",
-				// "Message", 2);
-			}
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-
-		}
-		return res;
-	}
-
-	@RequestMapping(value = { "/saveNotificationByRouteId" }, method = RequestMethod.POST)
-	public @ResponseBody GetNotificationRoute saveNotificationByRouteId(@RequestBody GetNotificationRoute noti) {
-
-		Notification res = new Notification();
-		List<Distributor> dist = new ArrayList<>();
-
-		try {
-
-			dist = distributorRepository.findByRouteIdAndIsUsed(noti.getRouteId(), 1);
-			System.err.println("dist " + dist.toString());
-
-			for (int j = 0; j < dist.size(); j++) {
-
-				System.out.println("size" + dist.size());
-
-				res.setNotifiTo(dist.get(j).getRouteId());
-
-				res = notifiRepo.saveAndFlush(noti.getNotification());
-				System.out.println("res------------------===" + res.toString());
-
-				// Firebase.sendPushNotification(dist.get(j).getToken(), " Notification",
-				// "Message", 2);
-			}
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-
-		}
-		return noti;
-	}
-
-	@RequestMapping(value = { "/saveNotiByDistIdList" }, method = RequestMethod.POST)
-	public @ResponseBody Notification saveNotiByDistIdList(@RequestBody GetNotification noti) {
-		System.err.println("saveNotifiByDistIdList ");
-
-		Notification res = new Notification();
-		List<Distributor> dist = new ArrayList<>();
-
-		try {
-
-			if (noti.getDistIdList().contains(0)) {
-
-				dist = distributorRepository.findByIsUsed(1);
-				
-				System.out.println("dist" + dist.toString());
-
-				for (int j = 0; j < dist.size(); j++) {
-					res.setNotifiTo(dist.get(j).getDistId());
-
-					res = notifiRepo.saveAndFlush(noti.getNotification());
-
-					System.out.println("res---------------------" + res);
-
-				}
-			} else {
-
-				dist = distributorRepository.getDistListById(noti.getDistIdList());
-				System.out.println("dist in else " + dist.toString());
-
-				for (int j = 0; j < dist.size(); j++) {
-					res.setNotifiTo(dist.get(j).getDistId());
-
-					res = notifiRepo.saveAndFlush(noti.getNotification());
-					System.out.println("res in else ---------------------" + res);
-
-				}
-			}
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-
-		}
-		return res;
-	}
-
-	@RequestMapping(value = { "/saveNotifiByDistIdList" }, method = RequestMethod.POST)
-	public @ResponseBody Notification saveNotifiByDistIdList(@RequestBody Notification noti,
-			@RequestParam("distIdList") List<Integer> distIdList) {
-		System.err.println("saveNotifiByDistIdList ");
-
-		Notification res = new Notification();
-		List<Distributor> dist = new ArrayList<>();
-
-		try {
-			if (distIdList.contains(0)) {
-
-				dist = distributorRepository.findByIsUsed(1);
-
-				for (int j = 0; j < dist.size(); j++) {
-
-					noti.setNotifiTo(dist.get(j).getDistId());
-					res = notifiRepo.saveAndFlush(noti);
-					// Firebase.sendPushNotification(dist.get(j).getToken(), " Notification",
-					// "Message", 2);
-
-				}
-			} else {
-
-				dist = distributorRepository.getDistListById(distIdList);
-
-				if (res != null) {
-
-					for (int j = 0; j < dist.size(); j++) {
-
-						noti.setNotifiTo(dist.get(j).getDistId());
-						res = notifiRepo.saveAndFlush(noti);
-						// Firebase.sendPushNotification(dist.get(j).getToken(), " Notification",
-						// "Message", 2);
-					}
-				}
-			}
 
 		} catch (Exception e) {
 
