@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ats.godaapi.common.Firebase;
 import com.ats.godaapi.model.Config;
 import com.ats.godaapi.model.Distributor;
 import com.ats.godaapi.model.ErrorMessage;
@@ -20,6 +21,7 @@ import com.ats.godaapi.model.GetNotificationRoute;
 import com.ats.godaapi.model.GetSetting;
 import com.ats.godaapi.model.Notification;
 import com.ats.godaapi.model.RouteAllocation;
+import com.ats.godaapi.model.RouteSup;
 import com.ats.godaapi.model.Setting;
 import com.ats.godaapi.model.Test;
 import com.ats.godaapi.repository.ConfigRepo;
@@ -28,6 +30,7 @@ import com.ats.godaapi.repository.GetSettingRepo;
 import com.ats.godaapi.repository.NotifiRepo;
 import com.ats.godaapi.repository.RouteAllocationRepo;
 import com.ats.godaapi.repository.RouteRepository;
+import com.ats.godaapi.repository.RouteSupRepo;
 import com.ats.godaapi.repository.SettingRepo;
 import com.ats.godaapi.repository.TestRepo;
 
@@ -57,6 +60,8 @@ public class TxApiController {
 
 	@Autowired
 	GetSettingRepo getSettingRepo;
+	@Autowired
+	RouteSupRepo routeSupRepo;
 
 	@RequestMapping(value = { "/saveNotificationByRouteId" }, method = RequestMethod.POST)
 	public @ResponseBody GetNotificationRoute saveNotificationByRouteId(@RequestBody GetNotificationRoute noti) {
@@ -88,8 +93,8 @@ public class TxApiController {
 
 				System.out.println("insetRes------------------===" + insetRes.toString());
 
-				// Firebase.sendPushNotification(dist.get(j).getToken(), " Notification",
-				// "Message", 2);
+				Firebase.sendPushNotification(dist.get(j).getToken(), " Notification",
+						noti.getNotification().getNotifiText(), 2);
 			}
 
 		} catch (Exception e) {
@@ -129,6 +134,8 @@ public class TxApiController {
 					notObejct.setNotifiType(noti.getNotification().getNotifiType());
 
 					Notification insetRes = notifiRepo.saveAndFlush(notObejct);
+					Firebase.sendPushNotification(dist.get(j).getToken(), " Notification",
+							noti.getNotification().getNotifiText(), 2);
 
 				}
 			} else {
@@ -148,6 +155,8 @@ public class TxApiController {
 					notObejct.setNotifiType(noti.getNotification().getNotifiType());
 
 					Notification insetRes = notifiRepo.saveAndFlush(notObejct);
+					Firebase.sendPushNotification(dist.get(j).getToken(), " Notification",
+							noti.getNotification().getNotifiText(), 2);
 
 				}
 			}
@@ -479,7 +488,18 @@ public class TxApiController {
 
 		try {
 
+			RouteSup routeSup = new RouteSup();
+
 			res = notifiRepo.saveAll(noti);
+
+			for (int i = 0; i < res.size(); i++) {
+				if (noti.get(i).getNotifiType() == 0) {
+					routeSup = routeSupRepo.findBySupIdAndIsUsed(noti.get(i).getNotifiTo(), 1);
+
+					Firebase.sendPushNotification(routeSup.getToken(), " Notification", noti.get(i).getNotifiText(), 2);
+
+				}
+			}
 
 		} catch (Exception e) {
 
