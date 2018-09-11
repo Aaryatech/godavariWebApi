@@ -1438,19 +1438,26 @@ public class MasterApiController {
 	public @ResponseBody ErrorMessage saveHubUserExisting(@RequestBody HubUser hubUser) {
 		ErrorMessage errorMessage = new ErrorMessage();
 		HubUser res = new HubUser();
-
-		res = hubUserRepo.findByHsContactNoAndIsUsed(hubUser.getHsContactNo(), 1);
 		try {
+			if (hubUser.getHsId() == 0) {
 
-			if (res == null) {
+				res = hubUserRepo.findByHsContactNoAndIsUsed(hubUser.getHsContactNo(), 1);
 
+				if (res == null) {
+
+					res = hubUserRepo.saveAndFlush(hubUser);
+					errorMessage.setError(false);
+					errorMessage.setMessage("Save Successfully");
+
+				} else {
+					errorMessage.setError(true);
+					errorMessage.setMessage("Mobile No Already Exist");
+				}
+			} else {
 				res = hubUserRepo.saveAndFlush(hubUser);
 				errorMessage.setError(false);
-				errorMessage.setMessage("Save Successfully");
+				errorMessage.setMessage("Update  Successfully");
 
-			} else {
-				errorMessage.setError(true);
-				errorMessage.setMessage("Mobile No Already Exist");
 			}
 
 		} catch (Exception e) {
@@ -1496,22 +1503,30 @@ public class MasterApiController {
 	public @ResponseBody ErrorMessage saveMahasanghUserExisting(@RequestBody MahasanghUser mahasnaghUser) {
 		ErrorMessage errorMessage = new ErrorMessage();
 		MahasanghUser res = new MahasanghUser();
-
-		res = mahasnaghUserRepo.findByMsContactNoAndIsUsed(mahasnaghUser.getMsContactNo(), 1);
 		try {
+			if (mahasnaghUser.getMsId() == 0) {
+				res = mahasnaghUserRepo.findByMsContactNoAndIsUsed(mahasnaghUser.getMsContactNo(), 1);
 
-			if (res == null) {
+				if (res == null) {
 
+					res = mahasnaghUserRepo.saveAndFlush(mahasnaghUser);
+					errorMessage.setError(false);
+					errorMessage.setMessage("Save Successfully");
+
+				} else {
+					errorMessage.setError(true);
+					errorMessage.setMessage("Mobile No Already Exist");
+				}
+			} else {
 				res = mahasnaghUserRepo.saveAndFlush(mahasnaghUser);
 				errorMessage.setError(false);
-				errorMessage.setMessage("Save Successfully");
+				errorMessage.setMessage("Update  Successfully");
 
-			} else {
-				errorMessage.setError(true);
-				errorMessage.setMessage("Mobile No Already Exist");
 			}
 
-		} catch (Exception e) {
+		} catch (
+
+		Exception e) {
 
 			e.printStackTrace();
 
@@ -1523,18 +1538,26 @@ public class MasterApiController {
 	public @ResponseBody ErrorMessage saveDistributorExisting(@RequestBody Distributor distributor) {
 		ErrorMessage errorMessage = new ErrorMessage();
 		Distributor res = new Distributor();
-		res = distributorRepository.findByDistContactNoAndIsUsed(distributor.getDistContactNo(), 1);
 		try {
 
-			if (res == null) {
+			if (distributor.getDistId() == 0) {
+				res = distributorRepository.findByDistContactNoAndIsUsed(distributor.getDistContactNo(), 1);
 
+				if (res == null) {
+
+					res = distributorRepository.saveAndFlush(distributor);
+					errorMessage.setError(false);
+					errorMessage.setMessage("Save Successfully");
+
+				} else {
+					errorMessage.setError(true);
+					errorMessage.setMessage("Mobile No Already Exist");
+				}
+			} else {
 				res = distributorRepository.saveAndFlush(distributor);
 				errorMessage.setError(false);
-				errorMessage.setMessage("Save Successfully");
+				errorMessage.setMessage("Update Successfully");
 
-			} else {
-				errorMessage.setError(true);
-				errorMessage.setMessage("Mobile No Already Exist");
 			}
 
 		} catch (Exception e) {
@@ -1550,19 +1573,24 @@ public class MasterApiController {
 	public @ResponseBody ErrorMessage saveRouteSuperVisorExisting(@RequestBody RouteSup routeSup) {
 		ErrorMessage errorMessage = new ErrorMessage();
 		RouteSup res = new RouteSup();
-
-		res = routeSupRepo.findBySupContactNoAndIsUsed(routeSup.getSupContactNo(), 1);
 		try {
+			if (routeSup.getSupId() == 0) {
+				res = routeSupRepo.findBySupContactNoAndIsUsed(routeSup.getSupContactNo(), 1);
 
-			if (res == null) {
+				if (res == null) {
 
+					res = routeSupRepo.saveAndFlush(routeSup);
+					errorMessage.setError(false);
+					errorMessage.setMessage("Save Successfully");
+
+				} else {
+					errorMessage.setError(true);
+					errorMessage.setMessage("Mobile No Already Exist");
+				}
+			} else {
 				res = routeSupRepo.saveAndFlush(routeSup);
 				errorMessage.setError(false);
-				errorMessage.setMessage("Save Successfully");
-
-			} else {
-				errorMessage.setError(true);
-				errorMessage.setMessage("Mobile No Already Exist");
+				errorMessage.setMessage("Update Successfully");
 			}
 
 		} catch (Exception e) {
