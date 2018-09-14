@@ -21,12 +21,18 @@ import com.ats.godaapi.model.ReportData;
 import com.ats.godaapi.model.RouteAllocationWithName;
 import com.ats.godaapi.model.RouteSup;
 import com.ats.godaapi.model.Vehicle;
+import com.ats.godaapi.model.report.CategoryDistReport;
+import com.ats.godaapi.model.report.DistReportByDate;
+import com.ats.godaapi.model.report.ItemwiseDistReport;
 import com.ats.godaapi.repository.DriverRepo;
 import com.ats.godaapi.repository.GetRouteRepo;
 import com.ats.godaapi.repository.ReportDataRepo;
 import com.ats.godaapi.repository.RouteAllocationWithNameRepo;
 import com.ats.godaapi.repository.RouteSupRepo;
 import com.ats.godaapi.repository.VehicleRepo;
+import com.ats.godaapi.repository.reportrepo.CategoryDistReportRepo;
+import com.ats.godaapi.repository.reportrepo.DistReportByDateRepo;
+import com.ats.godaapi.repository.reportrepo.ItemwiseDistReportRepo;
 
 @RestController
 public class ReportDataApiController {
@@ -48,6 +54,80 @@ public class ReportDataApiController {
 
 	@Autowired
 	DriverRepo driverRepo;
+
+	// sachin'
+	@Autowired 
+	DistReportByDateRepo distReportByDateRepo;
+
+	@Autowired 
+	ItemwiseDistReportRepo itemwiseDistReportRepo;
+	
+	@Autowired 
+	CategoryDistReportRepo categoryDistReportRepo;
+	
+	@RequestMapping(value = { "/getcategoryDistReport" }, method = RequestMethod.POST)
+	public @ResponseBody List<CategoryDistReport> getcategoryDistReport(@RequestParam("fromDate") String fromDate,
+			@RequestParam("toDate") String toDate, @RequestParam("distIdList") List<Integer> distIdList,
+			@RequestParam("orderStatus") int orderStatus) {
+
+		List<CategoryDistReport> cateDistReposrtList= new ArrayList<CategoryDistReport>();
+
+		try {
+
+			cateDistReposrtList = categoryDistReportRepo.getCategoryDistReport(fromDate, toDate, distIdList, orderStatus);
+			System.err.println("cateDistReposrtList : " + cateDistReposrtList.toString());
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		
+		return cateDistReposrtList;
+
+	}
+
+
+	@RequestMapping(value = { "/getitemwiseDistReport" }, method = RequestMethod.POST)
+	public @ResponseBody List<ItemwiseDistReport> getitemwiseDistRep(@RequestParam("fromDate") String fromDate,
+			@RequestParam("toDate") String toDate, @RequestParam("distIdList") List<Integer> distIdList,
+			@RequestParam("orderStatus") int orderStatus) {
+
+		List<ItemwiseDistReport> itemDistReportList= new ArrayList<ItemwiseDistReport>();
+
+		try {
+
+			itemDistReportList = itemwiseDistReportRepo.getItemwiseDistReport(fromDate, toDate, distIdList, orderStatus);
+			System.err.println("itemDistReportList : " + itemDistReportList.toString());
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return itemDistReportList;
+
+	}
+
+	
+	@RequestMapping(value = { "/getDistReportByDate" }, method = RequestMethod.POST)
+	public @ResponseBody List<DistReportByDate> getDistReportByDate(@RequestParam("fromDate") String fromDate,
+			@RequestParam("toDate") String toDate, @RequestParam("distIdList") List<Integer> distIdList,
+			@RequestParam("orderStatus") int orderStatus) {
+
+		List<DistReportByDate> distReportList = new ArrayList<DistReportByDate>();
+
+		try {
+
+			distReportList = distReportByDateRepo.getDistReportByDate(fromDate, toDate, distIdList, orderStatus);
+			System.err.println("distReportList : " + distReportList.toString());
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return distReportList;
+
+	}
+
 	// -------------------Report data------------------------
 
 	@RequestMapping(value = { "/saveReportData" }, method = RequestMethod.POST)
@@ -100,7 +180,7 @@ public class ReportDataApiController {
 		return dataList;
 
 	}
-//---Route Between Date-------------------------
+	// ---Route Between Date-------------------------
 
 	@RequestMapping(value = { "/getRouteBetDate" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetRoute> getRouteBetDate(@RequestParam("fromDate") String fromDate,
