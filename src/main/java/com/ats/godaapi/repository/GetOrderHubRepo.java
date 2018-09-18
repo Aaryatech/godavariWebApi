@@ -25,4 +25,7 @@ public interface GetOrderHubRepo extends JpaRepository<GetOrderHub, Integer> {
 			@Param("orderType") List<Integer> orderType, @Param("orderStatus") int orderStatus,
 			@Param("hubId") int hubId);
 
+	@Query(value = "SELECT h.*,d.dist_eng_name,d.dist_mar_name,d.dist_add_mar,d.dist_add_eng ,d.dist_contact_no FROM t_order_header h,m_dist d WHERE h.order_date=:orderDate AND h.dist_id=:distId AND d.dist_id=h.dist_id", nativeQuery = true)
+	GetOrderHub getOrderDist(@Param("orderDate") String date, @Param("distId") int distId);
+
 }

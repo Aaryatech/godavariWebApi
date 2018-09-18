@@ -1,5 +1,6 @@
 package com.ats.godaapi.model;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -8,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 public class GetOrderHub {
@@ -19,9 +22,9 @@ public class GetOrderHub {
 
 	private int orderType;
 	private int distId;
-	private String orderDate;
-	private String orderProdDate;
-	private String orderDeliveryDate;
+	private Date orderDate;
+	private Date orderProdDate;
+	private Date orderDeliveryDate;
 	private float orderTotal;
 	private int prevPendingCrateBal;
 	private float prevPendingAmt;
@@ -67,27 +70,30 @@ public class GetOrderHub {
 		this.distId = distId;
 	}
 
-	public String getOrderDate() {
+	@JsonFormat(locale = "hi", timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
+	public Date getOrderDate() {
 		return orderDate;
 	}
 
-	public void setOrderDate(String orderDate) {
+	@JsonFormat(locale = "hi", timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
+	public void setOrderDate(Date orderDate) {
 		this.orderDate = orderDate;
 	}
 
-	public String getOrderProdDate() {
+	public Date getOrderProdDate() {
 		return orderProdDate;
 	}
 
-	public void setOrderProdDate(String orderProdDate) {
+	@JsonFormat(locale = "hi", timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
+	public void setOrderProdDate(Date orderProdDate) {
 		this.orderProdDate = orderProdDate;
 	}
 
-	public String getOrderDeliveryDate() {
+	public Date getOrderDeliveryDate() {
 		return orderDeliveryDate;
 	}
 
-	public void setOrderDeliveryDate(String orderDeliveryDate) {
+	public void setOrderDeliveryDate(Date orderDeliveryDate) {
 		this.orderDeliveryDate = orderDeliveryDate;
 	}
 

@@ -67,6 +67,8 @@ import com.ats.godaapi.repository.RouteAllocationRepo;
 import com.ats.godaapi.repository.RouteRepository;
 import com.ats.godaapi.repository.SettingRepo;
 
+import jdk.internal.joptsimple.util.DateConverter;
+
 @RestController
 public class OrderApiController {
 
@@ -516,27 +518,25 @@ public class OrderApiController {
 	}
 
 	@RequestMapping(value = { "/getOrderHistoryDistwise" }, method = RequestMethod.POST)
-	public @ResponseBody List<GetOrder> getOrderHistoryDistwise(@RequestParam("date") String date,
+	public @ResponseBody GetOrderHub getOrderHistoryDistwise(@RequestParam("date") String date,
 			@RequestParam("distId") int distId) {
 
-		List<GetOrder> orderHeaderList = new ArrayList<GetOrder>();
+		GetOrderHub orderHeader = new GetOrderHub();
 
 		try {
 
-			orderHeaderList = getOrderRepo.getOrderDist(date, distId);
+			orderHeader = getOrderHubRepo.getOrderDist(date, distId);
 
-			for (int i = 0; i < orderHeaderList.size(); i++) {
-				List<GetOrderDetail> orderDetailList = getOrderDetailRepo
-						.getOrderDetailByItemwise(orderHeaderList.get(i).getOrderHeaderId());
-				orderHeaderList.get(i).setGetOrderDetailList(orderDetailList);
-			}
+			List<GetOrderDetail> orderDetailList = getOrderDetailRepo
+					.getOrderDetailByItemwise(orderHeader.getOrderHeaderId());
+			orderHeader.setGetOrderDetailList(orderDetailList);
 
 		} catch (Exception e) {
 
 			e.printStackTrace();
 
 		}
-		return orderHeaderList;
+		return orderHeader;
 
 	}
 
@@ -705,7 +705,6 @@ public class OrderApiController {
 
 	}
 
-	
 	@RequestMapping(value = { "/getOrderByDistIdStausAndType" }, method = RequestMethod.POST)
 	public @ResponseBody List<GetOrder> getOrderByDistIdStausAndType(@RequestParam("orderStatus") int orderStatus,
 			@RequestParam("distId") int distId, @RequestParam("date") String date) {
