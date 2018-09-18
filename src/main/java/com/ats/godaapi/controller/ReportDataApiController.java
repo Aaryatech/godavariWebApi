@@ -56,48 +56,60 @@ public class ReportDataApiController {
 	DriverRepo driverRepo;
 
 	// sachin'
-	@Autowired 
+	@Autowired
 	DistReportByDateRepo distReportByDateRepo;
 
-	@Autowired 
+	@Autowired
 	ItemwiseDistReportRepo itemwiseDistReportRepo;
-	
-	@Autowired 
+
+	@Autowired
 	CategoryDistReportRepo categoryDistReportRepo;
-	
+
 	@RequestMapping(value = { "/getcategoryDistReport" }, method = RequestMethod.POST)
 	public @ResponseBody List<CategoryDistReport> getcategoryDistReport(@RequestParam("fromDate") String fromDate,
 			@RequestParam("toDate") String toDate, @RequestParam("distIdList") List<Integer> distIdList,
 			@RequestParam("orderStatus") int orderStatus) {
 
-		List<CategoryDistReport> cateDistReposrtList= new ArrayList<CategoryDistReport>();
+		List<CategoryDistReport> cateDistReposrtList = new ArrayList<CategoryDistReport>();
 
 		try {
 
-			cateDistReposrtList = categoryDistReportRepo.getCategoryDistReport(fromDate, toDate, distIdList, orderStatus);
-			System.err.println("cateDistReposrtList : " + cateDistReposrtList.toString());
+			if (distIdList.contains(-1)) {
+				cateDistReposrtList = categoryDistReportRepo.getAllCategoryDistReport(fromDate, toDate, orderStatus);
+			} else {
+
+				cateDistReposrtList = categoryDistReportRepo.getCategoryDistReport(fromDate, toDate, distIdList,
+						orderStatus);
+				System.err.println("cateDistReposrtList : " + cateDistReposrtList.toString());
+			}
 		} catch (Exception e) {
 
 			e.printStackTrace();
 
 		}
-		
+
 		return cateDistReposrtList;
 
 	}
-
 
 	@RequestMapping(value = { "/getitemwiseDistReport" }, method = RequestMethod.POST)
 	public @ResponseBody List<ItemwiseDistReport> getitemwiseDistRep(@RequestParam("fromDate") String fromDate,
 			@RequestParam("toDate") String toDate, @RequestParam("distIdList") List<Integer> distIdList,
 			@RequestParam("orderStatus") int orderStatus) {
 
-		List<ItemwiseDistReport> itemDistReportList= new ArrayList<ItemwiseDistReport>();
+		List<ItemwiseDistReport> itemDistReportList = new ArrayList<ItemwiseDistReport>();
 
 		try {
 
-			itemDistReportList = itemwiseDistReportRepo.getItemwiseDistReport(fromDate, toDate, distIdList, orderStatus);
-			System.err.println("itemDistReportList : " + itemDistReportList.toString());
+			if (distIdList.contains(-1)) {
+
+				itemDistReportList = itemwiseDistReportRepo.getAllItemwiseDistReport(fromDate, toDate, orderStatus);
+			} else {
+
+				itemDistReportList = itemwiseDistReportRepo.getItemwiseDistReport(fromDate, toDate, distIdList,
+						orderStatus);
+				System.err.println("itemDistReportList : " + itemDistReportList.toString());
+			}
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -107,7 +119,6 @@ public class ReportDataApiController {
 
 	}
 
-	
 	@RequestMapping(value = { "/getDistReportByDate" }, method = RequestMethod.POST)
 	public @ResponseBody List<DistReportByDate> getDistReportByDate(@RequestParam("fromDate") String fromDate,
 			@RequestParam("toDate") String toDate, @RequestParam("distIdList") List<Integer> distIdList,

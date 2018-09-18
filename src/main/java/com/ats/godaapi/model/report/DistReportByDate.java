@@ -1,33 +1,38 @@
 package com.ats.godaapi.model.report;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 @Entity
 public class DistReportByDate {
-	
-	
+
 	@Id
 	private int orderHeaderId;
-	
-	private float orderTotal ;
-	
+
+	private float orderTotal;
+
 	private int prevPendingCrateBal;
-	
-	private int cratesReceived  ;
-	
-	private int  cratesIssued;
-	
-	private float prevPendingAmt ;
-	
+
+	private int cratesReceived;
+
+	private int cratesIssued;
+
+	private float prevPendingAmt;
+
 	private float amtReceived;
-	
+
 	private float balAmount;
-	
+
 	private String distEngName;
 	private String distMarName;
-	
+
 	private String distContactNo;
+
+	private Date orderDate;
 
 	public int getOrderHeaderId() {
 		return orderHeaderId;
@@ -117,14 +122,23 @@ public class DistReportByDate {
 		this.distContactNo = distContactNo;
 	}
 
+	@JsonFormat(locale = "hi", timezone = "Asia/Kolkata", pattern = "dd-MM-yyyy")
+
+	public Date getOrderDate() {
+		return orderDate;
+	}
+
+	public void setOrderDate(Date orderDate) {
+		this.orderDate = orderDate;
+	}
+
 	@Override
 	public String toString() {
 		return "DistReportByDate [orderHeaderId=" + orderHeaderId + ", orderTotal=" + orderTotal
 				+ ", prevPendingCrateBal=" + prevPendingCrateBal + ", cratesReceived=" + cratesReceived
 				+ ", cratesIssued=" + cratesIssued + ", prevPendingAmt=" + prevPendingAmt + ", amtReceived="
 				+ amtReceived + ", balAmount=" + balAmount + ", distEngName=" + distEngName + ", distMarName="
-				+ distMarName + ", distContactNo=" + distContactNo + "]";
+				+ distMarName + ", distContactNo=" + distContactNo + ", orderDate=" + orderDate + "]";
 	}
-
 
 }
