@@ -556,6 +556,35 @@ public class MasterApiController {
 
 	}
 
+	// Sachin 24/09
+	@RequestMapping(value = { "/getDistributorByMobNoOrName" }, method = RequestMethod.POST)
+	public @ResponseBody List<Distributor> getDistributorByMobNoOrName(
+			@RequestParam("distMobOrName") String distMobOrName) {
+
+		List<Distributor> distributorList = new ArrayList<Distributor>();
+		
+		try {
+
+			distributorList = distributorRepository.findByDistContactNoOrDistEngNameIgnoreCaseContaining(distMobOrName,distMobOrName);
+			
+			
+			if(distributorList.size()>0)
+			System.err.println("getDistributorByMobNoOrName" +distributorList.toString());
+
+
+		} catch (Exception e) {
+			
+			System.err.println("exception In getDistributorByMobNoOrName"+e.getMessage());
+
+			e.printStackTrace();
+
+		}
+		
+		
+		return distributorList;
+
+	}
+
 	@RequestMapping(value = { "/getDistributorByRouteId" }, method = RequestMethod.POST)
 	public @ResponseBody List<Distributor> getDistributorByRouteId(@RequestParam("routeId") int routeId) {
 
