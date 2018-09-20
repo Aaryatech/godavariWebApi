@@ -638,6 +638,106 @@ public class OrderApiController {
 
 	}
 
+	@RequestMapping(value = { "/getAllCatwiseItemListByDistIdAndOrderType" }, method = RequestMethod.POST)
+	public @ResponseBody GetAllCatwiseItemResp getAllCatwiseItemListByDistIdAndOrderType(
+			@RequestParam("distId") int distId, @RequestParam("hubId") int hubId,
+			@RequestParam("orderType") int orderType) {
+
+		List<Category> catList = new ArrayList<Category>();
+		List<GetCatItemList> catItemList = new ArrayList<GetCatItemList>();
+		GetAllCatwiseItemResp getAllCatwiseItemResp = new GetAllCatwiseItemResp();
+
+		try {
+			Date now = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			String currDate = sdf.format(now.getTime());
+
+			catList = categoryRepo.findByIsUsed(1);
+
+			List<Config> configList = configRepo.getItemConfig(hubId);
+			Config config = new Config();
+
+			for (Config c : configList) {
+
+				if (c.getConfigType() == 3) {
+
+					config = c;
+					getAllCatwiseItemResp.setConfig(c);
+
+				}
+
+			}
+
+			String itemStrList = config.getItemIds();
+
+			List<Integer> itemIdList = Stream.of(itemStrList.split(",")).map(Integer::parseInt)
+					.collect(Collectors.toList());
+
+			Order order = null;
+			System.out.println("curr date - " + currDate);
+			order = orderRepo.findByOrderDateAndDistIdAndOrderType(currDate, distId, orderType);
+
+			GetOrderHeader getOrderHeader = new GetOrderHeader();
+
+			if (order != null) {
+				getOrderHeader.setDistId(distId);
+				getOrderHeader.setOrderHeaderId(order.getOrderHeaderId());
+				getOrderHeader.setOrderTotal(order.getOrderTotal());
+				getOrderHeader.setOrderType(order.getOrderType());
+				getOrderHeader.setPrevPendingAmt(order.getPrevPendingAmt());
+				getOrderHeader.setPrevPendingCrateBal(order.getPrevPendingCrateBal());
+			}
+			getAllCatwiseItemResp.setGetOrderHeader(getOrderHeader);
+
+			catList = categoryRepo.findByIsUsed(1);
+
+			for (int i = 0; i < catList.size(); i++) {
+
+				Category cat = catList.get(i);
+
+				GetCatItemList catItem = new GetCatItemList();
+				catItem.setCatEngName(cat.getCatEngName());
+				catItem.setCatId(cat.getCatId());
+				catItem.setCatMarName(cat.getCatMarName());
+				catItem.setCatPic(cat.getCatPic());
+				catItem.setIsUsed(cat.getIsUsed());
+
+				List<GetAllItemsForRegOrder> list = getAllItemsForRegOrderRepo.getAllItemDetails(itemIdList,
+						cat.getCatId());
+
+				for (int j = 0; j < list.size(); j++) {
+
+					GetAllItemsForRegOrder getAllItemsForRegOrder = list.get(j);
+					if (order != null) {
+						try {
+							OrderDetail orderDetail = orderDetailRepo.findByItemIdAndOrderHeaderId(
+									getAllItemsForRegOrder.getItemId(), order.getOrderHeaderId());
+
+							list.get(j).setOrderQty(orderDetail.getOrderQty());
+							list.get(j).setOrderDetailId(orderDetail.getOrderDetailId());
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}
+
+				catItem.setAllItemList(list);
+
+				catItemList.add(catItem);
+
+			}
+			System.out.println("CatItemList - " + catItemList.toString());
+
+			getAllCatwiseItemResp.setCatItemLists(catItemList);
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return getAllCatwiseItemResp;
+
+	}
+
 	@RequestMapping(value = { "/getOrderByTypeAndStatus" }, method = RequestMethod.GET)
 	public @ResponseBody List<GetOrderHub> getOrderByTypeAndStatus() {
 
