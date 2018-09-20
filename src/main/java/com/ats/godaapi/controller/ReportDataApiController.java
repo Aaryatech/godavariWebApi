@@ -21,6 +21,11 @@ import com.ats.godaapi.model.ReportData;
 import com.ats.godaapi.model.RouteAllocationWithName;
 import com.ats.godaapi.model.RouteSup;
 import com.ats.godaapi.model.Vehicle;
+import com.ats.godaapi.model.dashreport.HubDashboardData;
+import com.ats.godaapi.model.dashreport.NoOrderDist;
+import com.ats.godaapi.model.dashreport.OrderCountPending;
+import com.ats.godaapi.model.dashreport.OrderTotAndCount;
+import com.ats.godaapi.model.dashreport.SpOrderTotAndCount;
 import com.ats.godaapi.model.report.CategoryDistReport;
 import com.ats.godaapi.model.report.DistReportByDate;
 import com.ats.godaapi.model.report.ItemwiseDistReport;
@@ -33,6 +38,8 @@ import com.ats.godaapi.repository.VehicleRepo;
 import com.ats.godaapi.repository.reportrepo.CategoryDistReportRepo;
 import com.ats.godaapi.repository.reportrepo.DistReportByDateRepo;
 import com.ats.godaapi.repository.reportrepo.ItemwiseDistReportRepo;
+import com.ats.godaapi.repository.reportrepo.NoOrderDistRepo;
+import com.ats.godaapi.repository.reportrepo.OrderTotAndCountRepo;
 
 @RestController
 public class ReportDataApiController {
@@ -64,6 +71,97 @@ public class ReportDataApiController {
 
 	@Autowired
 	CategoryDistReportRepo categoryDistReportRepo;
+	
+	
+	@Autowired
+	NoOrderDistRepo noOrderDistRepo;
+
+	@Autowired
+	OrderTotAndCountRepo orderTotAndCountRepo;
+
+	@RequestMapping(value = { "/getHubDashBoard" }, method = RequestMethod.POST)
+	public @ResponseBody HubDashboardData getHubDashBoard(@RequestParam("orderDate") String curDate,
+			@RequestParam("orderType") int orderType, @RequestParam("hubId") int hubId) {
+
+		OrderTotAndCount todaysOrdTotAndCount = new OrderTotAndCount();
+
+		SpOrderTotAndCount todaysSpOrdTotAndCount = new SpOrderTotAndCount();
+
+		OrderCountPending todaysOrderPending = new OrderCountPending();
+		List<NoOrderDist> noOrderDistList = new ArrayList<NoOrderDist>();
+
+		HubDashboardData hubDashboardData = null;
+		try {
+
+			hubDashboardData = new HubDashboardData();
+
+			todaysOrdTotAndCount = orderTotAndCountRepo.getOrderTotAndCount(curDate, orderType, hubId);
+
+			hubDashboardData.setTodaysOrdTotAndCount(todaysOrdTotAndCount);
+
+			todaysOrdTotAndCount = new OrderTotAndCount();
+
+			todaysOrdTotAndCount = orderTotAndCountRepo.getSpOrderTotAndCount(curDate, 1, hubId);
+
+			todaysSpOrdTotAndCount.setOrderCount(todaysOrdTotAndCount.getOrderCount());
+			todaysSpOrdTotAndCount.setOrderTotal(todaysOrdTotAndCount.getOrderTotal());
+			
+			hubDashboardData.setTodaysSpOrdTotAndCount(todaysSpOrdTotAndCount);
+
+
+			todaysOrdTotAndCount = new OrderTotAndCount();
+
+			todaysOrdTotAndCount = orderTotAndCountRepo.getOrderStatusPending(curDate, hubId);
+
+			todaysOrderPending.setOrderCount(todaysOrdTotAndCount.getOrderCount());
+			todaysOrderPending.setOrderTotal(todaysOrdTotAndCount.getOrderTotal());
+			
+			hubDashboardData.setTodaysOrderPending(todaysOrderPending);
+
+			noOrderDistList = noOrderDistRepo.getNoOrderDist(curDate);
+			
+			hubDashboardData.setNoOrderDistList(noOrderDistList);
+
+
+
+		} catch (Exception e) {
+
+			System.err.println("Ex in getHubDashBoard " + e.getMessage());
+
+			e.printStackTrace();
+		}
+
+		return hubDashboardData;
+
+	}
+	@RequestMapping(value = { "/getHubReportCatwise" }, method = RequestMethod.POST)
+	public @ResponseBody List<CategoryDistReport> getHubReportCatwise(@RequestParam("curDate") String curDate,
+			@RequestParam("hubId") int hubId) {
+
+		List<CategoryDistReport> catHubReport = new ArrayList<CategoryDistReport>();
+
+		try {
+
+			if (hubId==0) {
+				System.err.println("Hub Id = 0 all hub service ");
+				catHubReport = categoryDistReportRepo.getAllHubReportCatWise(curDate);
+			} else {
+
+				catHubReport = categoryDistReportRepo.getHubReportCatWise(curDate, hubId);
+			}
+			System.err.println("cateDistReposrtList : " + catHubReport.toString());
+
+		} catch (Exception e) {
+			
+			System.err.println("Exce in getHubReportCatwise "+e.getMessage());
+
+			e.printStackTrace();
+
+		}
+
+		return catHubReport;
+
+	}
 
 	@RequestMapping(value = { "/getcategoryDistReport" }, method = RequestMethod.POST)
 	public @ResponseBody List<CategoryDistReport> getcategoryDistReport(@RequestParam("fromDate") String fromDate,
@@ -91,6 +189,9 @@ public class ReportDataApiController {
 		return cateDistReposrtList;
 
 	}
+	
+	
+	
 
 	@RequestMapping(value = { "/getitemwiseDistReport" }, method = RequestMethod.POST)
 	public @ResponseBody List<ItemwiseDistReport> getitemwiseDistRep(@RequestParam("fromDate") String fromDate,

@@ -67,8 +67,6 @@ import com.ats.godaapi.repository.RouteAllocationRepo;
 import com.ats.godaapi.repository.RouteRepository;
 import com.ats.godaapi.repository.SettingRepo;
 
-import jdk.internal.joptsimple.util.DateConverter;
-
 @RestController
 public class OrderApiController {
 
@@ -135,6 +133,7 @@ public class OrderApiController {
 	@Autowired
 	GetOrderDetailWithCatRepository detailWithCatRepository;
 
+	
 	@RequestMapping(value = { "/saveOrderHeaderDetail" }, method = RequestMethod.POST)
 	public @ResponseBody ErrorMessage saveOrderHeaderDetail(@RequestBody Order order) {
 
