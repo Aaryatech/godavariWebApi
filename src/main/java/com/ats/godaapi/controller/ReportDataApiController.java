@@ -139,7 +139,7 @@ public class ReportDataApiController {
 			@RequestParam("hubId") int hubId) {
 
 		List<CategoryDistReport> catHubReport = new ArrayList<CategoryDistReport>();
-
+ 
 		try {
 
 			if (hubId==0) {
