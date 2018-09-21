@@ -22,7 +22,8 @@ import com.ats.godaapi.model.RouteAllocationWithName;
 import com.ats.godaapi.model.RouteSup;
 import com.ats.godaapi.model.Vehicle;
 import com.ats.godaapi.model.dashreport.AllDistLatestOrd;
-import com.ats.godaapi.model.dashreport.HubDashboardData;
+import com.ats.godaapi.model.dashreport.DashboardData;
+//import com.ats.godaapi.model.dashreport.HubDashboardData;
 import com.ats.godaapi.model.dashreport.NoOrderDist;
 import com.ats.godaapi.model.dashreport.OrderCountPending;
 import com.ats.godaapi.model.dashreport.OrderTotAndCount;
@@ -107,7 +108,7 @@ public class ReportDataApiController {
 	}
 
 	@RequestMapping(value = { "/getHubDashBoard" }, method = RequestMethod.POST)
-	public @ResponseBody HubDashboardData getHubDashBoard(@RequestParam("curDate") String curDate,
+	public @ResponseBody DashboardData getHubDashBoard(@RequestParam("curDate") String curDate,
 			@RequestParam("orderType") int orderType, @RequestParam("hubId") int hubId) {
 
 		OrderTotAndCount todaysOrdTotAndCount = new OrderTotAndCount();
@@ -117,10 +118,10 @@ public class ReportDataApiController {
 		OrderCountPending todaysOrderPending = new OrderCountPending();
 		List<NoOrderDist> noOrderDistList = new ArrayList<NoOrderDist>();
 
-		HubDashboardData hubDashboardData = new HubDashboardData();
+		DashboardData hubDashboardData = new DashboardData();
 		try {
 
-			hubDashboardData = new HubDashboardData();
+			hubDashboardData = new DashboardData();
 
 			todaysOrdTotAndCount = orderTotAndCountRepo.getOrderTotAndCount(curDate, orderType, hubId);
 
@@ -133,14 +134,7 @@ public class ReportDataApiController {
 			todaysSpOrdTotAndCount.setOrderCount(todaysOrdTotAndCount.getOrderCount());
 			todaysSpOrdTotAndCount.setOrderTotal(todaysOrdTotAndCount.getOrderTotal());
 
-			if (todaysOrdTotAndCount.equals("null")) {
-
-				System.err.println("Null found ");
-				todaysSpOrdTotAndCount.setOrderCount(0.0f);
-				todaysSpOrdTotAndCount.setOrderTotal(0.0f);
-
-			}
-
+			
 			hubDashboardData.setTodaysSpOrdTotAndCount(todaysSpOrdTotAndCount);
 
 			todaysOrdTotAndCount = new OrderTotAndCount();
@@ -149,15 +143,8 @@ public class ReportDataApiController {
 
 			todaysOrderPending.setOrderCount(todaysOrdTotAndCount.getOrderCount());
 			todaysOrderPending.setOrderTotal(todaysOrdTotAndCount.getOrderTotal());
-
-			if (todaysOrdTotAndCount == null) {
-
-				System.err.println("Null found  pending");
-				todaysOrderPending.setOrderCount(0.0f);
-				todaysOrderPending.setOrderTotal(0.0f);
-
-			}
-
+			
+			
 			hubDashboardData.setTodaysOrderPending(todaysOrderPending);
 
 			noOrderDistList = noOrderDistRepo.getNoOrderDist(curDate);
@@ -174,6 +161,66 @@ public class ReportDataApiController {
 		return hubDashboardData;
 
 	}
+
+	
+	
+	@RequestMapping(value = { "/getMSDashBoard" }, method = RequestMethod.POST)
+	public @ResponseBody DashboardData getMSDashBoard(@RequestParam("curDate") String curDate,
+			@RequestParam("orderType") int orderType) {
+
+		OrderTotAndCount todaysOrdTotAndCount = new OrderTotAndCount();
+
+		SpOrderTotAndCount todaysSpOrdTotAndCount = new SpOrderTotAndCount();
+
+		OrderCountPending todaysOrderPending = new OrderCountPending();
+		List<NoOrderDist> noOrderDistList = new ArrayList<NoOrderDist>();
+
+		DashboardData msDashboardData = new DashboardData();
+		try {
+
+			msDashboardData = new DashboardData();
+
+			todaysOrdTotAndCount = orderTotAndCountRepo.getOrderTotAndCountMs(curDate, orderType);
+
+			msDashboardData.setTodaysOrdTotAndCount(todaysOrdTotAndCount);
+
+			todaysOrdTotAndCount = new OrderTotAndCount();
+
+			todaysOrdTotAndCount = orderTotAndCountRepo.getSpOrderTotAndCountMs(curDate, 1);
+
+			todaysSpOrdTotAndCount.setOrderCount(todaysOrdTotAndCount.getOrderCount());
+			todaysSpOrdTotAndCount.setOrderTotal(todaysOrdTotAndCount.getOrderTotal());
+
+			
+
+			msDashboardData.setTodaysSpOrdTotAndCount(todaysSpOrdTotAndCount);
+
+			todaysOrdTotAndCount = new OrderTotAndCount();
+
+			todaysOrdTotAndCount = orderTotAndCountRepo.getOrderStatusPendingMs(curDate);
+
+			todaysOrderPending.setOrderCount(todaysOrdTotAndCount.getOrderCount());
+			todaysOrderPending.setOrderTotal(todaysOrdTotAndCount.getOrderTotal());
+			
+		
+
+			msDashboardData.setTodaysOrderPending(todaysOrderPending);
+
+			//noOrderDistList = noOrderDistRepo.getNoOrderDist(curDate); to be changed for get No order Hub
+
+			//msDashboardData.setNoOrderDistList(noOrderDistList);
+
+		} catch (Exception e) {
+
+			System.err.println("Ex in getMS Dashboard " + e.getMessage());
+
+			e.printStackTrace();
+		}
+
+		return msDashboardData;
+
+	}
+	
 
 	@RequestMapping(value = { "/getHubReportCatwise" }, method = RequestMethod.POST)
 	public @ResponseBody List<CategoryDistReport> getHubReportCatwise(@RequestParam("curDate") String curDate,

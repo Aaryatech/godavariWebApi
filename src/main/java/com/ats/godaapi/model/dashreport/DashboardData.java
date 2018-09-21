@@ -2,7 +2,7 @@ package com.ats.godaapi.model.dashreport;
 
 import java.util.List;
 
-public class HubDashboardData {
+public class DashboardData {
 	
 	OrderTotAndCount todaysOrdTotAndCount;
 	
