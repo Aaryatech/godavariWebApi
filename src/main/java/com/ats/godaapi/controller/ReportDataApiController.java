@@ -278,6 +278,81 @@ public class ReportDataApiController {
 
 	}
 
+	
+	
+	//same above 3 report for hub
+	
+	
+	@RequestMapping(value = { "/getcategoryHubReport" }, method = RequestMethod.POST)
+	public @ResponseBody List<CategoryDistReport> getcategoryHubReport(@RequestParam("fromDate") String fromDate,
+			@RequestParam("toDate") String toDate, @RequestParam("hubIdList") List<Integer> hubIdList,
+			@RequestParam("orderStatus") int orderStatus) {
+
+		List<CategoryDistReport> cateHubReportList = new ArrayList<CategoryDistReport>();
+
+		try {
+
+			
+				cateHubReportList = categoryDistReportRepo.getCategoryDistReportForHubs(fromDate, toDate, hubIdList, orderStatus);
+					
+				System.err.println("cateHubReportList : " + cateHubReportList.toString());
+			
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+
+		return cateHubReportList;
+
+	}
+
+	@RequestMapping(value = { "/getitemwiseHubReport" }, method = RequestMethod.POST)
+	public @ResponseBody List<ItemwiseDistReport> getitemwiseHubReport(@RequestParam("fromDate") String fromDate,
+			@RequestParam("toDate") String toDate, @RequestParam("hubIdList") List<Integer> hubIdList,
+			@RequestParam("orderStatus") int orderStatus) {
+
+		List<ItemwiseDistReport> itemHubReportList = new ArrayList<ItemwiseDistReport>();
+
+		try {
+
+		
+				itemHubReportList = itemwiseDistReportRepo.getItemwiseDistReportForHubs(fromDate, toDate, hubIdList, orderStatus);
+						
+				System.err.println("itemHubReportList : " + itemHubReportList.toString());
+			
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return itemHubReportList;
+
+	}
+
+	@RequestMapping(value = { "/getHubReportByDate" }, method = RequestMethod.POST)
+	public @ResponseBody List<DistReportByDate> getHubReportByDate(@RequestParam("fromDate") String fromDate,
+			@RequestParam("toDate") String toDate, @RequestParam("hubId") int hubId,
+			@RequestParam("orderStatus") int orderStatus) {
+
+		List<DistReportByDate> hubReportList = new ArrayList<DistReportByDate>();
+
+		try {
+
+			hubReportList = distReportByDateRepo.getDistReportByDateForHub(fromDate, toDate, hubId, orderStatus);
+			
+			System.err.println("hubReportList : " + hubReportList.toString());
+		
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+		return hubReportList;
+
+	}
+////same above 3 report for hub//end
+	
 	// -------------------Report data------------------------
 
 	@RequestMapping(value = { "/saveReportData" }, method = RequestMethod.POST)
