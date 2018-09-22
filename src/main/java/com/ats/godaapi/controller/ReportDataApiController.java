@@ -21,6 +21,7 @@ import com.ats.godaapi.model.ReportData;
 import com.ats.godaapi.model.RouteAllocationWithName;
 import com.ats.godaapi.model.RouteSup;
 import com.ats.godaapi.model.Vehicle;
+import com.ats.godaapi.model.dashreport.AllDistLatestOrd;
 import com.ats.godaapi.model.dashreport.HubDashboardData;
 import com.ats.godaapi.model.dashreport.NoOrderDist;
 import com.ats.godaapi.model.dashreport.OrderCountPending;
@@ -35,6 +36,7 @@ import com.ats.godaapi.repository.ReportDataRepo;
 import com.ats.godaapi.repository.RouteAllocationWithNameRepo;
 import com.ats.godaapi.repository.RouteSupRepo;
 import com.ats.godaapi.repository.VehicleRepo;
+import com.ats.godaapi.repository.reportrepo.AllDistLatestOrdRepo;
 import com.ats.godaapi.repository.reportrepo.CategoryDistReportRepo;
 import com.ats.godaapi.repository.reportrepo.DistReportByDateRepo;
 import com.ats.godaapi.repository.reportrepo.ItemwiseDistReportRepo;
@@ -71,16 +73,41 @@ public class ReportDataApiController {
 
 	@Autowired
 	CategoryDistReportRepo categoryDistReportRepo;
-	
-	
+
 	@Autowired
 	NoOrderDistRepo noOrderDistRepo;
 
 	@Autowired
 	OrderTotAndCountRepo orderTotAndCountRepo;
 
+	@Autowired
+	AllDistLatestOrdRepo allDistLatestOrdRepo;
+
+	@RequestMapping(value = { "/getAllDistLatestOrder" }, method = RequestMethod.POST)
+	public @ResponseBody List<AllDistLatestOrd> getAllDistLatestOrd(@RequestParam("distId") int distId) {
+
+		List<AllDistLatestOrd> allDistLatestOrdList = new ArrayList<AllDistLatestOrd>();
+
+		try {
+			System.err.println("distId Id = 0 all service ");
+			allDistLatestOrdList = allDistLatestOrdRepo.getAllDistLastestOrdList(distId);
+
+			System.err.println("allDistLatestOrdList : " + allDistLatestOrdList.toString());
+
+		} catch (Exception e) {
+
+			System.err.println("Exce in getAllDistLastestOrder " + e.getMessage());
+
+			e.printStackTrace();
+
+		}
+
+		return allDistLatestOrdList;
+
+	}
+
 	@RequestMapping(value = { "/getHubDashBoard" }, method = RequestMethod.POST)
-	public @ResponseBody HubDashboardData getHubDashBoard(@RequestParam("orderDate") String curDate,
+	public @ResponseBody HubDashboardData getHubDashBoard(@RequestParam("curDate") String curDate,
 			@RequestParam("orderType") int orderType, @RequestParam("hubId") int hubId) {
 
 		OrderTotAndCount todaysOrdTotAndCount = new OrderTotAndCount();
@@ -90,7 +117,7 @@ public class ReportDataApiController {
 		OrderCountPending todaysOrderPending = new OrderCountPending();
 		List<NoOrderDist> noOrderDistList = new ArrayList<NoOrderDist>();
 
-		HubDashboardData hubDashboardData = null;
+		HubDashboardData hubDashboardData = new HubDashboardData();
 		try {
 
 			hubDashboardData = new HubDashboardData();
@@ -105,9 +132,16 @@ public class ReportDataApiController {
 
 			todaysSpOrdTotAndCount.setOrderCount(todaysOrdTotAndCount.getOrderCount());
 			todaysSpOrdTotAndCount.setOrderTotal(todaysOrdTotAndCount.getOrderTotal());
-			
-			hubDashboardData.setTodaysSpOrdTotAndCount(todaysSpOrdTotAndCount);
 
+			if (todaysOrdTotAndCount.equals("null")) {
+
+				System.err.println("Null found ");
+				todaysSpOrdTotAndCount.setOrderCount(0.0f);
+				todaysSpOrdTotAndCount.setOrderTotal(0.0f);
+
+			}
+
+			hubDashboardData.setTodaysSpOrdTotAndCount(todaysSpOrdTotAndCount);
 
 			todaysOrdTotAndCount = new OrderTotAndCount();
 
@@ -116,13 +150,19 @@ public class ReportDataApiController {
 			todaysOrderPending.setOrderCount(todaysOrdTotAndCount.getOrderCount());
 			todaysOrderPending.setOrderTotal(todaysOrdTotAndCount.getOrderTotal());
 			
+			if (todaysOrdTotAndCount == null) {
+
+				System.err.println("Null found  pending");
+				todaysOrderPending.setOrderCount(0.0f);
+				todaysOrderPending.setOrderTotal(0.0f);
+
+			}
+
 			hubDashboardData.setTodaysOrderPending(todaysOrderPending);
 
 			noOrderDistList = noOrderDistRepo.getNoOrderDist(curDate);
-			
+
 			hubDashboardData.setNoOrderDistList(noOrderDistList);
-
-
 
 		} catch (Exception e) {
 
@@ -134,15 +174,16 @@ public class ReportDataApiController {
 		return hubDashboardData;
 
 	}
+
 	@RequestMapping(value = { "/getHubReportCatwise" }, method = RequestMethod.POST)
 	public @ResponseBody List<CategoryDistReport> getHubReportCatwise(@RequestParam("curDate") String curDate,
 			@RequestParam("hubId") int hubId) {
 
 		List<CategoryDistReport> catHubReport = new ArrayList<CategoryDistReport>();
- 
+
 		try {
 
-			if (hubId==0) {
+			if (hubId == 0) {
 				System.err.println("Hub Id = 0 all hub service ");
 				catHubReport = categoryDistReportRepo.getAllHubReportCatWise(curDate);
 			} else {
@@ -152,8 +193,8 @@ public class ReportDataApiController {
 			System.err.println("cateDistReposrtList : " + catHubReport.toString());
 
 		} catch (Exception e) {
-			
-			System.err.println("Exce in getHubReportCatwise "+e.getMessage());
+
+			System.err.println("Exce in getHubReportCatwise " + e.getMessage());
 
 			e.printStackTrace();
 
@@ -189,9 +230,6 @@ public class ReportDataApiController {
 		return cateDistReposrtList;
 
 	}
-	
-	
-	
 
 	@RequestMapping(value = { "/getitemwiseDistReport" }, method = RequestMethod.POST)
 	public @ResponseBody List<ItemwiseDistReport> getitemwiseDistRep(@RequestParam("fromDate") String fromDate,
