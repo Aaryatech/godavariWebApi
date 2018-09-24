@@ -33,8 +33,7 @@ public class TempController {
 		try {
 
 			List<Distributor> distList = distributorRepository.findByHubId(hubId);
-			
-			
+					
 
 			for (Distributor dist : distList) {
 				
