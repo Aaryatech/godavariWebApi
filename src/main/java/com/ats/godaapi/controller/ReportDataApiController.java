@@ -149,7 +149,7 @@ public class ReportDataApiController {
 
 			todaysOrderPending.setOrderCount(todaysOrdTotAndCount.getOrderCount());
 			todaysOrderPending.setOrderTotal(todaysOrdTotAndCount.getOrderTotal());
-			
+
 			if (todaysOrdTotAndCount == null) {
 
 				System.err.println("Null found  pending");
@@ -278,11 +278,8 @@ public class ReportDataApiController {
 
 	}
 
-	
-	
-	//same above 3 report for hub
-	
-	
+	// same above 3 report for hub
+
 	@RequestMapping(value = { "/getcategoryHubReport" }, method = RequestMethod.POST)
 	public @ResponseBody List<CategoryDistReport> getcategoryHubReport(@RequestParam("fromDate") String fromDate,
 			@RequestParam("toDate") String toDate, @RequestParam("hubIdList") List<Integer> hubIdList,
@@ -291,12 +288,16 @@ public class ReportDataApiController {
 		List<CategoryDistReport> cateHubReportList = new ArrayList<CategoryDistReport>();
 
 		try {
+			if (hubIdList.contains(-1)) {
+				cateHubReportList = categoryDistReportRepo.getAllCategoryDistReportForHubs(fromDate, toDate,
+						orderStatus);
+			} else {
 
-			
-				cateHubReportList = categoryDistReportRepo.getCategoryDistReportForHubs(fromDate, toDate, hubIdList, orderStatus);
-					
-				System.err.println("cateHubReportList : " + cateHubReportList.toString());
-			
+				cateHubReportList = categoryDistReportRepo.getCategoryDistReportForHubs(fromDate, toDate, hubIdList,
+						orderStatus);
+			}
+			System.err.println("cateHubReportList : " + cateHubReportList.toString());
+
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -316,11 +317,18 @@ public class ReportDataApiController {
 
 		try {
 
-		
-				itemHubReportList = itemwiseDistReportRepo.getItemwiseDistReportForHubs(fromDate, toDate, hubIdList, orderStatus);
-						
-				System.err.println("itemHubReportList : " + itemHubReportList.toString());
-			
+			if (hubIdList.contains(-1)) {
+
+				itemHubReportList = itemwiseDistReportRepo.getAllItemwiseDistReportForHubs(fromDate, toDate,
+						orderStatus);
+			} else {
+
+				itemHubReportList = itemwiseDistReportRepo.getItemwiseDistReportForHubs(fromDate, toDate, hubIdList,
+						orderStatus);
+			}
+
+			System.err.println("itemHubReportList : " + itemHubReportList.toString());
+
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -340,9 +348,9 @@ public class ReportDataApiController {
 		try {
 
 			hubReportList = distReportByDateRepo.getDistReportByDateForHub(fromDate, toDate, hubId, orderStatus);
-			
+
 			System.err.println("hubReportList : " + hubReportList.toString());
-		
+
 		} catch (Exception e) {
 
 			e.printStackTrace();
@@ -352,7 +360,7 @@ public class ReportDataApiController {
 
 	}
 ////same above 3 report for hub//end
-	
+
 	// -------------------Report data------------------------
 
 	@RequestMapping(value = { "/saveReportData" }, method = RequestMethod.POST)
