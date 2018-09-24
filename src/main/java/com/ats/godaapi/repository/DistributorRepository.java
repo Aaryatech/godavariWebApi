@@ -24,6 +24,8 @@ public interface DistributorRepository extends JpaRepository<Distributor, Intege
 	Distributor findByDistContactNoAndDistPwdAndIsUsed(String distContactNo, String distPwd, int i);
 
 	Distributor findByDistId(int distId);
+	List<Distributor> findByHubId(int hubId);
+
 
 	@Transactional
 	@Modifying
@@ -46,5 +48,7 @@ public interface DistributorRepository extends JpaRepository<Distributor, Intege
 	int updatePwd(@Param("distId") int distId, @Param("distPwd") String distPwd);
 
 	Distributor findByDistContactNoAndIsUsed(String distContactNo, int i);
+
+	List<Distributor> findByDistContactNoOrDistEngNameIgnoreCaseContaining(String mobNo,String distName);
 
 }
