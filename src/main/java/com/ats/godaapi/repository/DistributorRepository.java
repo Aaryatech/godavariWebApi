@@ -24,6 +24,8 @@ public interface DistributorRepository extends JpaRepository<Distributor, Intege
 	Distributor findByDistContactNoAndDistPwdAndIsUsed(String distContactNo, String distPwd, int i);
 
 	Distributor findByDistId(int distId);
+	List<Distributor> findByHubId(int hubId);
+
 
 	@Transactional
 	@Modifying
