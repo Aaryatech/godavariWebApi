@@ -11,6 +11,16 @@ public class DashboardData {
 	OrderCountPending todaysOrderPending;
 	
 	List<NoOrderDist> noOrderDistList;
+	
+	List<NoOrderHub> noOrderHubList;
+
+	public List<NoOrderHub> getNoOrderHubList() {
+		return noOrderHubList;
+	}
+
+	public void setNoOrderHubList(List<NoOrderHub> noOrderHubList) {
+		this.noOrderHubList = noOrderHubList;
+	}
 
 	public OrderTotAndCount getTodaysOrdTotAndCount() {
 		return todaysOrdTotAndCount;
@@ -46,9 +56,9 @@ public class DashboardData {
 
 	@Override
 	public String toString() {
-		return "HubDashboardData [todaysOrdTotAndCount=" + todaysOrdTotAndCount + ", todaysSpOrdTotAndCount="
+		return "DashboardData [todaysOrdTotAndCount=" + todaysOrdTotAndCount + ", todaysSpOrdTotAndCount="
 				+ todaysSpOrdTotAndCount + ", todaysOrderPending=" + todaysOrderPending + ", noOrderDistList="
-				+ noOrderDistList + "]";
+				+ noOrderDistList + ", noOrderHubList=" + noOrderHubList + "]";
 	}
 	
 	

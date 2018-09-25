@@ -25,6 +25,7 @@ import com.ats.godaapi.model.dashreport.AllDistLatestOrd;
 import com.ats.godaapi.model.dashreport.DashboardData;
 //import com.ats.godaapi.model.dashreport.HubDashboardData;
 import com.ats.godaapi.model.dashreport.NoOrderDist;
+import com.ats.godaapi.model.dashreport.NoOrderHub;
 import com.ats.godaapi.model.dashreport.OrderCountPending;
 import com.ats.godaapi.model.dashreport.OrderTotAndCount;
 import com.ats.godaapi.model.dashreport.SpOrderTotAndCount;
@@ -42,6 +43,7 @@ import com.ats.godaapi.repository.reportrepo.CategoryDistReportRepo;
 import com.ats.godaapi.repository.reportrepo.DistReportByDateRepo;
 import com.ats.godaapi.repository.reportrepo.ItemwiseDistReportRepo;
 import com.ats.godaapi.repository.reportrepo.NoOrderDistRepo;
+import com.ats.godaapi.repository.reportrepo.NoOrderHubRepo;
 import com.ats.godaapi.repository.reportrepo.OrderTotAndCountRepo;
 
 @RestController
@@ -83,6 +85,11 @@ public class ReportDataApiController {
 
 	@Autowired
 	AllDistLatestOrdRepo allDistLatestOrdRepo;
+	
+	@Autowired
+	NoOrderHubRepo getNoOrderHubRepo;
+	
+	
 
 	@RequestMapping(value = { "/getAllDistLatestOrder" }, method = RequestMethod.POST)
 	public @ResponseBody List<AllDistLatestOrd> getAllDistLatestOrd(@RequestParam("distId") int distId) {
@@ -173,9 +180,11 @@ public class ReportDataApiController {
 		SpOrderTotAndCount todaysSpOrdTotAndCount = new SpOrderTotAndCount();
 
 		OrderCountPending todaysOrderPending = new OrderCountPending();
-		List<NoOrderDist> noOrderDistList = new ArrayList<NoOrderDist>();
+		
+		List<NoOrderHub> noOrderHubList = new ArrayList<NoOrderHub>();
 
-		DashboardData msDashboardData = new DashboardData();
+		DashboardData msDashboardData = null;
+		
 		try {
 
 			msDashboardData = new DashboardData();
@@ -201,14 +210,13 @@ public class ReportDataApiController {
 
 			todaysOrderPending.setOrderCount(todaysOrdTotAndCount.getOrderCount());
 			todaysOrderPending.setOrderTotal(todaysOrdTotAndCount.getOrderTotal());
-			
 		
 
 			msDashboardData.setTodaysOrderPending(todaysOrderPending);
 
-			//noOrderDistList = noOrderDistRepo.getNoOrderDist(curDate); to be changed for get No order Hub
+			noOrderHubList = getNoOrderHubRepo.getNoOrderHub(curDate);
 
-			//msDashboardData.setNoOrderDistList(noOrderDistList);
+			msDashboardData.setNoOrderHubList(noOrderHubList);
 
 		} catch (Exception e) {
 
