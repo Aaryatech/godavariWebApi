@@ -133,7 +133,6 @@ public class OrderApiController {
 	@Autowired
 	GetOrderDetailWithCatRepository detailWithCatRepository;
 
-	
 	@RequestMapping(value = { "/saveOrderHeaderDetail" }, method = RequestMethod.POST)
 	public @ResponseBody ErrorMessage saveOrderHeaderDetail(@RequestBody Order order) {
 
@@ -901,29 +900,29 @@ public class OrderApiController {
 				System.out.println("route" + route.toString());
 				distList = distributorRepository.findByRouteIdAndIsUsed(route.getRouteId(), 1);
 				for (int i = 0; i < distList.size(); i++) {
-					List<GetOrderRoute >  getOrderRoute = new ArrayList();
+					List<GetOrderRoute> getOrderRoute = new ArrayList();
 
 					System.out.println("distList------------------ " + distList.get(i).getDistId());
 
-					 getOrderRoute = getOrderRouteRepo.getOrderRoutebyDistId(currDate, distList.get(i).getDistId());
+					getOrderRoute = getOrderRouteRepo.getOrderRoutebyDistId(currDate, distList.get(i).getDistId());
 
 					if (getOrderRoute != null) {
 
-						List<Integer>list=new ArrayList();
-						for(GetOrderRoute orderRoute : getOrderRoute) {
-							
+						List<Integer> list = new ArrayList();
+						for (GetOrderRoute orderRoute : getOrderRoute) {
+
 							list.add(orderRoute.getOrderHeaderId());
 						}
 						System.out.println("header list" + list.toString());
 
+						if (list.size() > 0) {
+							List<GetOrderDetailForSupervisor> orderDetailList = detailWithCatRepository
+									.getOrderDetail(list);
 
-						List<GetOrderDetailForSupervisor> orderDetailList = detailWithCatRepository
-								.getOrderDetail(list);
-
-						GetOrderRoute getOrderRoute2 =getOrderRoute.get(0);
-						getOrderRoute2.setGetOrderDetailList(orderDetailList);
-						getOrderRouteList.add(getOrderRoute2);
-
+							GetOrderRoute getOrderRoute2 = getOrderRoute.get(0);
+							getOrderRoute2.setGetOrderDetailList(orderDetailList);
+							getOrderRouteList.add(getOrderRoute2);
+						}
 					}
 
 					getRoute.setMsg("Success");
