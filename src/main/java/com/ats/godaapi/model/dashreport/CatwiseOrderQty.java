@@ -7,8 +7,11 @@ import javax.persistence.Id;
 public class CatwiseOrderQty {
 
 	@Id
-	private int catId;
 	private int orderQty;
+	
+	
+	private int catId;
+	
 	private String catEngName;
 	
 	public int getCatId() {
