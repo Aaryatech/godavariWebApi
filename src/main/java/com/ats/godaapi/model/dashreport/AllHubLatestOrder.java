@@ -1,33 +1,21 @@
 package com.ats.godaapi.model.dashreport;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
-@Entity
 public class AllHubLatestOrder {
-	
-	
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "hub_id")
+	
 	private int hubId;
 
 	private String hubEngName;
 	private String hubMarName;
 	
-
 	private String hubContactNo;
 	
 	
+	private float order1;
+	private float order2;
+	private float order3;
 	
-	private Date orderDate;
-	private float orderTotal;
+	
 	public int getHubId() {
 		return hubId;
 	}
@@ -52,23 +40,31 @@ public class AllHubLatestOrder {
 	public void setHubContactNo(String hubContactNo) {
 		this.hubContactNo = hubContactNo;
 	}
-	public Date getOrderDate() {
-		return orderDate;
+	public float getOrder1() {
+		return order1;
 	}
-	public void setOrderDate(Date orderDate) {
-		this.orderDate = orderDate;
+	public void setOrder1(float order1) {
+		this.order1 = order1;
 	}
-	public float getOrderTotal() {
-		return orderTotal;
+	public float getOrder2() {
+		return order2;
 	}
-	public void setOrderTotal(float orderTotal) {
-		this.orderTotal = orderTotal;
+	public void setOrder2(float order2) {
+		this.order2 = order2;
 	}
+	public float getOrder3() {
+		return order3;
+	}
+	public void setOrder3(float order3) {
+		this.order3 = order3;
+	}
+	
 	@Override
 	public String toString() {
 		return "AllHubLatestOrder [hubId=" + hubId + ", hubEngName=" + hubEngName + ", hubMarName=" + hubMarName
-				+ ", hubContactNo=" + hubContactNo + ", orderDate=" + orderDate + ", orderTotal=" + orderTotal + "]";
+				+ ", hubContactNo=" + hubContactNo + ", order1=" + order1 + ", order2=" + order2 + ", order3=" + order3
+				+ "]";
 	}
 	
-
+	
 }

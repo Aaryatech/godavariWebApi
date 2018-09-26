@@ -15,13 +15,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ats.godaapi.model.DatewiseRoute;
+import com.ats.godaapi.model.Distributor;
 import com.ats.godaapi.model.Driver;
 import com.ats.godaapi.model.GetRoute;
+import com.ats.godaapi.model.Hub;
 import com.ats.godaapi.model.ReportData;
 import com.ats.godaapi.model.RouteAllocationWithName;
 import com.ats.godaapi.model.RouteSup;
 import com.ats.godaapi.model.Vehicle;
 import com.ats.godaapi.model.dashreport.AllDistLatestOrd;
+import com.ats.godaapi.model.dashreport.AllHubLatestOrder;
+import com.ats.godaapi.model.dashreport.HubLatestOrder;
 import com.ats.godaapi.model.dashreport.DashboardData;
 //import com.ats.godaapi.model.dashreport.HubDashboardData;
 import com.ats.godaapi.model.dashreport.NoOrderDist;
@@ -31,14 +35,17 @@ import com.ats.godaapi.model.dashreport.OrderTotAndCount;
 import com.ats.godaapi.model.dashreport.SpOrderTotAndCount;
 import com.ats.godaapi.model.report.CategoryDistReport;
 import com.ats.godaapi.model.report.DistReportByDate;
+import com.ats.godaapi.model.report.DistWithLastOrders;
 import com.ats.godaapi.model.report.ItemwiseDistReport;
 import com.ats.godaapi.repository.DriverRepo;
 import com.ats.godaapi.repository.GetRouteRepo;
+import com.ats.godaapi.repository.HubRepository;
 import com.ats.godaapi.repository.ReportDataRepo;
 import com.ats.godaapi.repository.RouteAllocationWithNameRepo;
 import com.ats.godaapi.repository.RouteSupRepo;
 import com.ats.godaapi.repository.VehicleRepo;
 import com.ats.godaapi.repository.reportrepo.AllDistLatestOrdRepo;
+import com.ats.godaapi.repository.reportrepo.HubLatestOrderRepo;
 import com.ats.godaapi.repository.reportrepo.CategoryDistReportRepo;
 import com.ats.godaapi.repository.reportrepo.DistReportByDateRepo;
 import com.ats.godaapi.repository.reportrepo.ItemwiseDistReportRepo;
@@ -239,7 +246,7 @@ public class ReportDataApiController {
 		try {
 
 			if (hubId == 0) {
-				System.err.println("Hub Id = 0 all hub service ");
+				System.err.println("Hub Id = 0 all hub service: it is used for Ms Panel Dashboard catwise graph ");
 				catHubReport = categoryDistReportRepo.getAllHubReportCatWise(curDate);
 			} else {
 
@@ -256,6 +263,69 @@ public class ReportDataApiController {
 		}
 
 		return catHubReport;
+
+	}
+	
+	@Autowired
+	HubRepository hubRepository;
+	
+	@Autowired
+	HubLatestOrderRepo getAllHubLatestOrderRepo;
+
+	
+	@RequestMapping(value = { "/getHubLatesOrdersForGraph" }, method = RequestMethod.GET)
+	public @ResponseBody List<AllHubLatestOrder> getHubLatesOrdersForGraphMethod() {
+
+		List<AllHubLatestOrder> hubLastOrdersList = new ArrayList();
+
+		try {
+
+			List<Hub> hubList = new ArrayList<Hub>();
+
+				hubList = hubRepository.findByIsUsed(1);
+
+			for (Hub hub : hubList) {
+
+				AllHubLatestOrder hubLatestOrders = new AllHubLatestOrder();
+				
+				hubLatestOrders.setHubEngName(hub.getHubEngName());
+				hubLatestOrders.setHubMarName(hub.getHubMarName());
+				hubLatestOrders.setHubId(hub.getHubId());
+				hubLatestOrders.setHubContactNo(hub.getHubContactNo());
+				
+				List<HubLatestOrder> latestOrds = getAllHubLatestOrderRepo.getAllHubLatestOrder(hub.getHubId());
+				
+				if(latestOrds.size()>0) {
+					
+					System.err.println("latestOrds " +latestOrds.toString());
+					
+				
+				for (int i = 0; i < latestOrds.size(); i++) {
+
+					HubLatestOrder ord = latestOrds.get(i);
+
+					if (i == 0) {
+						hubLatestOrders.setOrder1(ord.getOrderTotal());
+					} else if (i == 1) {
+						hubLatestOrders.setOrder2(ord.getOrderTotal());
+					} else if (i == 2) {
+						hubLatestOrders.setOrder3(ord.getOrderTotal());
+					}
+
+				}
+				}
+
+				hubLastOrdersList.add(hubLatestOrders);
+			}
+
+			System.err.println("allDistLatestOrdList : " + hubLastOrdersList.toString());
+
+		} catch (Exception e) {
+			System.err.println("AllDistLastestOrder " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		return hubLastOrdersList;
 
 	}
 
