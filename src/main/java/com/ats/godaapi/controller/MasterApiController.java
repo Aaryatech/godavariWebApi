@@ -397,6 +397,27 @@ public class MasterApiController {
 		return hubList;
 
 	}
+	// Search Hub by mob no or hub name for MS Dashboard 27-09-2018
+
+	@RequestMapping(value = { "/searchHub" }, method = RequestMethod.POST)
+	public @ResponseBody List<Hub> searchHub(@RequestParam("hubMobOrName") String hubMobOrName) {
+
+		List<Hub> hubList = new ArrayList<Hub>();
+
+		try {
+
+			hubList = hubRepository.findByHubContactNoOrHubEngNameIgnoreCaseContainingAndIsUsed(hubMobOrName, hubMobOrName, 1);
+
+		} catch (Exception e) {
+			
+			System.err.println("Exception in getting hub bys earchHub" + e.getMessage());
+
+			e.printStackTrace();
+
+		}
+		return hubList;
+
+	}
 
 	@RequestMapping(value = { "/deleteHub" }, method = RequestMethod.POST)
 	public @ResponseBody ErrorMessage deleteHub(@RequestParam("hubId") int hubId) {
@@ -562,25 +583,23 @@ public class MasterApiController {
 			@RequestParam("distMobOrName") String distMobOrName) {
 
 		List<Distributor> distributorList = new ArrayList<Distributor>();
-		
+
 		try {
 
-			distributorList = distributorRepository.findByDistContactNoOrDistEngNameIgnoreCaseContaining(distMobOrName,distMobOrName);
-			
-			
-			if(distributorList.size()>0)
-			System.err.println("getDistributorByMobNoOrName" +distributorList.toString());
+			distributorList = distributorRepository.findByDistContactNoOrDistEngNameIgnoreCaseContainingAndIsUsed(distMobOrName,
+					distMobOrName,1);
 
+			if (distributorList.size() > 0)
+				System.err.println("getDistributorByMobNoOrName" + distributorList.toString());
 
 		} catch (Exception e) {
-			
-			System.err.println("exception In getDistributorByMobNoOrName"+e.getMessage());
+
+			System.err.println("exception In getDistributorByMobNoOrName" + e.getMessage());
 
 			e.printStackTrace();
 
 		}
-		
-		
+
 		return distributorList;
 
 	}

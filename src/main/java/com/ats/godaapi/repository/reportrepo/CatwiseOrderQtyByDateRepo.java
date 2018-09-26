@@ -18,5 +18,13 @@ public interface CatwiseOrderQtyByDateRepo extends JpaRepository<CatwiseOrderQty
 			+ "AND m_item.item_id=t_order_detail.item_id AND m_category.cat_id=m_item.cat_id GROUP BY m_item.cat_id", nativeQuery = true)
 	List<CatwiseOrderQty> getCatOrderQtyByDate(@Param("date") String date, @Param("hubId") int hubId);
 
+	
+	@Query(value = "SELECT SUM(t_order_detail.order_qty) as order_qty , m_item.cat_id , "
+			+ "m_category.cat_eng_name FROM m_item,m_category, t_order_header LEFT JOIN "
+			+ "t_order_detail ON t_order_header.order_header_id= t_order_detail.order_header_id "
+			+ "WHERE t_order_header.order_date =:date AND m_item.item_id=t_order_detail.item_id "
+			+ "AND m_category.cat_id=m_item.cat_id GROUP BY m_item.cat_id", nativeQuery = true)
+	List<CatwiseOrderQty> getCatOrderQtyByDateForMs(@Param("date") String date);
+
 
 }

@@ -21,4 +21,9 @@ public interface HubRepository extends JpaRepository<Hub, Integer> {
 	@Query("UPDATE Hub SET isUsed=0    WHERE hub_id=:hubId ")
 	int deleteHub(@Param("hubId") int hubId);
 
+	
+	List<Hub> findByHubContactNoOrHubEngNameIgnoreCaseContainingAndIsUsed(String mobNo,String hubName,int isUsed);
+	
+	//List<Hub> findByHubContactNoOrHubEngNameIgnoreCaseContainining(String mobNo, String hubName);
+
 }

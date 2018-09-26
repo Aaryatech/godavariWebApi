@@ -49,6 +49,6 @@ public interface DistributorRepository extends JpaRepository<Distributor, Intege
 
 	Distributor findByDistContactNoAndIsUsed(String distContactNo, int i);
 
-	List<Distributor> findByDistContactNoOrDistEngNameIgnoreCaseContaining(String mobNo,String distName);
+	List<Distributor> findByDistContactNoOrDistEngNameIgnoreCaseContainingAndIsUsed(String mobNo,String distName,int isUsed);
 
 }

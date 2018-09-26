@@ -42,10 +42,9 @@ public class TempController {
 
 	@Autowired
 	CategoryRepo categoryRepo;
-	
+
 	@Autowired
 	CategoryDistReportRepo categoryDistReportRepo;
-
 
 	@RequestMapping(value = { "/getGraphDataForDistwiseOrderHistory" }, method = RequestMethod.POST)
 	public @ResponseBody List<DistWithLastOrders> getGraphDataForDistwiseOrderHistory(
@@ -93,10 +92,16 @@ public class TempController {
 		return distWithLastOrdersList;
 
 	}
-/* for MS Panel Cat wise Trend query
- SELECT SUM(t_order_detail.order_qty) as order_qty , m_item.cat_id , m_category.cat_eng_name FROM m_item,m_category, t_order_header LEFT JOIN t_order_detail ON t_order_header.order_header_id= t_order_detail.order_header_id WHERE t_order_header.order_date ='2018-09-26' AND m_item.item_id=t_order_detail.item_id AND m_category.cat_id=m_item.cat_id GROUP BY m_item.cat_id
 
- */
+	/*
+	 * for MS Panel Cat wise Trend query SELECT SUM(t_order_detail.order_qty) as
+	 * order_qty , m_item.cat_id , m_category.cat_eng_name FROM m_item,m_category,
+	 * t_order_header LEFT JOIN t_order_detail ON t_order_header.order_header_id=
+	 * t_order_detail.order_header_id WHERE t_order_header.order_date ='2018-09-26'
+	 * AND m_item.item_id=t_order_detail.item_id AND m_category.cat_id=m_item.cat_id
+	 * GROUP BY m_item.cat_id
+	 * 
+	 */
 	@RequestMapping(value = { "/getCatwiseTrend" }, method = RequestMethod.POST)
 	public @ResponseBody HashMap<String, Object> getCatwiseTrend(@RequestParam("hubId") int hubId,
 			@RequestParam("days") int days) {
@@ -123,17 +128,29 @@ public class TempController {
 
 				System.out.println("Day " + i + " Date After Increment " + todaysDate);
 
-			//	List<CategoryDistReport> list=	categoryDistReportRepo.getHubReportCatWise(todaysDate, hubId);
-				List<CatwiseOrderQty> list = catwiseOrderQtyByDateRepo.getCatOrderQtyByDate(todaysDate, hubId);
+				// List<CategoryDistReport> list=
+				// categoryDistReportRepo.getHubReportCatWise(todaysDate, hubId);
+				List<CatwiseOrderQty> list;
+				
+				if (hubId > 0) {
+					
+					System.err.println("hub ID is >0");
+					list = catwiseOrderQtyByDateRepo.getCatOrderQtyByDate(todaysDate, hubId);
+
+				} else {
+					
+					System.err.println("hub ID is <1 It is for MS DatewiseCatQty list ");
+					list = catwiseOrderQtyByDateRepo.getCatOrderQtyByDateForMs(todaysDate);
+
+				}
+
 				System.out.println("List  " + list.toString());
 
 				DatewiseCatQty catQty = new DatewiseCatQty();
 				catQty.setDate(todaysDate);
 
 				List<Integer> qtyList = new ArrayList();
-				
-		
-				
+
 				for (Category category : catList) {
 
 					qtyList.add(0);
