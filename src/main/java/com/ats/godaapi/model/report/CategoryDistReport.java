@@ -15,7 +15,7 @@ public class CategoryDistReport {
 	
 	
 
-	private float orderQty;
+	private int orderQty;
 
 	private float itemTotal;
 
@@ -43,11 +43,11 @@ public class CategoryDistReport {
 		this.catMarName = catMarName;
 	}
 
-	public float getOrderQty() {
+	public int getOrderQty() {
 		return orderQty;
 	}
 
-	public void setOrderQty(float orderQty) {
+	public void setOrderQty(int orderQty) {
 		this.orderQty = orderQty;
 	}
 
@@ -64,7 +64,8 @@ public class CategoryDistReport {
 		return "CategoryDistReport [catId=" + catId + ", catEngName=" + catEngName + ", catMarName=" + catMarName
 				+ ", orderQty=" + orderQty + ", itemTotal=" + itemTotal + "]";
 	}
+
 	
-	
+
 	
 }
