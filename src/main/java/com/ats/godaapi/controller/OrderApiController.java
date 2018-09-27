@@ -516,25 +516,28 @@ public class OrderApiController {
 	}
 
 	@RequestMapping(value = { "/getOrderHistoryDistwise" }, method = RequestMethod.POST)
-	public @ResponseBody GetOrderHub getOrderHistoryDistwise(@RequestParam("date") String date,
+	public @ResponseBody List<GetOrderHub> getOrderHistoryDistwise(@RequestParam("date") String date,
 			@RequestParam("distId") int distId) {
 
-		GetOrderHub orderHeader = new GetOrderHub();
+		List<GetOrderHub> orderHeaderList = new ArrayList<>();
 
 		try {
 
-			orderHeader = getOrderHubRepo.getOrderDist(date, distId);
+			orderHeaderList = getOrderHubRepo.getOrderDist(date, distId);
 
-			List<GetOrderDetail> orderDetailList = getOrderDetailRepo
-					.getOrderDetailByItemwise(orderHeader.getOrderHeaderId());
-			orderHeader.setGetOrderDetailList(orderDetailList);
+			for (int i = 0; i < orderHeaderList.size(); i++) {
+
+				List<GetOrderDetail> orderDetailList = getOrderDetailRepo
+						.getOrderDetailByItemwise(orderHeaderList.get(i).getOrderHeaderId());
+				orderHeaderList.get(i).setGetOrderDetailList(orderDetailList);
+			}
 
 		} catch (Exception e) {
 
 			e.printStackTrace();
 
 		}
-		return orderHeader;
+		return orderHeaderList;
 
 	}
 
