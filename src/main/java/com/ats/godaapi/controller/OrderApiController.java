@@ -739,9 +739,9 @@ public class OrderApiController {
 		return getAllCatwiseItemResp;
 
 	}
-
-	@RequestMapping(value = { "/getOrderByTypeAndStatus" }, method = RequestMethod.GET)
-	public @ResponseBody List<GetOrderHub> getOrderByTypeAndStatus() {
+//changed by Sachin on 28/09  to pass dynamic order Status 
+	@RequestMapping(value = { "/getOrderByTypeAndStatus" }, method = RequestMethod.POST)
+	public @ResponseBody List<GetOrderHub> getOrderByTypeAndStatus(@RequestParam("orderStatusList") List<Integer> orderStatusList) {
 
 		List<GetOrderHub> orderHeaderList = new ArrayList<GetOrderHub>();
 
@@ -751,7 +751,7 @@ public class OrderApiController {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			String currDate = sdf.format(now.getTime());
 
-			orderHeaderList = getOrderHubRepo.getOrderHub(currDate);
+			orderHeaderList = getOrderHubRepo.getOrderHub(currDate,orderStatusList);
 
 		} catch (Exception e) {
 
