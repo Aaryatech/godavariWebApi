@@ -96,7 +96,11 @@ public class ReportDataApiController {
 	@Autowired
 	NoOrderHubRepo getNoOrderHubRepo;
 	
+	@Autowired
+	HubRepository hubRepository;
 	
+	@Autowired
+	HubLatestOrderRepo getAllHubLatestOrderRepo;
 
 	@RequestMapping(value = { "/getAllDistLatestOrder" }, method = RequestMethod.POST)
 	public @ResponseBody List<AllDistLatestOrd> getAllDistLatestOrd(@RequestParam("distId") int distId) {
@@ -266,11 +270,7 @@ public class ReportDataApiController {
 
 	}
 	
-	@Autowired
-	HubRepository hubRepository;
 	
-	@Autowired
-	HubLatestOrderRepo getAllHubLatestOrderRepo;
 
 	
 	@RequestMapping(value = { "/getHubLatesOrdersForGraph" }, method = RequestMethod.GET)

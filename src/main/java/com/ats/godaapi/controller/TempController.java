@@ -123,8 +123,22 @@ public class TempController {
 		map.put("catList", catList);
 
 		List<DatewiseCatQty> orderQtyList = new ArrayList();
+		
 		try {
-			for (int i = 0; i < days; i++) {
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar c = Calendar.getInstance();
+
+		c.setTime(sdf.parse(todaysDate));
+		
+		int noOfDays= -(days);
+		c.add(Calendar.DATE, noOfDays);
+		todaysDate = sdf.format(c.getTime());
+		System.err.println("no of days "+noOfDays);
+
+		
+		
+			for (int i = 0; i < (days+1); i++) {
 
 				System.out.println("Day " + i + " Date After Increment " + todaysDate);
 
@@ -166,8 +180,7 @@ public class TempController {
 				catQty.setOrderQty(qtyList);
 				orderQtyList.add(catQty);
 
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-				Calendar c = Calendar.getInstance();
+				 c = Calendar.getInstance();
 
 				c.setTime(sdf.parse(todaysDate));
 				c.add(Calendar.DATE, 1);
