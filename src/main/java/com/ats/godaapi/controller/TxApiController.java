@@ -548,7 +548,7 @@ public class TxApiController {
 
 		List<Notification> noti = new ArrayList<>();
 		try {
-			noti = notifiRepo.findByNotifiToAndNotifiType(notifiTo, 2);
+			noti = notifiRepo.findByNotifiToAndNotifiTypeOrderByNotifiIdDesc(notifiTo, 2);
 
 		} catch (Exception e) {
 
@@ -564,7 +564,7 @@ public class TxApiController {
 
 		List<Notification> noti = new ArrayList<>();
 		try {
-			noti = notifiRepo.findByNotifiToAndNotifiType(notifiTo, 0);
+			noti = notifiRepo.findByNotifiToAndNotifiTypeOrderByNotifiIdDesc(notifiTo, 0);
 
 		} catch (Exception e) {
 
@@ -626,7 +626,7 @@ public class TxApiController {
 		List<Notification> notiList = new ArrayList<Notification>();
 
 		try {
-			notiList = notifiRepo.findByNotifiToAndNotifiType(notifiTo, 1);
+			notiList = notifiRepo.findByNotifiToAndNotifiTypeOrderByNotifiIdDesc(notifiTo, 1);
 
 		} catch (Exception e) {
 
