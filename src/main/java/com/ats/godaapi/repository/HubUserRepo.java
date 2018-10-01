@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ats.godaapi.model.GetOrderDetail;
 import com.ats.godaapi.model.HubUser;
 
 public interface HubUserRepo extends JpaRepository<HubUser, Integer> {
@@ -31,7 +30,7 @@ public interface HubUserRepo extends JpaRepository<HubUser, Integer> {
 
 	HubUser findByHsContactNoAndIsUsed(String hsContactNo, int i);
 
-	@Query(value = "SELECT * FROM m_hub_user h WHERE h.is_used=1 AND h.is_admin IN(:userType) ", nativeQuery = true)
+	@Query(value = "SELECT * FROM m_hub_user h WHERE h.is_used=1 AND h.is_admin IN(:userType) order by  h.hs_id desc ", nativeQuery = true)
 	List<HubUser> getHubUserByUserType(@Param("userType") List<Integer> userType);
 
 }

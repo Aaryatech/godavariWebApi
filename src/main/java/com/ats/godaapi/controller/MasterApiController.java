@@ -406,10 +406,11 @@ public class MasterApiController {
 
 		try {
 
-			hubList = hubRepository.findByHubContactNoOrHubEngNameIgnoreCaseContainingAndIsUsed(hubMobOrName, hubMobOrName, 1);
+			hubList = hubRepository.findByHubContactNoOrHubEngNameIgnoreCaseContainingAndIsUsed(hubMobOrName,
+					hubMobOrName, 1);
 
 		} catch (Exception e) {
-			
+
 			System.err.println("Exception in getting hub bys earchHub" + e.getMessage());
 
 			e.printStackTrace();
@@ -586,8 +587,8 @@ public class MasterApiController {
 
 		try {
 
-			distributorList = distributorRepository.findByDistContactNoOrDistEngNameIgnoreCaseContainingAndIsUsed(distMobOrName,
-					distMobOrName,1);
+			distributorList = distributorRepository
+					.findByDistContactNoOrDistEngNameIgnoreCaseContainingAndIsUsed(distMobOrName, distMobOrName, 1);
 
 			if (distributorList.size() > 0)
 				System.err.println("getDistributorByMobNoOrName" + distributorList.toString());
@@ -627,7 +628,7 @@ public class MasterApiController {
 
 		try {
 
-			distList = distributorRepository.findByIsUsed(1);
+			distList = distributorRepository.findByIsUsedOrderByDistIdDesc(1);
 
 		} catch (Exception e) {
 

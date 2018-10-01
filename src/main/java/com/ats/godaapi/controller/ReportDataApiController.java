@@ -1,6 +1,7 @@
 package com.ats.godaapi.controller;
 
 import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ats.godaapi.model.DatewiseRoute;
-import com.ats.godaapi.model.Distributor;
 import com.ats.godaapi.model.Driver;
 import com.ats.godaapi.model.GetRoute;
 import com.ats.godaapi.model.Hub;

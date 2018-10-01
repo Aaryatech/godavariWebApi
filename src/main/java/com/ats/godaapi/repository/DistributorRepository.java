@@ -19,13 +19,15 @@ public interface DistributorRepository extends JpaRepository<Distributor, Intege
 	@Query("UPDATE Distributor SET isUsed=0    WHERE dist_id=:distId ")
 	int deleteDistributor(@Param("distId") int distId);
 
+	List<Distributor> findByIsUsedOrderByDistIdDesc(int i);
+
 	List<Distributor> findByIsUsed(int i);
 
 	Distributor findByDistContactNoAndDistPwdAndIsUsed(String distContactNo, String distPwd, int i);
 
 	Distributor findByDistId(int distId);
-	List<Distributor> findByHubId(int hubId);
 
+	List<Distributor> findByHubId(int hubId);
 
 	@Transactional
 	@Modifying
@@ -49,6 +51,7 @@ public interface DistributorRepository extends JpaRepository<Distributor, Intege
 
 	Distributor findByDistContactNoAndIsUsed(String distContactNo, int i);
 
-	List<Distributor> findByDistContactNoOrDistEngNameIgnoreCaseContainingAndIsUsed(String mobNo,String distName,int isUsed);
+	List<Distributor> findByDistContactNoOrDistEngNameIgnoreCaseContainingAndIsUsed(String mobNo, String distName,
+			int isUsed);
 
 }
