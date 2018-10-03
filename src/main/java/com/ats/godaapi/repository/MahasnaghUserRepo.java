@@ -17,7 +17,10 @@ public interface MahasnaghUserRepo extends JpaRepository<MahasanghUser, Integer>
 	@Query("UPDATE MahasanghUser SET isUsed=0    WHERE ms_id=:msId ")
 	int deleteMahasnaghUser(@Param("msId") int msId);
 
+	List<MahasanghUser> findByIsUsedOrderByMsIdDesc(int i);
+	
 	List<MahasanghUser> findByIsUsed(int i);
+
 
 	MahasanghUser findByMsIdAndIsUsed(int msId, int i);
 

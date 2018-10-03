@@ -21,4 +21,6 @@ public interface ItemHsnRepo extends JpaRepository<ItemHsn, Integer> {
 
 	List<ItemHsn> findByIsUsed(int i);
 
+	List<ItemHsn> findByIsUsedOrderByItemHsnIdDesc(int i);
+
 }

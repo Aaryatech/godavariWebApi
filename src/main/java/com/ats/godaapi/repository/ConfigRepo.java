@@ -19,6 +19,8 @@ public interface ConfigRepo extends JpaRepository<Config, Integer> {
 	int deleteConfig(@Param("configId") int configId);
 
 	List<Config> findByIsUsed(int i);
+	
+	List<Config> findByIsUsedOrderByConfigIdDesc(int i);
 
 	Config findByConfigIdAndIsUsed(int configId, int i);
 

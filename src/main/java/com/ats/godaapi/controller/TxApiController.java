@@ -409,7 +409,7 @@ public class TxApiController {
 
 		try {
 
-			conList = configRepo.findByIsUsed(1);
+			conList = configRepo.findByIsUsedOrderByConfigIdDesc(1);
 
 		} catch (Exception e) {
 

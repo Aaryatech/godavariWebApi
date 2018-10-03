@@ -13,6 +13,8 @@ import com.ats.godaapi.model.Driver;
 public interface DriverRepo extends JpaRepository<Driver, Integer> {
 
 	List<Driver> findByIsUsed(int i);
+	
+	List<Driver> findByIsUsedOrderByDriverIdDesc(int i);
 
 	Driver findByDriverIdAndIsUsed(int driverId, int i);
 

@@ -16,14 +16,16 @@ public interface HubRepository extends JpaRepository<Hub, Integer> {
 
 	List<Hub> findByIsUsed(int i);
 
+	List<Hub> findByIsUsedOrderByHubIdDesc(int i);
+
 	@Transactional
 	@Modifying
 	@Query("UPDATE Hub SET isUsed=0    WHERE hub_id=:hubId ")
 	int deleteHub(@Param("hubId") int hubId);
 
-	
-	List<Hub> findByHubContactNoOrHubEngNameIgnoreCaseContainingAndIsUsed(String mobNo,String hubName,int isUsed);
-	
-	//List<Hub> findByHubContactNoOrHubEngNameIgnoreCaseContainining(String mobNo, String hubName);
+	List<Hub> findByHubContactNoOrHubEngNameIgnoreCaseContainingAndIsUsed(String mobNo, String hubName, int isUsed);
+
+	// List<Hub> findByHubContactNoOrHubEngNameIgnoreCaseContainining(String mobNo,
+	// String hubName);
 
 }

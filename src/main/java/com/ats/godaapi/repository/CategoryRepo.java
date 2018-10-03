@@ -17,6 +17,8 @@ public interface CategoryRepo extends JpaRepository<Category, Integer> {
 	@Query("UPDATE Category SET isUsed=0    WHERE cat_id=:catId ")
 	int deleteCategory(@Param("catId") int catId);
 
+	List<Category> findByIsUsedOrderByCatIdDesc(int i);
+	
 	List<Category> findByIsUsed(int i);
 
 	Category findByCatIdAndIsUsed(int catId, int i);

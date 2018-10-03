@@ -19,6 +19,8 @@ public interface UomRepo extends JpaRepository<Uom, Integer> {
 
 	Uom findByUomIdAndIsUsed(int uomId, int i);
 
-	List<Uom> findByIsUsed(int i);
+	List<Uom> findByIsUsedOrderByUomIdDesc(int i);
+
+	
 
 }

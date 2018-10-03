@@ -14,6 +14,8 @@ import com.ats.godaapi.model.Vehicle;
 public interface VehicleRepo extends JpaRepository<Vehicle, Integer> {
 
 	List<Vehicle> findByIsUsed(int i);
+	
+	List<Vehicle> findByIsUsedOrderByVehicleIdDesc(int i);
 
 	Vehicle findByVehicleIdAndIsUsed(int vehicleId, int i);
 

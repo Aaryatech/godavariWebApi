@@ -134,7 +134,7 @@ public class MasterApiController {
 
 		try {
 
-			driList = driverRepo.findByIsUsed(1);
+			driList = driverRepo.findByIsUsedOrderByDriverIdDesc(1);
 
 		} catch (Exception e) {
 
@@ -213,7 +213,7 @@ public class MasterApiController {
 
 		try {
 
-			vehList = vehicleRepo.findByIsUsed(1);
+			vehList = vehicleRepo.findByIsUsedOrderByVehicleIdDesc(1);
 
 		} catch (Exception e) {
 
@@ -308,7 +308,7 @@ public class MasterApiController {
 
 		try {
 
-			uomList = uomRepo.findByIsUsed(1);
+			uomList = uomRepo.findByIsUsedOrderByUomIdDesc(1);
 
 		} catch (Exception e) {
 
@@ -387,7 +387,7 @@ public class MasterApiController {
 
 		try {
 
-			hubList = hubRepository.findByIsUsed(1);
+			hubList = hubRepository.findByIsUsedOrderByHubIdDesc(1);
 
 		} catch (Exception e) {
 
@@ -765,7 +765,7 @@ public class MasterApiController {
 
 		try {
 
-			catList = categoryRepo.findByIsUsed(1);
+			catList = categoryRepo.findByIsUsedOrderByCatIdDesc(1);
 
 		} catch (Exception e) {
 
@@ -967,7 +967,7 @@ public class MasterApiController {
 
 		try {
 
-			itemHsnList = itemHsnRepo.findByIsUsed(1);
+			itemHsnList = itemHsnRepo.findByIsUsedOrderByItemHsnIdDesc(1);
 
 		} catch (Exception e) {
 
@@ -1147,7 +1147,7 @@ public class MasterApiController {
 
 		try {
 
-			msList = mahasnaghUserRepo.findByIsUsed(1);
+			msList = mahasnaghUserRepo.findByIsUsedOrderByMsIdDesc(1);
 
 		} catch (Exception e) {
 
@@ -1251,7 +1251,7 @@ public class MasterApiController {
 
 		try {
 
-			rsList = routeSupRepo.findByIsUsed(1);
+			rsList = routeSupRepo.findByIsUsedOrderBySupIdDesc(1);
 
 		} catch (Exception e) {
 

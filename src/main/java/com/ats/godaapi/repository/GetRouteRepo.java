@@ -10,7 +10,7 @@ import com.ats.godaapi.model.GetRoute;
 
 public interface GetRouteRepo extends JpaRepository<GetRoute, Integer> {
 
-	@Query(value = "SELECT r.*,h.hub_eng_name,h.hub_mar_name,h.hub_eng_add,h.hub_mar_add FROM m_route r ,m_hub h  WHERE r.is_used=1 AND r.hub_id=h.hub_id", nativeQuery = true)
+	@Query(value = "SELECT r.*,h.hub_eng_name,h.hub_mar_name,h.hub_eng_add,h.hub_mar_add FROM m_route r ,m_hub h  WHERE r.is_used=1 AND r.hub_id=h.hub_id order by r.route_id desc", nativeQuery = true)
 	List<GetRoute> getRouteHubName();
 
 	@Query(value = "SELECT r.* ,h.hub_eng_name,h.hub_mar_name,h.hub_eng_add,h.hub_mar_add FROM m_route r,m_hub h  WHERE r.route_id NOT IN (SELECT route_id FROM t_route_allocation WHERE  "
